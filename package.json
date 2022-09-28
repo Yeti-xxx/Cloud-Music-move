@@ -14,6 +14,7 @@
     "element-plus": "^2.2.17",
     "qs": "^6.11.0",
     "vue": "^3.2.37",
+    "vue-router": "^4.1.5",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

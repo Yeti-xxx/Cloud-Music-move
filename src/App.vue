@@ -3,7 +3,8 @@
 import home from './components/home.vue'
 </script>
 <template>
-  <home />
+  <!-- <home /> -->
+  <router-view></router-view>
 </template>
 
 <style scoped>

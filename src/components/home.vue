@@ -107,13 +107,13 @@
         </div>
       </el-scrollbar>
     </div>
-    
     <!-- tabbar -->
     <tabbar :pageNum="pageIndex"></tabbar>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 // import axios from '../axios/http.js'
 import Tabbar from './tababr/tabbar.vue'
 export default {
@@ -121,14 +121,12 @@ export default {
   components: {
     Tabbar
   },
-  computed: {
-    pageIndex: 1
-  },
+
   data() {
     return {
       musicList: {},
       weListen: [],
-      pageIndex:1
+      pageIndex: 1
     }
   },
   created() {

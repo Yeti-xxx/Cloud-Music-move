@@ -1,7 +1,7 @@
 <template>
   <div class="tabbar">
     <div class="home">
-      <div class="home-item">
+      <div class="home-item home" @click="TabbarChange(1)">
         <div class="ActiveHome" v-if="pageNum==1">
           <div class="ActiveHome-item">
             <div class="back">
@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div class="home-item">
+      <div class="home-item my" @click="TabbarChange(2)">
         <div class="ActiveHome" v-if="pageNum==2">
           <div class="ActiveHome-item">
             <div class="back">
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div class="home-item">
+      <div class="home-item play" @click="TabbarChange(3)">
         <div class="ActiveHome" v-if="pageNum==3">
           <div class="ActiveHome-item">
             <div class="back">
@@ -67,7 +67,7 @@
           </div>
         </div>
       </div>
-      <div class="home-item">
+      <div class="home-item commune" @click="TabbarChange(4)">
         <div class="ActiveHome" v-if="pageNum==4">
           <div class="ActiveHome-item">
             <div class="back">
@@ -103,6 +103,21 @@ export default {
     return {
 
     }
+  },
+  methods:{
+    TabbarChange(num){
+      if (num===1) {
+        this.$router.push('/home')
+      }else if(num===2){
+        this.$router.push('/my')
+      }else if(num===3){
+        this.$router.push('/play')
+      }else if(num===4){
+        this.$router.push('/commune')
+      }
+    
+    }
+      
   }
 }
 
