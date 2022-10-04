@@ -1,9 +1,9 @@
 <template>
     <div class="container">
-        <div class="myContainer" v-if="token">
+        <div class="myContainer" v-if="accountStore">
             已登录
         </div>
-        <Login></Login>
+        <Login v-else></Login>
         <Tabbar :pageNum="2"></Tabbar>
     </div>
 </template>
@@ -15,8 +15,8 @@ import { mapState } from 'vuex'
 export default {
     name: 'my',
     computed: {
-        ...mapState('m_my',['token']),
-        
+        ...mapState('m_my', ['accountStore']),
+
     },
     components: {
         Tabbar,
@@ -24,7 +24,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     },
 }
@@ -32,5 +32,8 @@ export default {
 </script>
 
 <style lang='less' scoped>
-
+.container {
+    width: 100%;
+    height: 100%;
+}
 </style>

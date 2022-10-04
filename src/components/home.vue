@@ -121,7 +121,7 @@ export default {
   components: {
     Tabbar
   },
-
+  
   data() {
     return {
       musicList: {},
@@ -157,7 +157,8 @@ export default {
 .container {
   background-color: #242424;
   width: 100%;
-  height: 750px;
+  padding-bottom:73px;
+  // height: 750px;
 
 }
 

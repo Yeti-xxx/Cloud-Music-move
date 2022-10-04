@@ -1,12 +1,14 @@
-export default{
+export default {
     namespaced: true,
     state: () => ({
-        token:''
+        accountStore:JSON.parse(window.localStorage.vuex || '{}'),
     }),
-    mutations:{
-
+    mutations: {
+        updateAccount(state, account) {
+            state.accountStore = account
+        },
     },
-    getters:{
+    getters: {
 
     }
 }
