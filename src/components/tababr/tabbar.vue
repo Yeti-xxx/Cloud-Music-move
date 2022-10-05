@@ -125,7 +125,7 @@ export default {
 
 <style lang='less' scoped>
 .tabbar {
-  border-top: 2px solid #252525;
+  // border-top: 2px solid #252525;
   position: fixed;
   background: #1c1c1e;
   bottom: 0;

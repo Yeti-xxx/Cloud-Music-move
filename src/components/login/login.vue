@@ -80,8 +80,8 @@ import { ElMessage } from 'element-plus'
 export default {
     name: 'login',
     computed: {
-        ...mapState('m_my', ['accountStore','test']),
-        
+        ...mapState('m_my', ['accountStore', 'userInfo']),
+
     },
     created() {
         console.log(this.$store);
@@ -91,7 +91,7 @@ export default {
             gotoLogin: false,
             gotoPage: true,
             gotoCheck: false,
-            phone: '15886576755',
+            phone: '',
             inputbox: [
                 {
                     value: ''
@@ -111,7 +111,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations('m_my', ['updateAccount','updatedtest']),
+        ...mapMutations('m_my', ['updateAccount', 'updateUserInfo']),
         gotoPageChange() {
             this.gotoPage = !this.gotoPage
             this.gotoLogin = !this.gotoLogin
@@ -132,10 +132,32 @@ export default {
             }
 
         },
+        // 校验 验证码
         async getCheck(check) {
             const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
             this.account = res.account
             this.updateAccount(this.account)
+            // console.log(this.account);
+            this.getUserInfo(this.account.id)
+
+        },
+        // 获取用户基本信息
+        async getUserInfo(uid) {
+            const res = await this.$h.get('/user/detail?uid=' + uid)
+            if (res.code !== 200) {
+                ElMessage({
+                    showClose: true,
+                    message: '服务器出错！',
+                    type: 'error',
+                })
+                return this.reload
+            }
+            console.log(res);
+            this.updateUserInfo(res)
+            // setTimeout(() => {
+            //     location.reload() 
+            // }, 5000);
+
         },
         onInput(index) {
             // index < 5 ，如果是第6格，不触发光标移动至下一个输入框。

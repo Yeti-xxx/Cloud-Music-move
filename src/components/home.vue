@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    
     <!-- 导航栏区域 -->
     <div class="nav">
       <el-icon color="#eee" :size="24">
@@ -107,6 +108,8 @@
         </div>
       </el-scrollbar>
     </div>
+    <!-- 音乐播放器
+    <playmusic></playmusic> -->
     <!-- tabbar -->
     <tabbar :pageNum="pageIndex"></tabbar>
   </div>
@@ -115,11 +118,13 @@
 <script>
 import { mapState } from 'vuex'
 // import axios from '../axios/http.js'
+import playmusic from './playmusic/playmusic.vue'
 import Tabbar from './tababr/tabbar.vue'
 export default {
   name: 'home',
   components: {
-    Tabbar
+    Tabbar,
+    playmusic
   },
   
   data() {
