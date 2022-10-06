@@ -79,7 +79,7 @@
       <el-scrollbar>
         <div class="scrollbar-flex-content">
           <div class="scrollbar-demo-item">
-            <div class="WeListen-item" v-for="(item,index) in weListen.slice(0,3)" :key="index">
+            <div class="WeListen-item" v-for="(item,index) in weListen.slice(0,3)" :key="index" @click="playMusic(item)">
               <div class="Welisten-item-song">
                 <img :src="item.picUrl" class="song-img" />
                 <div class="song-item">{{item.name}}</div>
@@ -88,7 +88,7 @@
             </div>
           </div>
           <div class="scrollbar-demo-item">
-            <div class="WeListen-item" v-for="(item,index) in weListen.slice(3,6)" :key="index">
+            <div class="WeListen-item" v-for="(item,index) in weListen.slice(3,6)" :key="index" @click="playMusic(item)">
               <div class="Welisten-item-song">
                 <img :src="item.picUrl" class="song-img" />
                 <div class="song-item">{{item.name}}</div>
@@ -97,7 +97,7 @@
             </div>
           </div>
           <div class="scrollbar-demo-item">
-            <div class="WeListen-item" v-for="(item,index) in weListen.slice(6,9)" :key="index">
+            <div class="WeListen-item" v-for="(item,index) in weListen.slice(6,9)" :key="index" @click="playMusic(item)">
               <div class="Welisten-item-song">
                 <img :src="item.picUrl" class="song-img" />
                 <div class="song-item">{{item.name}}</div>
@@ -126,12 +126,12 @@ export default {
     Tabbar,
     playmusic
   },
-  
   data() {
     return {
       musicList: {},
       weListen: [],
-      pageIndex: 1
+      pageIndex: 1,
+      musicUrl:''
     }
   },
   created() {
@@ -140,6 +140,7 @@ export default {
     // 获取大家都在听
     this.getWeListen()
   },
+  inject:['playMusictoApp'],
   methods: {
     // 获取歌单数据
     async getMusicList() {
@@ -147,9 +148,25 @@ export default {
       this.musicList = res
 
     },
+    // 大家都在听
     async getWeListen() {
       const { result: res } = await this.$h.get('/personalized/newsong?limit=9')
       this.weListen = res
+    },
+    // 获取歌曲url
+    async getMusicUrl(info){
+      const res= await this.$h.get('/song/url?id='+info.id)
+      this.musicUrl = res.data[0].url
+      return true
+    },
+    // 向父组件中的音乐播放器组件传入数据
+    async playMusic(songInfo){
+      console.log(songInfo);
+      const res = await this.getMusicUrl(songInfo);
+      if (res) {
+        // console.log(this.musicUrl);
+        this.playMusictoApp(this.musicUrl,songInfo.picUrl,songInfo.name)
+      }
     }
   }
 
@@ -162,7 +179,7 @@ export default {
 .container {
   background-color: #242424;
   width: 100%;
-  padding-bottom:73px;
+  padding-bottom:123px;
   // height: 750px;
 
 }
