@@ -11,6 +11,7 @@ export default {
         updateUserInfo(state, userInfo) {
             console.log(11);
             state.userInfo = userInfo
+            
         },
     },
     getters: {
