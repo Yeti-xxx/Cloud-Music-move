@@ -77,7 +77,6 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { ElMessage } from 'element-plus'
-import { ElLoading } from 'element-plus'
 export default {
     name: 'login',
     computed: {
@@ -121,122 +120,122 @@ export default {
             this.$refs.inputPhone.value = '';
         },
         async getLogin() {
-            // if (this.$refs.inputPhone.value.length !== 11) {
-            //     return ElMessage('请输入11位数字的手机号')
-            // }
-            // this.phone = this.$refs.inputPhone.value
-            // // 验证通过后
-            // const res = await this.$h.get('/captcha/sent?phone=' + this.$refs.inputPhone.value)
-            // if (res.code === 200 && res.data === true) {
+            if (this.$refs.inputPhone.value.length !== 11) {
+                return ElMessage('请输入11位数字的手机号')
+            }
+            this.phone = this.$refs.inputPhone.value
+            // 验证通过后
+            const res = await this.$h.get('/captcha/sent?phone=' + this.$refs.inputPhone.value)
+            if (res.code === 200 && res.data === true) {
             //     console.log(111);
                 this.gotoLogin = !this.gotoLogin
                 this.gotoCheck = !this.gotoCheck
                 
-            // }
+            }
             
 
         },
         // 校验 验证码
         async getCheck(check) {
-            // const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
-            // this.account = res.account
-            this.account = {
-    "loginType": 1,
-    "code": 200,
-    "account": {
-        "id": 1335174138,
-        "userName": "1_15886576755",
-        "type": 1,
-        "status": 0,
-        "whitelistAuthority": 0,
-        "createTime": 1515330777193,
-        "salt": "[B@58e4afd2",
-        "tokenVersion": 0,
-        "ban": 0,
-        "baoyueVersion": 0,
-        "donateVersion": 0,
-        "vipType": 0,
-        "viptypeVersion": 1643820003722,
-        "anonimousUser": false,
-        "uninitialized": false
-    },
-    "token": "9ec094ef524df65688a8c414206df5d8c59c002467a7714607d16c73da299343993166e004087dd300b9079e6c75c15dfa524d38c5b34675310739b9c9eae1861d2f363e806233297a561ba977ae766d",
-    "profile": {
-        "followed": false,
-        "backgroundUrl": "https://p2.music.126.net/pf6wr3laJhP56M-3UxfQNA==/109951164663755261.jpg",
-        "detailDescription": "",
-        "backgroundImgIdStr": "109951164663755261",
-        "avatarImgIdStr": "109951164345830726",
-        "userId": 1335174138,
-        "userType": 0,
-        "vipType": 0,
-        "nickname": "庚希XX",
-        "birthday": 1068304333147,
-        "gender": 1,
-        "province": 430000,
-        "city": 431000,
-        "avatarImgId": 109951164345830720,
-        "backgroundImgId": 109951164663755260,
-        "accountStatus": 0,
-        "avatarUrl": "https://p3.music.126.net/r0NFzjDum3fZeZBlRVLthA==/109951164345830726.jpg",
-        "defaultAvatar": false,
-        "expertTags": null,
-        "experts": {},
-        "mutual": false,
-        "remarkName": null,
-        "authStatus": 0,
-        "djStatus": 0,
-        "description": "",
-        "signature": "",
-        "authority": 0,
-        "avatarImgId_str": "109951164345830726",
-        "followeds": 4,
-        "follows": 8,
-        "eventCount": 0,
-        "avatarDetail": null,
-        "playlistCount": 7,
-        "playlistBeSubscribedCount": 0
-    },
-    "bindings": [
-        {
-            "userId": 1335174138,
-            "url": "",
-            "expired": false,
-            "refreshTime": 1515330812,
-            "bindingTime": 1515330812481,
-            "tokenJsonStr": "{\"countrycode\":\"\",\"cellphone\":\"15886576755\",\"hasPassword\":true}",
-            "expiresIn": 2147483647,
-            "id": 6520282062,
-            "type": 1
-        },
-        {
-            "userId": 1335174138,
-            "url": "",
-            "expired": true,
-            "refreshTime": 1539406290,
-            "bindingTime": 1515330777206,
-            "tokenJsonStr": "{\"access_token\":\"2EA0038B4E172F3D7687681E07E96A72\",\"refresh_token\":\"50598068E68960EF4C40A92325ACDB96\",\"openid\":\"AA4B0336B4452B16B47683F7CD91A35B\",\"nickname\":\"布尔什维\",\"expires_in\":7776000}",
-            "expiresIn": 7776000,
-            "id": 6520289040,
-            "type": 5
-        },
-        {
-            "userId": 1335174138,
-            "url": "",
-            "expired": true,
-            "refreshTime": 1565193068,
-            "bindingTime": 1565193068377,
-            "tokenJsonStr": "{\"access_token\":\"24_imEIWKd-93uDCquLN_Cvsl-VBQUFMG5OuAS5JyHZwxRUq7rCcVwpD7PbfYonBU2tRnq9F66J-XG7RITrm2ZX7kJE_DuVIhJ8WU9TVupwQ2Y\",\"refresh_token\":\"24_5X9C4DzXZKNm47U7ap-HVvjJ9FuzDWzPkwsC_dTsO5fBCQNBSBAgkFiR3DJ2tDP24uC0t8bD4qQytUe70ArWnzVJYwRsiCTwPxAtrDA-gMc\",\"unionid\":\"oZoefuPg7wswVs1-laIoy2xj_vQ4\",\"openid\":\"okvmMjmtXGSDVRviSsMuS8Fs2XjA\",\"scope\":\"snsapi_userinfo\",\"nickname\":\"Yeti\",\"expires_in\":7200}",
-            "expiresIn": 7200,
-            "id": 6934910317,
-            "type": 10
-        }
-    ],
-    "cookie": "MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/feedback;;MUSIC_SNS=; Max-Age=0; Expires=Fri, 07 Oct 2022 02:31:27 GMT; Path=/;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/clientlog;;MUSIC_U=9ec094ef524df65688a8c414206df5d8c59c002467a7714607d16c73da299343993166e004087dd300b9079e6c75c15dfa524d38c5b34675310739b9c9eae1861d2f363e806233297a561ba977ae766d; Max-Age=1296000; Expires=Sat, 22 Oct 2022 02:31:27 GMT; Path=/;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/feedback;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/openapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/feedback;;__csrf=f0e9d5be6f9fc0225763b67da9357ff9; Max-Age=1296010; Expires=Sat, 22 Oct 2022 02:31:37 GMT; Path=/;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/feedback;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/clientlog;;__remember_me=true; Max-Age=1296000; Expires=Sat, 22 Oct 2022 02:31:27 GMT; Path=/;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/openapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/feedback;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/feedback;"
-}
+            const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
+            this.account = res.account
+//             this.account = {
+//     "loginType": 1,
+//     "code": 200,
+//     "account": {
+//         "id": 1335174138,
+//         "userName": "1_15886576755",
+//         "type": 1,
+//         "status": 0,
+//         "whitelistAuthority": 0,
+//         "createTime": 1515330777193,
+//         "salt": "[B@58e4afd2",
+//         "tokenVersion": 0,
+//         "ban": 0,
+//         "baoyueVersion": 0,
+//         "donateVersion": 0,
+//         "vipType": 0,
+//         "viptypeVersion": 1643820003722,
+//         "anonimousUser": false,
+//         "uninitialized": false
+//     },
+//     "token": "9ec094ef524df65688a8c414206df5d8c59c002467a7714607d16c73da299343993166e004087dd300b9079e6c75c15dfa524d38c5b34675310739b9c9eae1861d2f363e806233297a561ba977ae766d",
+//     "profile": {
+//         "followed": false,
+//         "backgroundUrl": "https://p2.music.126.net/pf6wr3laJhP56M-3UxfQNA==/109951164663755261.jpg",
+//         "detailDescription": "",
+//         "backgroundImgIdStr": "109951164663755261",
+//         "avatarImgIdStr": "109951164345830726",
+//         "userId": 1335174138,
+//         "userType": 0,
+//         "vipType": 0,
+//         "nickname": "庚希XX",
+//         "birthday": 1068304333147,
+//         "gender": 1,
+//         "province": 430000,
+//         "city": 431000,
+//         "avatarImgId": 109951164345830720,
+//         "backgroundImgId": 109951164663755260,
+//         "accountStatus": 0,
+//         "avatarUrl": "https://p3.music.126.net/r0NFzjDum3fZeZBlRVLthA==/109951164345830726.jpg",
+//         "defaultAvatar": false,
+//         "expertTags": null,
+//         "experts": {},
+//         "mutual": false,
+//         "remarkName": null,
+//         "authStatus": 0,
+//         "djStatus": 0,
+//         "description": "",
+//         "signature": "",
+//         "authority": 0,
+//         "avatarImgId_str": "109951164345830726",
+//         "followeds": 4,
+//         "follows": 8,
+//         "eventCount": 0,
+//         "avatarDetail": null,
+//         "playlistCount": 7,
+//         "playlistBeSubscribedCount": 0
+//     },
+//     "bindings": [
+//         {
+//             "userId": 1335174138,
+//             "url": "",
+//             "expired": false,
+//             "refreshTime": 1515330812,
+//             "bindingTime": 1515330812481,
+//             "tokenJsonStr": "{\"countrycode\":\"\",\"cellphone\":\"15886576755\",\"hasPassword\":true}",
+//             "expiresIn": 2147483647,
+//             "id": 6520282062,
+//             "type": 1
+//         },
+//         {
+//             "userId": 1335174138,
+//             "url": "",
+//             "expired": true,
+//             "refreshTime": 1539406290,
+//             "bindingTime": 1515330777206,
+//             "tokenJsonStr": "{\"access_token\":\"2EA0038B4E172F3D7687681E07E96A72\",\"refresh_token\":\"50598068E68960EF4C40A92325ACDB96\",\"openid\":\"AA4B0336B4452B16B47683F7CD91A35B\",\"nickname\":\"布尔什维\",\"expires_in\":7776000}",
+//             "expiresIn": 7776000,
+//             "id": 6520289040,
+//             "type": 5
+//         },
+//         {
+//             "userId": 1335174138,
+//             "url": "",
+//             "expired": true,
+//             "refreshTime": 1565193068,
+//             "bindingTime": 1565193068377,
+//             "tokenJsonStr": "{\"access_token\":\"24_imEIWKd-93uDCquLN_Cvsl-VBQUFMG5OuAS5JyHZwxRUq7rCcVwpD7PbfYonBU2tRnq9F66J-XG7RITrm2ZX7kJE_DuVIhJ8WU9TVupwQ2Y\",\"refresh_token\":\"24_5X9C4DzXZKNm47U7ap-HVvjJ9FuzDWzPkwsC_dTsO5fBCQNBSBAgkFiR3DJ2tDP24uC0t8bD4qQytUe70ArWnzVJYwRsiCTwPxAtrDA-gMc\",\"unionid\":\"oZoefuPg7wswVs1-laIoy2xj_vQ4\",\"openid\":\"okvmMjmtXGSDVRviSsMuS8Fs2XjA\",\"scope\":\"snsapi_userinfo\",\"nickname\":\"Yeti\",\"expires_in\":7200}",
+//             "expiresIn": 7200,
+//             "id": 6934910317,
+//             "type": 10
+//         }
+//     ],
+//     "cookie": "MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/feedback;;MUSIC_SNS=; Max-Age=0; Expires=Fri, 07 Oct 2022 02:31:27 GMT; Path=/;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/clientlog;;MUSIC_U=9ec094ef524df65688a8c414206df5d8c59c002467a7714607d16c73da299343993166e004087dd300b9079e6c75c15dfa524d38c5b34675310739b9c9eae1861d2f363e806233297a561ba977ae766d; Max-Age=1296000; Expires=Sat, 22 Oct 2022 02:31:27 GMT; Path=/;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/feedback;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/openapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/feedback;;__csrf=f0e9d5be6f9fc0225763b67da9357ff9; Max-Age=1296010; Expires=Sat, 22 Oct 2022 02:31:37 GMT; Path=/;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/wapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/feedback;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/api/feedback;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/neapi/clientlog;;__remember_me=true; Max-Age=1296000; Expires=Sat, 22 Oct 2022 02:31:27 GMT; Path=/;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/openapi/clientlog;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/feedback;;MUSIC_R_T=1515330904316; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/eapi/clientlog;;MUSIC_A_T=1515330777193; Max-Age=2147483647; Expires=Wed, 25 Oct 2090 05:45:34 GMT; Path=/weapi/feedback;"
+// }
             this.updateAccount(this.account)
-            this.getUserInfo(this.account.account.id)//测试时使用
-            // this.getUserInfo(this.account.id)
+            // this.getUserInfo(this.account.account.id)//测试时使用
+            this.getUserInfo(this.account.id)
             setTimeout(() => {
                 this.$router.go(0) 
             }, 2000);
@@ -253,11 +252,8 @@ export default {
                 })
                 return this.reload
             }
-            console.log(res);
+            // console.log(res);
             this.updateUserInfo(res)
-            // setTimeout(() => {
-            //     location.reload() 
-            // }, 5000);
 
         },
         onInput(index) {

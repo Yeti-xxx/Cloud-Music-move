@@ -168,8 +168,7 @@ export default {
 }
 
 .music {
-    position: fixed;
-    bottom: 59px;
+    
     width: 375px;
     margin: 0 auto;
     // border-radius: 15px;

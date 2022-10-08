@@ -20,9 +20,24 @@ export default {
     playmusic,
     home,
   },
+  watch: {
+    $route(to, from) {
+      if (to.path === '/songListPage') {
+        this.styleObject.bottom = '0'
+      }else{
+        this.styleObject.bottom = '56px'
+      }
+    }
+  },
   data() {
     return {
-      showPlay: true
+      showPlay: true,
+      bottom: 56,
+      styleObject: {
+        zIndex: '999',
+        position: 'fixed',
+        bottom: '56px'
+      }
     }
   },
   provide() {
@@ -40,10 +55,11 @@ export default {
 <template>
   <!-- <home /> -->
   <!-- 音乐播放器 -->
-  <playmusic style="z-index:999" ref="playmusic" v-if="showPlay"></playmusic>
+  <playmusic class="playmusic" :style="styleObject" ref="playmusic" v-if="showPlay">
+  </playmusic>
   <router-view></router-view>
 </template>
 
 <style scoped>
-
+.playmusic {}
 </style>
