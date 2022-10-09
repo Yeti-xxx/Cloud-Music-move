@@ -110,7 +110,7 @@ export default {
     async play(item) {
       console.log(item.id);
       const { data: res } = await this.getMusicUrl(item.id)
-      this.playMusictoApp(res[0].url, item.al.picUrl, item.name)
+      this.playMusictoApp(res[0].url, item.al.picUrl, item.name,item.id)
     },
     // 返回上一页
     goBack() {
