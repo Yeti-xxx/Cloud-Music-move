@@ -1,11 +1,15 @@
 <template>
-    <div class="music">
+    <div class="music" ref="big">
         <div class="music__main">
-            <div :class="['music__main__cover',isPlay ? 'active' : '']" @click="pause">
+            <div :class="['music__main__cover',isPlay ? 'active' : '']" ref="cover" @click="pause">
                 <img :src="songPic" />
             </div>
             <div class="music__main__timeBar">
-                <div class="title" @click="gotoSongPage">
+                <!-- <div class="time" ref="time" style="display:none">
+                    <span>{{ realMusicTime }}</span>
+                    <span>{{ totalMusicTime }}</span>
+                </div> -->
+                <div class="title" ref="title" @click="gotoSongPage">
                     <spna>{{songName}}</spna>
                 </div>
                 <div class="bar" ref="bar" @click="handClickBar">
@@ -47,6 +51,28 @@ export default {
         this.watchMusicTime();
     },
     methods: {
+        // 离开回复缩下版样式
+        showStyle() {
+            this.$refs.cover.style.display = 'block'
+            this.$refs.title.style.display = 'block'
+            // this.$refs.time.style.display = 'none'
+            this.$refs.bar.style.height = '1px'
+            this.$refs.big.style.width = '374px'
+            this.$refs.big.style.background = '#1c1c1e'
+            
+        },
+        // 进入songPage页面需要修改布局和样式
+        noneStyle() {
+            this.$refs.cover.style.display = 'none'
+            this.$refs.title.style.display = 'none'
+            // this.$refs.time.style.display = 'flex'
+            this.$refs.big.style.width = '360px'
+            // 进度条放大
+            this.$refs.bar.style.height = '2px'
+            this.$refs.big.style.background = 'rgba(0,0,0,0)'
+            
+
+        },
         // 点击歌曲标题，进入歌曲详情页面
         gotoSongPage() {
             this.$router.push({
@@ -179,15 +205,16 @@ export default {
 
 .music {
 
-    width: 375px;
+    width: 374px;
     margin: 0 auto;
+    margin-left: 1px;
     // border-radius: 15px;
     // position: relative;
     padding: 5px 22px;
     box-sizing: border-box;
     overflow: hidden;
     background: #1c1c1e;
-
+    transition:.7s;
     &__main {
         display: flex;
 
@@ -203,8 +230,8 @@ export default {
             animation-play-state: paused; // 暂定动画
 
             img {
-                width: 100%;
-                height: 100%;
+                width: 40px;
+                height: 40px;
             }
 
             &.active {
@@ -234,16 +261,19 @@ export default {
 
             }
 
-            // .time {
-            //     display: flex;
-            //     justify-content: space-between;
-            //     color: #fff;
+            .time {
+                display: flex;
+                justify-content: space-between;
+                color: #ceb8b7;
+                span{
+                    // position:absolute;
+                    font-size: 12px;
+                    line-height: 1;
+                    transform:scale(0.8);
+                }
 
-            //     span {
-            //         font-size: 12px;
-            //         line-height: 1;
-            //     }
-            // }
+                
+            }
 
             .bar {
                 height: 1px;

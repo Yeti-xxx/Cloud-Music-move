@@ -5,7 +5,7 @@ export default{
     }),
     mutations: {
         updateShowPlay(state){
-            state.showPlay = !state.showPlay
+            state.showPlay=!state.showPlay
         }
     },
     getters: {

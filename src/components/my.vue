@@ -2,13 +2,13 @@
     <div class="container">
         <!-- 已登录 -->
         <div class="myConatiner" v-if="accountStore!=11">
-            <!-- <span style="color:#fff">{{accountStore}}</span> -->
-            <Avatars v-bind:nickname="accountStore.m_my.userInfo.profile.nickname"
-                v-bind:avatarUrl="accountStore.m_my.userInfo.profile.avatarUrl">
+            <!-- <span style="color:#fff">{{userInfo}}</span> -->
+            <Avatars v-bind:nickname="userInfo.profile.nickname"
+                v-bind:avatarUrl="userInfo.profile.avatarUrl">
                 <div class="level">
-                    <span>{{accountStore.m_my.userInfo.profile.follows}}关注</span>
-                    <span>{{accountStore.m_my.userInfo.profile.followeds}}粉丝</span>
-                    <span>LV.{{accountStore.m_my.userInfo.level}}</span>
+                    <span>{{userInfo.profile.follows}}关注</span>
+                    <span>{{userInfo.profile.followeds}}粉丝</span>
+                    <span>LV.{{userInfo.level}}</span>
                 </div>
             </Avatars>
             <!-- 测试使用 -->
@@ -22,13 +22,13 @@
             <!-- 我喜欢的歌单 -->
             <div class="myLove">
                 <Songlist v-bind:title="songList[0].name" v-bind:count="songList[0].trackCount"
-                    v-bind:songImg="songList[0].coverImgUrl"></Songlist>
+                    v-bind:songImg="songList[0].coverImgUrl" @click="gotoList(songList[0].id)"></Songlist>
             </div>
             <!-- 其他歌单 -->
             <div class="songListOther">
                 <div class="title">歌单({{songList.length-1}}个)</div>
-                <Songlist v-for="(item,i) in songList.slice(1,songList.length-1)" v-bind:title="item.name"
-                    v-bind:count="item.trackCount" v-bind:songImg="item.coverImgUrl"></Songlist>
+                <Songlist v-for="(item,i) in songList.slice(1,songList.length-1)" :key="i" v-bind:title="item.name"
+                    v-bind:count="item.trackCount" v-bind:songImg="item.coverImgUrl" @click="gotoList(item.id)"></Songlist>
             </div>
             <!-- 退出登录 -->
             <el-card class="box-card logOut-box" @click="LogOut">
@@ -50,12 +50,14 @@ import Tabbar from './tababr/tabbar.vue'
 import Avatars from './avatar/avatar.vue'
 import { mapState } from 'vuex'
 import { ElLoading } from 'element-plus'
+import mixinItem from '../mixins/mixin.js'
 export default {
     name: 'my',
     computed: {
         ...mapState('m_my', ['accountStore', 'userInfo']),
 
     },
+    mixins: [mixinItem],
     components: {
         Tabbar,
         Login,
@@ -88,6 +90,9 @@ export default {
         LogOut() {
             localStorage.removeItem('vuex')
             this.$router.go(0)
+        },
+        gotoList(id){
+            this.goToList(id)
         }
     },
 }

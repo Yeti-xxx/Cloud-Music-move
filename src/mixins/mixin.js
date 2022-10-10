@@ -21,13 +21,22 @@ export default {
             return res
         },
         // 获取歌曲信息
-        async getMusicDetail(id){
-            const res = await this.$h.get('/song/detail?ids='+id)
+        async getMusicDetail(id) {
+            const res = await this.$h.get('/song/detail?ids=' + id)
             console.log(res);
             return res
         },
         test() {
             console.log(111);
+        },
+        // 点击歌单进入歌单详情页面
+        goToList(ListId) {
+            this.$router.push({
+                path: '/songListPage',
+                query: {
+                    id: ListId
+                }
+            })
         }
     },
 }

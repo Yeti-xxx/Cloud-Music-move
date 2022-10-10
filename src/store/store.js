@@ -8,10 +8,10 @@ const store = new Vuex.Store({
 
     modules: {
         m_my: modulesMy,
-        m_play:modulesPlay
+        m_play: modulesPlay
     },
     plugins: [createPersistedState({
-        
+        paths: ["m_my","m_play"]
     })]
 })
 

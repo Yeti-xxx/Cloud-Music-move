@@ -9,11 +9,6 @@ export default {
     // ...mapState('m_my', ['accountStore']),
     ...mapState('m_play', ['showPlay'])
   },
-  watch: {
-    showPlay(newV, oldV) {
-      console.log(newV);
-    }
-  },
   // 子组件点击歌曲触发播放器组件
   components: {
     playmusic,
@@ -23,9 +18,17 @@ export default {
     $route(to, from) {
       if (to.path === '/songListPage') {
         this.styleObject.bottom = '0'
+      } else if (to.path === '/songPage') {
+        this.styleObject.bottom = '116px'
+      } else if (from.path === '/songPage') {
+        this.$refs.playmusic.showStyle()
+        this.styleObject.bottom = '56px'
       } else {
         this.styleObject.bottom = '56px'
       }
+    },
+    showPlay(newV, oldV) {
+      this.$refs.playmusic.noneStyle()
     }
   },
   data() {
@@ -54,7 +57,7 @@ export default {
 <template>
   <!-- <home /> -->
   <!-- 音乐播放器 -->
-  <playmusic class="playmusic" :style="styleObject" ref="playmusic" v-show="showPlay">
+  <playmusic class="playmusic" :style="styleObject" ref="playmusic">
   </playmusic>
   <router-view></router-view>
 </template>

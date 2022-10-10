@@ -1,8 +1,9 @@
 export default {
     namespaced: true,
     state: () => ({
-        accountStore:JSON.parse(window.localStorage.vuex || '11'),
-        userInfo:JSON.parse(window.localStorage.vuex || '{}'),
+        accountStore: '11',
+        userInfo: '{}',
+
     }),
     mutations: {
         updateAccount(state, account) {
@@ -11,8 +12,11 @@ export default {
         updateUserInfo(state, userInfo) {
             console.log(11);
             state.userInfo = userInfo
-            
+
         },
+        test(){
+
+        }
     },
     getters: {
 
