@@ -20,10 +20,8 @@ export default {
         this.styleObject.bottom = '0'
       } else if (to.path === '/songPage') {
         this.styleObject.bottom = '116px'
-      } else if (from.path === '/songPage') {
-        this.$refs.playmusic.showStyle()
-        this.styleObject.bottom = '56px'
-      } else {
+      }
+      else {
         this.styleObject.bottom = '56px'
       }
     },
@@ -45,12 +43,22 @@ export default {
   provide() {
     return {
       playMusictoApp: this.playMusicHandle,
+      showPlaytoApp:this.showPlayHandle,
+      changeMusicStoApp:this.changeMusicS
     }
   },
   methods: {
     playMusicHandle(url, pic, name, id) {
-      console.log(url)
+      // console.log(url)
       this.$refs.playmusic.OneclickPlay(url, pic, name, id)
+    },
+    showPlayHandle() {
+      // console.log(111);
+      this.$refs.playmusic.showStyle()
+      this.styleObject.bottom = '56px'
+    },
+    changeMusicS(){
+      return this.$refs.playmusic.changeTheMusic()
     }
   }
 }

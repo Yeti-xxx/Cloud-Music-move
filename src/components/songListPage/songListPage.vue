@@ -105,7 +105,7 @@ export default {
       this.SongListDetail = res
       // console.log(this.SongListDetail);
       this.author = await this.getUserInfo(this.SongListDetail.userId)
-      console.log(this.author);
+      // console.log(this.author);
     },
 
     // 播放歌曲

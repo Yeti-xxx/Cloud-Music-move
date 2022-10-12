@@ -23,13 +23,35 @@
             <div class="cover">
                 <img src="../../assets/img/playDefaultPic.png" />
                 <div class="pic">
-                    <img :src="song.al.picUrl" />
+                    <img :class="[playIt ? 'active' : '']" :src="song.al.picUrl" />
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="left" @click="changeTheMusic('pre')">
+                    <el-icon :size="20" color="#dfd6d6">
+                        <ArrowLeftBold />
+                    </el-icon>
+                </div>
+                <div class="play" @click="playMusic">
+                    <el-icon :size="50" color="#dfd6d6" v-if="playIt">
+                        <VideoPause />
+                    </el-icon>
+                    <el-icon :size="50" color="#dfd6d6" v-else>
+                        <VideoPlay />
+                    </el-icon>
+                </div>
+                <div class="right" @click="changeTheMusic('next')">
+                    <el-icon :size="20" color="#dfd6d6">
+                        <ArrowRightBold />
+                    </el-icon>
                 </div>
             </div>
         </el-card>
         <!-- 数据未完成加载时 -->
         <el-card class="loadingbox" v-else>
-            <div class="loading"></div>
+            <div class="loading">
+
+            </div>
             <div class="text">加载中....</div>
         </el-card>
     </div>
@@ -43,15 +65,21 @@ import { useRoute } from "vue-router";
 export default {
     name: 'SongPage',
     mixins: [mixinItem],
+    inject: ['showPlaytoApp', 'changeMusicStoApp'],
     data() {
         return {
             songId: 0,
             song: {},
-
+            fromPath: '11'
+        }
+    },
+    watch:{
+        changeMusic(newV,oldV){
+            console.log(this.changeMusic);
         }
     },
     computed: {
-        ...mapState('m_play', ['showPlay']),
+        ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic']),
 
     },
     async created() {
@@ -63,10 +91,27 @@ export default {
 
     },
     methods: {
-        ...mapMutations('m_play', ['updateShowPlay']),
+        ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic']),
         // 关闭SongPage
         closed() {
-            this.$router.push('/home')
+            this.showPlaytoApp()
+            this.$router.go(-1)
+
+        },
+        // 暂停或播放音乐
+        playMusic() {
+            this.updateplayIt()
+        },
+        // 切换音乐
+        async changeTheMusic(direction) {
+            console.log(this.song);
+            this.updateChangeMusic(direction)
+            const res = await this.changeMusicStoApp()
+            console.log(res[0]);
+            this.song = res[0]
+            console.log(this.song);
+
+
         }
 
     },
@@ -153,11 +198,14 @@ export default {
         transform: translateX(-50%);
 
         img {
-            animation: musicRotate 10s linear infinite;
-            animation-play-state: running;
             height: 265px;
             width: 265px;
 
+        }
+
+        .active {
+            animation: musicRotate 10s linear infinite;
+            animation-play-state: running;
         }
 
         .pic {
@@ -171,6 +219,19 @@ export default {
                 border-radius: 50%;
             }
         }
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: absolute;
+        bottom: 30px;
+        width: 275px;
+        height: 65px;
+        // background:red;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 </style>

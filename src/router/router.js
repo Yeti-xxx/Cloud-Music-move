@@ -19,5 +19,10 @@ const Router = createRouter({
         { path: '/songPage',component: songPage, name: 'songPage'}
     ]
 })
+// Router.beforeEach((to, from, next) => {
+//     next(()=>{
+//         console.log(to);
+//     })
 
+//   })
 export default Router;
