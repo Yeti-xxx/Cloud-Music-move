@@ -1,3 +1,4 @@
+import { ElMessage } from 'element-plus'
 export default {
     methods: {
         async getUserInfo(uid) {
@@ -17,7 +18,11 @@ export default {
         },
         // 获取歌曲url
         async getMusicUrl(id) {
-            const res = await this.$h.get('/song/url?id=' + id)
+            // const res = await this.$h.get('/song/url?id=' + id)
+            const res = await this.$h.get('/song/url/v1?id=' + id + '&level=standard')
+            if (res.data[0].url === null) {
+                return 'urlNull'
+            }
             return res
         },
         // 获取歌曲信息

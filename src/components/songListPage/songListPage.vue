@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 import mixinItem from '../../mixins/mixin.js'
 export default {
   name: 'soangListPage',
@@ -106,11 +107,19 @@ export default {
       this.author = await this.getUserInfo(this.SongListDetail.userId)
       console.log(this.author);
     },
+
     // 播放歌曲
     async play(item) {
-      console.log(item.id);
-      const { data: res } = await this.getMusicUrl(item.id)
-      this.playMusictoApp(res[0].url, item.al.picUrl, item.name,item.id)
+      const res = await this.getMusicUrl(item.id)
+      if (res === 'urlNull') {
+        return ElMessage({
+          showClose: false,
+          center:true,
+          message: '歌曲暂时无法播放.',
+          type: 'error',
+        })
+      }
+      this.playMusictoApp(res.data[0].url, item.al.picUrl, item.name, item.id)
     },
     // 返回上一页
     goBack() {

@@ -49,6 +49,7 @@ export default {
   },
   methods: {
     playMusicHandle(url, pic, name, id) {
+      console.log(url)
       this.$refs.playmusic.OneclickPlay(url, pic, name, id)
     }
   }

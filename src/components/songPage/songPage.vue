@@ -108,7 +108,7 @@ export default {
     }
 
     .top {
-        border-box: box-sizing;
+        // border-box: box-sizing;
         display: flex;
         justify-content: space-between;
         align-items: center;

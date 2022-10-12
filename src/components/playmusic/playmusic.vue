@@ -59,7 +59,7 @@ export default {
             this.$refs.bar.style.height = '1px'
             this.$refs.big.style.width = '374px'
             this.$refs.big.style.background = '#1c1c1e'
-            
+
         },
         // 进入songPage页面需要修改布局和样式
         noneStyle() {
@@ -70,7 +70,7 @@ export default {
             // 进度条放大
             this.$refs.bar.style.height = '2px'
             this.$refs.big.style.background = 'rgba(0,0,0,0)'
-            
+
 
         },
         // 点击歌曲标题，进入歌曲详情页面
@@ -83,18 +83,18 @@ export default {
             })
         },
         // 点击单首歌曲时的方法
-        async OneclickPlay(url, pic, name, id) {
+        OneclickPlay(url, pic, name, id) {
+            this.audioSrc = '' + url
             if (this.audioSrcs.indexOf(url) === -1) {
                 this.audioSrcs.push(url)
             }
             // console.log(this.audioSrcs);
-            this.audioSrc = '' + url
             this.songPic = pic
             this.songName = name
             this.songId = id
             setTimeout(() => {
                 this.play()
-            }, 200);
+            }, 400);
 
         },
         play() {
@@ -214,7 +214,8 @@ export default {
     box-sizing: border-box;
     overflow: hidden;
     background: #1c1c1e;
-    transition:.7s;
+    transition: .7s;
+
     &__main {
         display: flex;
 
@@ -265,14 +266,15 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 color: #ceb8b7;
-                span{
+
+                span {
                     // position:absolute;
                     font-size: 12px;
                     line-height: 1;
-                    transform:scale(0.8);
+                    transform: scale(0.8);
                 }
 
-                
+
             }
 
             .bar {
