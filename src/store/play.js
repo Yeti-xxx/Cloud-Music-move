@@ -3,13 +3,15 @@ export default {
     state: () => ({
         showPlay: true,
         playIt: true,
-        changeMusic: ''
+        changeMusic: '',
+        songStore:{}
     }),
     mutations: {
         updateShowPlay(state) {
             state.showPlay = !state.showPlay
         },
         updateplayIt(state) {
+            // console.log(11);
             state.playIt = !state.playIt
         },
         // 覆盖play为true
@@ -21,10 +23,13 @@ export default {
                 state.changeMusic = direction
             } else if (direction === 'pre') {
                 state.changeMusic = 'pre'
-            }else if (direction === 'qie') {
-                state.direction = 'qie'
+            }else{
+                state.changeMusic = direction
             }
             // console.log(11);
+        },
+        updatesongStore(state,songStore){
+            state.songStore = songStore
         }
     },
     getters: {

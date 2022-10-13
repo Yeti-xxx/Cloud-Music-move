@@ -22,8 +22,8 @@
             </div>
             <div class="cover">
                 <img src="../../assets/img/playDefaultPic.png" />
-                <div class="pic">
-                    <img :class="[playIt ? 'active' : '']" :src="song.al.picUrl" />
+                <div class="pic" :class="[playIt ? 'active' : '']">
+                    <img :src="song.al.picUrl" />
                 </div>
             </div>
             <div class="bottom">
@@ -48,12 +48,12 @@
             </div>
         </el-card>
         <!-- 数据未完成加载时 -->
-        <el-card class="loadingbox" v-else>
+        <!-- <el-card class="loadingbox" v-else>
             <div class="loading">
 
             </div>
             <div class="text">加载中....</div>
-        </el-card>
+        </el-card> -->
     </div>
 
 </template>
@@ -65,7 +65,7 @@ import { useRoute } from "vue-router";
 export default {
     name: 'SongPage',
     mixins: [mixinItem],
-    inject: ['showPlaytoApp', 'changeMusicStoApp'],
+    inject: ['showPlaytoApp', 'changeMusicStoApp','playContainertoApp'],
     data() {
         return {
             songId: 0,
@@ -73,13 +73,17 @@ export default {
             fromPath: '11'
         }
     },
-    watch:{
-        changeMusic(newV,oldV){
-            console.log(this.changeMusic);
+    watch: {
+        changeMusic(newV, oldV) {
+            console.log(111);
+            if (newV !== 'next' || newV !== 'pre') {
+                this.song = this.songStore
+                // console.log(this.songStore);
+            }
         }
     },
     computed: {
-        ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic']),
+        ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic', 'songStore']),
 
     },
     async created() {
@@ -87,11 +91,10 @@ export default {
         const res = await this.getMusicDetail(this.songId)
         this.song = res.songs[0]
         this.updateShowPlay()
-        // console.log(this.song);
 
     },
     methods: {
-        ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic']),
+        ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic','playTotrue']),
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
@@ -100,17 +103,17 @@ export default {
         },
         // 暂停或播放音乐
         playMusic() {
-            this.updateplayIt()
+            this.playContainertoApp()
         },
         // 切换音乐
         async changeTheMusic(direction) {
-            console.log(this.song);
+            // console.log(this.song);
             this.updateChangeMusic(direction)
+            this.playTotrue()
             const res = await this.changeMusicStoApp()
             console.log(res[0]);
             this.song = res[0]
-            console.log(this.song);
-
+            // console.log(this.song);
 
         }
 

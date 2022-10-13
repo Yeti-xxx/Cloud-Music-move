@@ -37,16 +37,9 @@ export default {
         }
     },
     computed: {
-        ...mapState('m_play', ['playIt', 'changeMusic']),
+        ...mapState('m_play', ['playIt', 'changeMusic', 'songStore']),
     },
     watch: {
-        playIt(newV, oldV) {
-            if (this.playIt) {
-                this.play()
-            } else {
-                this.pause()
-            }
-        },
         changeMusic(newV, oldV) {
             this.changeTheMusic(this.changeMusic)
         }
@@ -70,7 +63,7 @@ export default {
         this.watchMusicTime();
     },
     methods: {
-        ...mapMutations('m_play', ['updateChangeMusic']),
+        ...mapMutations('m_play', ['updateChangeMusic', 'updatesongStore', 'updateplayIt']),
         // 离开回复缩下版样式
         showStyle() {
             this.$refs.cover.style.display = 'block'
@@ -105,7 +98,8 @@ export default {
         // 点击单首歌曲时的方法
         OneclickPlay(url, pic, name, id) {
             this.audioSrc = '' + url
-            if (this.audioSrcs.indexOf(url) === -1) {
+            if (this.audioSrcs.indexOf(url + '@#' + id) === -1) {
+                // console.log(this.audioSrcs.indexOf(url + '@#'));
                 this.audioSrcs.push(url + '@#' + id)
             }
             // console.log(this.audioSrcs);
@@ -122,8 +116,15 @@ export default {
             this.isPlay = true;
         },
         pause() {
-            this.music.pause();
-            this.isPlay = false;
+            console.log(this.isPlay);
+            if (this.isPlay === true) {
+                this.isPlay = false;
+                this.music.pause();
+            } else {
+                this.isPlay = true;
+                this.music.play()
+            }
+            this.updateplayIt()
         },
         // 处理时间
         handlMusicTime() {
@@ -184,8 +185,10 @@ export default {
                 this.songPic = res[0].al.picUrl
                 // 修改歌曲名称
                 this.songName = res[0].al.name
+                this.song = res[0]
+                this.songToStore(this.song)
             }
-            this.updateChangeMusic('qie')
+            this.updateChangeMusic(this.changeMusic + '1')
             this.music.load()
             // 文件下载完毕，如果不用等到全部下载完毕，可以用canplay事件
             this.music.addEventListener("canplay", () => {
@@ -194,15 +197,25 @@ export default {
             });
         },
         // 切换歌曲
-        async changeTheMusic(changeMusicHandle) {
-            if (changeMusicHandle === 'next') {
+        async changeTheMusic() {
+            const temp = this.audioSrc + '@#' + this.songId
+            for (let index = 0; index < this.audioSrcs.length; index++) {
+                if (temp === this.audioSrcs[index]) {
+                    this.audioIndex = index
+                    console.log(this.audioIndex);
+                    break;
+                }
+
+            }
+            console.log(this.changeMusic);
+            if (this.changeMusic === 'next') {
                 // 获取当前的audioIndex加一
                 if (this.audioIndex === this.audioSrcs.length - 1) {
                     this.audioIndex = 0
                 } else {
                     this.audioIndex++
                 }
-            } else if (changeMusicHandle === 'pre') {
+            } else if (this.changeMusic === 'pre') {
                 // 获取当前的audioIndex减一
                 if (this.audioIndex === 0) {
                     this.audioIndex = this.audioSrcs.length - 1
@@ -212,6 +225,7 @@ export default {
             } else if (changeMusicHandle === 'qie') {
 
             }
+            console.log(this.audioIndex);
             const str = this.audioSrcs[this.audioIndex];
             const arr = str.split('@#')
             // 获取url
@@ -224,6 +238,8 @@ export default {
             this.songPic = res[0].al.picUrl
             // 修改歌曲名称
             this.songName = res[0].al.name
+            this.song = res[0].al
+            this.songToStore(this.song)
             this.music.load()
             // 文件下载完毕，如果不用等到全部下载完毕，可以用canplay事件
             this.music.addEventListener("canplay", () => {
@@ -233,6 +249,10 @@ export default {
             return res
 
 
+        },
+        songToStore(song) {
+            // console.log(111);
+            this.updatesongStore(song)
         },
         //使用事件监听方式捕捉事件
         watchMusicTime() {
@@ -404,7 +424,7 @@ export default {
     }
 
     &__mask {
-        background-image: url('../../assets/meet.jpg');
+        // background-image: url('../../assets/meet.jpg');
         z-index: -2;
         background-repeat: no-repeat;
         background-size: cover;

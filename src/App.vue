@@ -44,7 +44,8 @@ export default {
     return {
       playMusictoApp: this.playMusicHandle,
       showPlaytoApp:this.showPlayHandle,
-      changeMusicStoApp:this.changeMusicS
+      changeMusicStoApp:this.changeMusicS,
+      playContainertoApp:this.playContainer
     }
   },
   methods: {
@@ -59,6 +60,9 @@ export default {
     },
     changeMusicS(){
       return this.$refs.playmusic.changeTheMusic()
+    },
+    playContainer(){
+      this.$refs.playmusic.pause()
     }
   }
 }
