@@ -65,7 +65,7 @@ import { useRoute } from "vue-router";
 export default {
     name: 'SongPage',
     mixins: [mixinItem],
-    inject: ['showPlaytoApp', 'changeMusicStoApp','playContainertoApp'],
+    inject: ['showPlaytoApp', 'changeMusicStoApp', 'playContainertoApp'],
     data() {
         return {
             songId: 0,
@@ -75,7 +75,6 @@ export default {
     },
     watch: {
         changeMusic(newV, oldV) {
-            console.log(111);
             if (newV !== 'next' || newV !== 'pre') {
                 this.song = this.songStore
                 // console.log(this.songStore);
@@ -83,18 +82,31 @@ export default {
         }
     },
     computed: {
-        ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic', 'songStore']),
+        ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic', 'songStore', 'songListStore']),
+        ...mapState('t_play', ['TsongListStore'])
 
     },
     async created() {
+        let flagToGet = true
         this.songId = this.$route.query.id
-        const res = await this.getMusicDetail(this.songId)
-        this.song = res.songs[0]
+        for (let i = 0; i < this.TsongListStore.length; i++) {
+            if (this.TsongListStore[i].id == this.songId) {
+                this.song = this.TsongListStore[i]
+                flagToGet = false
+                break;
+            }
+        }
+        if (flagToGet) {
+            const res = await this.getMusicDetail(this.songId)
+            this.song = res.songs[0]
+            this.TsongListStore.push(this.song)
+
+        }
         this.updateShowPlay()
 
     },
     methods: {
-        ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic','playTotrue']),
+        ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic', 'playTotrue']),
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
@@ -111,8 +123,13 @@ export default {
             this.updateChangeMusic(direction)
             this.playTotrue()
             const res = await this.changeMusicStoApp()
-            console.log(res[0]);
-            this.song = res[0]
+            if (typeof res == 'object') {
+                this.song = res[0]
+                console.log(res);
+            }else{
+                this.song = this.TsongListStore[res]
+            }
+            
             // console.log(this.song);
 
         }

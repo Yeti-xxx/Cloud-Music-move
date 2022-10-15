@@ -4,7 +4,8 @@ export default {
         showPlay: true,
         playIt: true,
         changeMusic: '',
-        songStore:{}
+        songStore:{},
+        songListStore:[]
     }),
     mutations: {
         updateShowPlay(state) {

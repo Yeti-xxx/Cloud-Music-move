@@ -1,5 +1,9 @@
 <template>
-  <div class="container">
+  <!-- 下拉刷新loading -->
+  <div class="loadingBoxHome" v-if="loadingShow">
+    <div class="loading"></div>
+  </div>
+  <div class="container" ref="container">
 
     <!-- 导航栏区域 -->
     <div class="nav">
@@ -119,7 +123,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 // import axios from '../axios/http.js'
 import playmusic from './playmusic/playmusic.vue'
 import Tabbar from './tababr/tabbar.vue'
@@ -129,22 +133,38 @@ export default {
     Tabbar,
     playmusic
   },
+  computed: {
+    ...mapState('m_home', ['musicListinStore', 'weListeninStore'])
+  },
   data() {
     return {
       musicList: {},
       weListen: [],
       pageIndex: 1,
-      musicUrl: ''
+      musicUrl: '',
+      isRefresh: true,
+      loadingShow: false
     }
   },
-  created() {
-    // 获取推荐歌单
-    this.getMusicList()
-    // 获取大家都在听
-    this.getWeListen()
+  async created() {
+    if (this.musicListinStore == '11' && this.weListeninStore == '22') {
+      // 获取推荐歌单
+      await this.getMusicList()
+      // 获取大家都在听
+      await this.getWeListen()
+      this.updatedMusicListinStore(this.musicList)
+      this.updatedWeListeninStore(this.weListen)
+    }
+    this.musicList = this.musicListinStore
+    this.weListen = this.weListeninStore
+
+  },
+  mounted() {
+    this.downRefresh()
   },
   inject: ['playMusictoApp'],
   methods: {
+    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore']),
     // 获取歌单数据
     async getMusicList() {
       const { result: res } = await this.$h.get('/personalized?limit=6')
@@ -168,7 +188,7 @@ export default {
       const res = await this.getMusicUrl(songInfo);
       if (res) {
         // console.log(this.musicUrl);
-        this.playMusictoApp(this.musicUrl, songInfo.picUrl, songInfo.name,songInfo.id)
+        this.playMusictoApp(this.musicUrl, songInfo.picUrl, songInfo.name, songInfo.id)
       }
     },
     // 点击歌单进入歌单详情页面
@@ -176,9 +196,39 @@ export default {
       this.$router.push({
         path: '/songListPage',
         query: {
-          id:ListId
+          id: ListId
         }
       })
+    },
+    // 下拉刷新
+    downRefresh() {
+      let start = 0 //初始位置
+      let transitionHeight = 0  //移动距离
+      let This = this
+      this.$refs.container.addEventListener('touchstart', function (e) {
+        start = e.touches[0].pageY
+      }, false)
+      this.$refs.container.addEventListener('touchmove', async function (e) {
+        transitionHeight = e.touches[0].pageY - start //记录差值
+        if (transitionHeight > 0 && document.documentElement.scrollTop === 0) {
+          if (transitionHeight > 250 && This.isRefresh) {
+            This.isRefresh = false
+            This.loading()
+            await This.getMusicList()
+            await This.getWeListen()
+            This.updatedMusicListinStore(this.musicList)
+            This.updatedWeListeninStore(this.weListen)
+          }
+        }
+      })
+    },
+    //刷新效果动画
+    loading() {
+      this.loadingShow = true
+      setTimeout(() => {
+        this.isRefresh = true
+        this.loadingShow = false
+      }, 1000);
     }
   }
 
@@ -317,6 +367,37 @@ export default {
       }
 
     }
+  }
+
+}
+
+// 转转转动画
+@keyframes circle {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingBoxHome {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+
+  .loading {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e63434;
+    border-top-color: transparent;
+    border-radius: 100%;
+    animation: circle infinite 0.75s linear;
   }
 }
 </style>

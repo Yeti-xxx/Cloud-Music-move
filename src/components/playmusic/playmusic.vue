@@ -37,7 +37,8 @@ export default {
         }
     },
     computed: {
-        ...mapState('m_play', ['playIt', 'changeMusic', 'songStore']),
+        ...mapState('m_play', ['playIt', 'changeMusic', 'songStore', 'songListStore']),
+        ...mapState('t_play', ['TsongListStore'])
     },
     watch: {
         changeMusic(newV, oldV) {
@@ -58,7 +59,8 @@ export default {
             audioIndex: 0
         };
     },
-    created() { },
+    created() {
+    },
     mounted() {
         this.watchMusicTime();
     },
@@ -97,12 +99,11 @@ export default {
         },
         // 点击单首歌曲时的方法
         OneclickPlay(url, pic, name, id) {
+            console.log(6666);
             this.audioSrc = '' + url
             if (this.audioSrcs.indexOf(url + '@#' + id) === -1) {
-                // console.log(this.audioSrcs.indexOf(url + '@#'));
                 this.audioSrcs.push(url + '@#' + id)
             }
-            // console.log(this.audioSrcs);
             this.songPic = pic
             this.songName = name
             this.songId = id
@@ -198,16 +199,17 @@ export default {
         },
         // 切换歌曲
         async changeTheMusic() {
+            let res = null
             const temp = this.audioSrc + '@#' + this.songId
+            // 获取当前歌曲在歌曲数组中的位置
             for (let index = 0; index < this.audioSrcs.length; index++) {
                 if (temp === this.audioSrcs[index]) {
                     this.audioIndex = index
-                    console.log(this.audioIndex);
+                    // console.log(this.audioIndex);+
                     break;
                 }
 
             }
-            console.log(this.changeMusic);
             if (this.changeMusic === 'next') {
                 // 获取当前的audioIndex加一
                 if (this.audioIndex === this.audioSrcs.length - 1) {
@@ -225,20 +227,41 @@ export default {
             } else if (changeMusicHandle === 'qie') {
 
             }
-            console.log(this.audioIndex);
             const str = this.audioSrcs[this.audioIndex];
             const arr = str.split('@#')
             // 获取url
             this.audioSrc = arr[0]
             // 获取id
             const id = arr[1]
-            // 调用获取歌曲详情函数
-            const { songs: res } = await this.getMusicDetail(id)
-            // 修改封面
-            this.songPic = res[0].al.picUrl
-            // 修改歌曲名称
-            this.songName = res[0].al.name
-            this.song = res[0].al
+            let flagToget = true
+            console.log(id);
+            // 判断缓存中是否存在歌曲的封面等信息，避免重复请求
+            for (let i = 0; i < this.TsongListStore.length; i++) {
+                if (this.TsongListStore[i].id == id) {
+                    this.songPic = this.TsongListStore[i].al.picUrl
+                    this.songName = this.TsongListStore[i].name
+                    this.song = this.TsongListStore[i].al
+                    flagToget = false
+                    res = i
+                    break;
+                }
+
+            }
+            // 缓存中不存在歌曲的信息
+            if (flagToget) {
+                // 调用获取歌曲详情函数
+                const data = await this.getMusicDetail(id)
+                res = data.songs
+                // 修改封面
+                this.songPic = res[0].al.picUrl
+                // 修改歌曲名称
+                this.songName = res[0].al.name
+                this.song = res[0].al
+                // 加入缓存中
+                console.log(1111);
+                console.log(this.TsongListStore);
+                this.TsongListStore.push(res[0])
+            }
             this.songToStore(this.song)
             this.music.load()
             // 文件下载完毕，如果不用等到全部下载完毕，可以用canplay事件
@@ -247,8 +270,6 @@ export default {
                 this.isPlay = true;
             });
             return res
-
-
         },
         songToStore(song) {
             // console.log(111);

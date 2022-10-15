@@ -3,8 +3,7 @@
         <!-- 已登录 -->
         <div class="myConatiner" v-if="accountStore!=11">
             <!-- <span style="color:#fff">{{userInfo}}</span> -->
-            <Avatars v-bind:nickname="userInfo.profile.nickname"
-                v-bind:avatarUrl="userInfo.profile.avatarUrl">
+            <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl">
                 <div class="level">
                     <span>{{userInfo.profile.follows}}关注</span>
                     <span>{{userInfo.profile.followeds}}粉丝</span>
@@ -28,7 +27,8 @@
             <div class="songListOther">
                 <div class="title">歌单({{songList.length-1}}个)</div>
                 <Songlist v-for="(item,i) in songList.slice(1,songList.length-1)" :key="i" v-bind:title="item.name"
-                    v-bind:count="item.trackCount" v-bind:songImg="item.coverImgUrl" @click="gotoList(item.id)"></Songlist>
+                    v-bind:count="item.trackCount" v-bind:songImg="item.coverImgUrl" @click="gotoList(item.id)">
+                </Songlist>
             </div>
             <!-- 退出登录 -->
             <el-card class="box-card logOut-box" @click="LogOut">
@@ -48,13 +48,13 @@ import Songlist from './songlist/songlist.vue'
 import Login from './login/login.vue'
 import Tabbar from './tababr/tabbar.vue'
 import Avatars from './avatar/avatar.vue'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { ElLoading } from 'element-plus'
 import mixinItem from '../mixins/mixin.js'
 export default {
     name: 'my',
     computed: {
-        ...mapState('m_my', ['accountStore', 'userInfo']),
+        ...mapState('m_my', ['accountStore', 'userInfo', 'songListinStore']),
 
     },
     mixins: [mixinItem],
@@ -70,28 +70,35 @@ export default {
             songList: {}
         }
     },
-    created() {
+    async created() {
         if (this.accountStore != 11) {
-            console.log(this.accountStore);
+            // console.log(this.accountStore);
             // this.SongListId = this.accountStore.account.id//测试使用
             this.SongListId = this.accountStore.id
-            this.getSongList(this.SongListId)
+            if (this.songListinStore == '11') {
+                // console.log('songListNo');
+                await this.getSongList(this.SongListId)
+                // console.log(this.songList);
+                this.updateSongListinStore(this.songList)
+            }
+            this.songList = this.songListinStore
+            
         }
 
     },
     methods: {
+        ...mapMutations('m_my', ['updateSongListinStore']),
         // 获取用户歌单
         async getSongList(uid) {
             const { playlist: res } = await this.$h.get('https://netease-cloud-music-api-nxzt.vercel.app/user/playlist?uid=' + uid)
             this.songList = res
-            console.log(res);
         },
         // 退出登录
         LogOut() {
             localStorage.removeItem('vuex')
             this.$router.go(0)
         },
-        gotoList(id){
+        gotoList(id) {
             this.goToList(id)
         }
     },
