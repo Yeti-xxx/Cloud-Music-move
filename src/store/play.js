@@ -2,7 +2,7 @@ export default {
     namespaced: true,
     state: () => ({
         showPlay: true,
-        playIt: true,
+        playIt: false,
         changeMusic: '',
         songStore:{},
         songListStore:[]

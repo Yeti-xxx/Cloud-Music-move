@@ -14,6 +14,9 @@ export default {
     playmusic,
     home,
   },
+  created() {
+    // this.DisplayMusic()
+  },
   watch: {
     $route(to, from) {
       if (to.path === '/songListPage') {
@@ -37,7 +40,8 @@ export default {
         zIndex: '999',
         position: 'fixed',
         bottom: '56px'
-      }
+      },
+      showFlag:true
     }
   },
   provide() {
@@ -45,7 +49,8 @@ export default {
       playMusictoApp: this.playMusicHandle,
       showPlaytoApp:this.showPlayHandle,
       changeMusicStoApp:this.changeMusicS,
-      playContainertoApp:this.playContainer
+      playContainertoApp:this.playContainer,
+      DisplayMusictoApp:this.DisplayMusic
     }
   },
   methods: {
@@ -63,6 +68,10 @@ export default {
     },
     playContainer(){
       this.$refs.playmusic.pause()
+    },
+    // 控制隐藏或者显示播放器
+    DisplayMusic(){
+      this.showFlag = !this.showFlag;
     }
   }
 }
@@ -70,7 +79,7 @@ export default {
 <template>
   <!-- <home /> -->
   <!-- 音乐播放器 -->
-  <playmusic class="playmusic" :style="styleObject" ref="playmusic">
+  <playmusic class="playmusic" :style="styleObject" ref="playmusic" v-show="showFlag">
   </playmusic>
   <router-view></router-view>
 </template>

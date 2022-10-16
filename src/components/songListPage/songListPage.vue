@@ -52,12 +52,16 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import { ElMessage } from 'element-plus'
 import mixinItem from '../../mixins/mixin.js'
 export default {
   name: 'soangListPage',
   mixins: [mixinItem],
   inject: ['playMusictoApp'],
+  computed: {
+    ...mapState('t_play', ['TsongBigListStore'])
+  },
   data() {
     return {
       ListId: 0,
@@ -68,14 +72,23 @@ export default {
       author: {}
     }
   },
-  created() {
+  async created() {
     this.ListId = this.$route.query.id;
-    // 获取长度
-    this.getSongList(this.ListId)
+    if (this.TsongBigListStore[0] === '0' || this.TsongBigListStore[0] !== this.ListId) {
+      this.TsongBigListStore[0] = this.ListId
+      // 获取长度
+      await this.getSongList(this.ListId)
+    }else{
+      this.song = this.TsongBigListStore[1]
+      this.SongListDetail = this.TsongBigListStore[2]
+      this.author = this.TsongBigListStore[3]
+      this.getOver = true
+    }
 
 
   },
   methods: {
+    ...mapMutations('t_play', ['updateTsongBigListStore']),
     // 获取歌单长度
     async getSongList(id) {
       const { songs: res } = await this.$h.get('/playlist/track/all?id=' + id)
@@ -97,6 +110,8 @@ export default {
       }
       // 当歌曲获取完毕后，getOver设为true
       this.getOver = true
+      this.pushToStore()
+      console.log(this.TsongBigListStore);
 
     },
     // 获取歌单详情
@@ -114,7 +129,7 @@ export default {
       if (res === 'urlNull') {
         return ElMessage({
           showClose: false,
-          center:true,
+          center: true,
           message: '歌曲暂时无法播放.',
           type: 'error',
         })
@@ -124,6 +139,13 @@ export default {
     // 返回上一页
     goBack() {
       this.$router.go(-1)
+    },
+    // 歌单缓存
+    pushToStore() {
+      this.TsongBigListStore.push(this.song)
+      this.TsongBigListStore.push(this.SongListDetail)
+      this.TsongBigListStore.push(this.author)
+      this.updateTsongBigListStore(this.TsongBigListStore)
     }
 
   }

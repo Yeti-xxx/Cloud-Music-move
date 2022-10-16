@@ -65,7 +65,7 @@ export default {
         this.watchMusicTime();
     },
     methods: {
-        ...mapMutations('m_play', ['updateChangeMusic', 'updatesongStore', 'updateplayIt']),
+        ...mapMutations('m_play', ['updateChangeMusic', 'updatesongStore', 'updateplayIt','playTotrue']),
         // 离开回复缩下版样式
         showStyle() {
             this.$refs.cover.style.display = 'block'
@@ -156,6 +156,7 @@ export default {
         },
         // 处理点击进度条事件
         handClickBar(e) {
+            this.playTotrue()
             const barTotalWidth = this.bar.offsetWidth; // bar 总宽度
             const rect = e.target.getBoundingClientRect(); // 元素右边距离页面边距的距离 返回上下左右
             let length = e.pageX - rect.left;

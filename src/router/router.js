@@ -5,6 +5,7 @@ import play from '../components/play.vue'
 import commune from '../components/commune.vue'
 import songListPage from '../components/songListPage/songListPage.vue'
 import songPage from '../components/songPage/songPage.vue'
+import comment from '../components/comment/comment.vue'
 
 const Router = createRouter({
     history: createWebHashHistory(),
@@ -16,7 +17,8 @@ const Router = createRouter({
         { path: '/play', component: play, name: 'play' },
         { path: '/commune', component: commune, name: 'commune' },
         { path: '/songListPage',component: songListPage, name: 'songListPage'},
-        { path: '/songPage',component: songPage, name: 'songPage'}
+        { path: '/songPage',component: songPage, name: 'songPage'},
+        { path: '/comment',component: comment, name: 'comment'}
     ]
 })
 // Router.beforeEach((to, from, next) => {

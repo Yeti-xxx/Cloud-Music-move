@@ -14,9 +14,9 @@
                     <div class="name">{{song.name}}</div>
                     <div class="author">{{song.ar[0].name}}</div>
                 </div>
-                <div class="share">
+                <div class="share" @click="gotoComment">
                     <el-icon :size="20">
-                        <Share />
+                        <ChatDotRound />
                     </el-icon>
                 </div>
             </div>
@@ -126,12 +126,20 @@ export default {
             if (typeof res == 'object') {
                 this.song = res[0]
                 console.log(res);
-            }else{
+            } else {
                 this.song = this.TsongListStore[res]
             }
-            
+
             // console.log(this.song);
 
+        },
+        gotoComment() {
+            this.$router.push({
+                path: '/comment',
+                query: {
+                    id: 'sid' + this.songId
+                }
+            })
         }
 
     },
