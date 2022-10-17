@@ -1,14 +1,16 @@
 <template>
     <div class="commentContainer" ref="commentContainer">
         <el-card class="box-card">
+            <!-- 顶部 -->
             <div class="top">
                 <div class="close" @click="closed">
                     <el-icon :size="20">
                         <ArrowLeft />
                     </el-icon>
-                    <span>评论(666)</span>
+                    <span>评论(40)</span>
                 </div>
             </div>
+            <!-- 评论内容区域 -->
             <div class="content">
                 <div class="contentTop">
                     <div class="title">评论区</div>
@@ -35,10 +37,18 @@
                     </div>
                 </div>
             </div>
+            <!-- 评论框 -->
+            <el-card class="box-card commentInput">
+                <div class="text">
+                    <textarea rows="" cols="" ref="textArea" @focus="clearWord"></textarea>
+                    <div class="sentBtn" @click="sentComment">发送</div>
+                </div>
+            </el-card>
         </el-card>
     </div>
 </template>
 <script>
+import { ElMessage } from 'element-plus'
 export default {
     name: 'comment',
     created: {
@@ -56,7 +66,38 @@ export default {
         }
     },
     methods: {
-        changeGetNum(num){
+        async sentComment() {
+            if (this.$refs.textArea.value == '') {
+                return ElMessage({
+                    showClose: false,
+                    message: '评论内容为空',
+                    center: true,
+                })
+            }
+            console.log(this.$refs.textArea.value);
+            const res = await this.$h.get('/comment?t=1&type=0&id=' + this.id + '&content=' + this.$refs.textArea.value)
+            if (res.code === 200) {
+                this.$refs.textArea.value = ''
+                ElMessage({
+                    showClose: false,
+                    message: '发布成功',
+                    center: true,
+                })
+                return this.changeGetNum(3)
+            }
+        },
+        // 清除默认文本
+        clearWord() {
+            if (this.$refs.textArea.value === '这一次也许就是你上热评了') {
+                this.$refs.textArea.value = ''
+            }
+        },
+        // 默认文本
+        textAreaWord() {
+            this.$refs.textArea.value = '这一次也许就是你上热评了'
+        },
+        // 按需获取评论
+        changeGetNum(num) {
             this.getNum = num
             this.sortType = num
             this.getComment(this.type, this.id, this.sortType)
@@ -74,7 +115,7 @@ export default {
         },
         //获取评论函数
         async getComment(type, id, sortType) {
-            this.commentArray=[]
+            this.commentArray = []
             const res = await this.$h.get('/comment/new?type=' + type + '&id=' + id + '&sortType=' + sortType + '&pageSize=40&pageNo=1')
             for (let i = 0; i < res.data.comments.length; i++) {
                 const resfilter = this.filterComment(res.data.comments[i], ['user', 'content', 'timeStr', 'ipLocation']);
@@ -104,6 +145,7 @@ export default {
     },
     mounted() {
         this.getNewComment()
+        this.textAreaWord()
     },
     inject: ['DisplayMusictoApp'],
     created() {
@@ -134,6 +176,8 @@ export default {
 <style lang='less' scoped>
 ::v-deep(.el-card) {
     --el-card-padding: 0;
+    --el-card-border-color: 0;
+    background-color: #2b2b2b;
 }
 
 .commentContainer {
@@ -237,6 +281,39 @@ export default {
                     -webkit-line-clamp: 6;
                 }
             }
+        }
+    }
+
+    .commentInput {
+
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        z-index: 999;
+
+        .text {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            textarea {
+                padding: 10px;
+                color: #fefefe;
+                font-weight: 600;
+                width: 80%;
+                height: 30px;
+                outline: none;
+                resize: none;
+                border: 0;
+                background-color: #2b2b2b;
+            }
+        }
+
+        .sentBtn {
+            height: 50px;
+            color: #efefef;
+            line-height: 48px;
+            font-size: 14px;
         }
     }
 }
