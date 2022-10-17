@@ -70,7 +70,8 @@ export default {
         return {
             songId: 0,
             song: {},
-            fromPath: '11'
+            fromPath: '11',
+            prePath: ''
         }
     },
     watch: {
@@ -81,14 +82,21 @@ export default {
             }
         }
     },
+    beforeRouteUpdate(to, from) {
+        this.prePath = '777'
+    },
     computed: {
         ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic', 'songStore', 'songListStore']),
-        ...mapState('t_play', ['TsongListStore'])
+        ...mapState('t_play', ['TsongListStore', 'TsongPageIdStore'])
 
     },
     async created() {
         let flagToGet = true
-        this.songId = this.$route.query.id
+        if (this.TsongPageIdStore == '11') {
+            this.songId = this.$route.query.id
+        } else {
+            this.songId = this.TsongPageIdStore
+        }
         for (let i = 0; i < this.TsongListStore.length; i++) {
             if (this.TsongListStore[i].id == this.songId) {
                 this.song = this.TsongListStore[i]
@@ -103,13 +111,15 @@ export default {
 
         }
         this.updateShowPlay()
-
+        // this.prePath = this.$route.path
     },
     methods: {
         ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic', 'playTotrue']),
+        ...mapMutations('t_play', ['updateTsongPageIdStore']),
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
+            this.updateTsongPageIdStore('11')
             this.$router.go(-1)
 
         },
@@ -125,9 +135,11 @@ export default {
             const res = await this.changeMusicStoApp()
             if (typeof res == 'object') {
                 this.song = res[0]
-                console.log(res);
             } else {
                 this.song = this.TsongListStore[res]
+                this.songId = this.song.id
+                this.updateTsongPageIdStore(this.songId)
+                console.log(this.songId);
             }
 
             // console.log(this.song);
@@ -137,9 +149,10 @@ export default {
             this.$router.push({
                 path: '/comment',
                 query: {
-                    id: 'sid' + this.songId
+                    id: 'sid' + this.songId,
                 }
             })
+
         }
 
     },

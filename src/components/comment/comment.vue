@@ -13,9 +13,9 @@
                 <div class="contentTop">
                     <div class="title">评论区</div>
                     <div class="choose">
-                        <div class="recommend chooseItem">推荐</div>
-                        <div class="hot chooseItem">最热</div>
-                        <div class="new chooseItem">最新</div>
+                        <div :class="['recommend','chooseItem',getNum===1?'get':'']" @click="changeGetNum(1)">推荐</div>
+                        <div :class="['hot','chooseItem',getNum===2?'get':'']" @click="changeGetNum(2)">最热</div>
+                        <div :class="['new','chooseItem',getNum===3?'get':'']" @click="changeGetNum(3)">最新</div>
                     </div>
                 </div>
                 <div class="UserComment" v-for="(item,i) in commentArray" :key="i">
@@ -49,25 +49,37 @@ export default {
             type: null,         //判断需要获取的是 0: 歌曲 1: mv 2: 歌单 的评论
             id: null,
             sortType: '1',       //排序方式, 1:按推荐排序, 2:按热度排序, 3:按时间排序
-            commentArray: []     //评论数组
+            commentArray: [],     //评论数组
+            prePath: '',        //保存上一页面地址
+            getNum: 1
 
         }
     },
     methods: {
+        changeGetNum(num){
+            this.getNum = num
+            this.sortType = num
+            this.getComment(this.type, this.id, this.sortType)
+        },
         closed() {
+            // this.$router.push({
+            //     path:this.prePath,
+            //     query:{
+            //         id:this.id
+            //     }
+            // })
             this.$router.go(-1)
             // 显示播放器
             this.DisplayMusictoApp()
         },
         //获取评论函数
         async getComment(type, id, sortType) {
+            this.commentArray=[]
             const res = await this.$h.get('/comment/new?type=' + type + '&id=' + id + '&sortType=' + sortType + '&pageSize=40&pageNo=1')
-            console.log(res);
             for (let i = 0; i < res.data.comments.length; i++) {
                 const resfilter = this.filterComment(res.data.comments[i], ['user', 'content', 'timeStr', 'ipLocation']);
                 this.commentArray.push(resfilter)
             }
-            console.log(this.commentArray);
         },
         // 过滤getComment中得到的初步数据
         filterComment(obj, arr) {
@@ -112,6 +124,7 @@ export default {
         // split 出id
         this.id = this.$route.query.id.split('sid')[1]
         this.getComment(this.type, this.id, this.sortType)
+        // this.prePath = this.$route.query.pAth
     },
 
 }
@@ -124,6 +137,13 @@ export default {
 }
 
 .commentContainer {
+    background: #2b2b2b;
+
+    // 被选中则添加该样式
+    .get {
+        color: #fefefe;
+    }
+
     .top {
         display: flex;
         height: 50px;

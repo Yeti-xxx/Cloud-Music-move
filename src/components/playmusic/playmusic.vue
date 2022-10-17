@@ -99,7 +99,7 @@ export default {
         },
         // 点击单首歌曲时的方法
         OneclickPlay(url, pic, name, id) {
-            console.log(6666);
+            // console.log(6666);
             this.audioSrc = '' + url
             if (this.audioSrcs.indexOf(url + '@#' + id) === -1) {
                 this.audioSrcs.push(url + '@#' + id)
@@ -109,7 +109,7 @@ export default {
             this.songId = id
             setTimeout(() => {
                 this.play()
-            }, 400);
+            }, 300);
 
         },
         play() {
