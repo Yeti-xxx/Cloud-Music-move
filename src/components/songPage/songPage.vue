@@ -176,7 +176,7 @@ export default {
 }
 
 .container {
-    height: 667px;
+    height: 100%;
 
     // overflow:hidden;
     .content {
