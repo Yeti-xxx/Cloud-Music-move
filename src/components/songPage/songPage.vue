@@ -121,7 +121,6 @@ export default {
             this.showPlaytoApp()
             this.updateTsongPageIdStore('11')
             this.$router.go(-1)
-
         },
         // 暂停或播放音乐
         playMusic() {

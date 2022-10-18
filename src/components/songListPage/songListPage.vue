@@ -1,5 +1,5 @@
 <template>
-  <div class="songListPageContainer">
+  <div class="songListPageContainer" ref="songListPageContainer">
     <!-- 数据加载完成时 -->
     <div v-if="getOver">
       <el-card class="List">
@@ -60,7 +60,7 @@ export default {
   mixins: [mixinItem],
   inject: ['playMusictoApp'],
   computed: {
-    ...mapState('t_play', ['TsongBigListStore'])
+    ...mapState('t_play', ['TsongBigListStore', 'TListLengthStore', 'TListNowStore'])
   },
   data() {
     return {
@@ -69,26 +69,34 @@ export default {
       song: [],
       SongListDetail: {},
       getOver: false,
-      author: {}
+      author: {},
+      getNext: true,  //记录是否可以进行下一次歌曲获取
+      ListNow: 20  //记录已获取列表歌曲数量
     }
   },
   async created() {
     this.ListId = this.$route.query.id;
-    if (this.TsongBigListStore[0] === '0' || this.TsongBigListStore[0] !== this.ListId) {
+    if (this.TsongBigListStore[0] === '01' || this.TsongBigListStore[0] !== this.ListId) {
+      this.updateTsongBigListStore(['01'])
       this.TsongBigListStore[0] = this.ListId
       // 获取长度
       await this.getSongList(this.ListId)
-    }else{
+    } else {
+      this.ListId = this.TsongBigListStore[0]
       this.song = this.TsongBigListStore[1]
       this.SongListDetail = this.TsongBigListStore[2]
+      console.log(this.TsongBigListStore[2]);
       this.author = this.TsongBigListStore[3]
       this.getOver = true
+      this.Listlength = this.TListLengthStore
+      this.ListNow = this.TListNowStore
     }
-
-
+  },
+  mounted() {
+    this.upFresh()
   },
   methods: {
-    ...mapMutations('t_play', ['updateTsongBigListStore']),
+    ...mapMutations('t_play', ['updateTsongBigListStore', 'updateTListNowStore', 'updatedTListLengthStore']),
     // 获取歌单长度
     async getSongList(id) {
       const { songs: res } = await this.$h.get('/playlist/track/all?id=' + id)
@@ -100,8 +108,8 @@ export default {
     },
     // 获取歌单内的歌曲
     async getSong(id, length) {
-
-      for (let i = 0; i < 40; i += 10) {
+      // this.updateTsongBigListStore([])//清空上一条的数据
+      for (let i = 0; i < 10; i += 10) {
         if (i >= length) {
           return
         }
@@ -110,17 +118,14 @@ export default {
       }
       // 当歌曲获取完毕后，getOver设为true
       this.getOver = true
-      this.pushToStore()
-      console.log(this.TsongBigListStore);
 
     },
     // 获取歌单详情
     async getSongListDetail(id) {
       const { playlist: res } = await this.$h.get('/playlist/detail?id=' + id)
       this.SongListDetail = res
-      // console.log(this.SongListDetail);
       this.author = await this.getUserInfo(this.SongListDetail.userId)
-      // console.log(this.author);
+      
     },
 
     // 播放歌曲
@@ -138,6 +143,7 @@ export default {
     },
     // 返回上一页
     goBack() {
+      this.pushToStore()
       this.$router.go(-1)
     },
     // 歌单缓存
@@ -146,6 +152,33 @@ export default {
       this.TsongBigListStore.push(this.SongListDetail)
       this.TsongBigListStore.push(this.author)
       this.updateTsongBigListStore(this.TsongBigListStore)
+      this.updateTListNowStore(this.ListNow)
+      this.updatedTListLengthStore(this.Listlength)
+      console.log(this.TsongBigListStore);
+    },
+    // 上拉加载歌曲
+    upFresh() {
+      let This = this
+      this.$refs.songListPageContainer.addEventListener('touchstart', async function (e) {
+        let clientHeight = document.documentElement.clientHeight; //浏览器高度
+        let scrollHeight = document.body.scrollHeight;
+        let scrollTop = document.documentElement.scrollTop;
+        let distance = 20  //距离可视窗口多高时发起请求
+        // 已经触底 发起请求
+        if ((scrollTop + clientHeight) >= (scrollHeight - distance)) {
+
+          if (This.getNext && This.ListNow < This.Listlength) {
+            This.getNext = false
+            const { songs: res } = await This.$h.get('/playlist/track/all?id=' + This.ListId + '&limit=10&offset=' + This.ListNow)
+            This.song = Array.from(new Set([...This.song, ...res]))
+            This.ListNow += 10
+            This.getNext = true
+          } else {
+            console.log(111);
+            return
+          }
+        }
+      }, false)
     }
 
   }

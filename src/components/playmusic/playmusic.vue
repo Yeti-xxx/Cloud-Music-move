@@ -1,28 +1,29 @@
 <template>
     <div class="music" ref="big">
-        <div class="music__main">
-            <div :class="['music__main__cover',isPlay ? 'active' : '']" ref="cover" @click="pause">
-                <img :src="songPic" />
-            </div>
-            <div class="music__main__timeBar">
-                <!-- <div class="time" ref="time" style="display:none">
+            <div class="music__main">
+                <div :class="['music__main__cover',isPlay ? 'active' : '']" ref="cover" @click="pause">
+                    <img :src="songPic" />
+                </div>
+                <div class="music__main__timeBar">
+                    <!-- <div class="time" ref="time" style="display:none">
                     <span>{{ realMusicTime }}</span>
                     <span>{{ totalMusicTime }}</span>
                 </div> -->
-                <div class="title" ref="title" @click="gotoSongPage">
-                    <spna>{{songName}}</spna>
+                    <div class="title" ref="title" @click="gotoSongPage">
+                        <spna>{{songName}}</spna>
+                    </div>
+                    <div class="bar" ref="bar" @click="handClickBar">
+                        <div class="bar__slid" ref="slid" @click="handClickBar"></div>
+                    </div>
+                    <div class="head" ref="head"></div>
                 </div>
-                <div class="bar" ref="bar" @click="handClickBar">
-                    <div class="bar__slid" ref="slid" @click="handClickBar"></div>
-                </div>
-                <div class="head" ref="head"></div>
             </div>
-        </div>
-        <div class="music__btn">
-            <i class="el-icon-refresh" @click="switchMusic"></i>
-        </div>
-        <div class="music__mask"></div>
-        <audio ref="music" :src="audioSrc"></audio>
+            <div class="music__btn">
+                <i class="el-icon-refresh" @click="switchMusic"></i>
+            </div>
+            <div class="music__mask"></div>
+            <audio ref="music" :src="audioSrc"></audio>
+        
     </div>
 </template>
 <script>
@@ -65,7 +66,7 @@ export default {
         this.watchMusicTime();
     },
     methods: {
-        ...mapMutations('m_play', ['updateChangeMusic', 'updatesongStore', 'updateplayIt','playTotrue']),
+        ...mapMutations('m_play', ['updateChangeMusic', 'updatesongStore', 'updateplayIt', 'playTotrue']),
         // 离开回复缩下版样式
         showStyle() {
             this.$refs.cover.style.display = 'block'
@@ -315,6 +316,17 @@ export default {
 };
 </script>
 <style lang="less">
+::v-deep(.el-card) {
+    --el-card-padding: 0;
+    --el-card-border-color: 0;
+    background-color: #2b2b2b;
+    border:0;
+    border-radius:0;
+}
+::v-deep(.el-card__body){
+    padding:0;
+}
+
 @keyframes musicRotate {
     from {
         transform: rotate(0);
@@ -327,7 +339,7 @@ export default {
 
 .music {
 
-    width: 374px;
+    width: 100%;
     margin: 0 auto;
     margin-left: 1px;
     // border-radius: 15px;

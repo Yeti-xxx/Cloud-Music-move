@@ -1,5 +1,9 @@
 <template>
-    <div class="container">
+    <div class="container" ref="container">
+        <!-- 下拉刷新loading -->
+        <div class="loadingBoxHome" v-if="loadingShow">
+            <div class="loading"></div>
+        </div>
         <!-- 已登录 -->
         <div class="myConatiner" v-if="accountStore!=11">
             <!-- <span style="color:#fff">{{userInfo}}</span> -->
@@ -67,8 +71,13 @@ export default {
     data() {
         return {
             UserId: 0,
-            songList: {}
+            songList: {},
+            isRefresh: true,
+            loadingShow: false
         }
+    },
+    mounted() {
+        this.downRefresh()
     },
     async created() {
         if (this.accountStore != 11) {
@@ -82,7 +91,7 @@ export default {
                 this.updateSongListinStore(this.songList)
             }
             this.songList = this.songListinStore
-            
+
         }
 
     },
@@ -100,6 +109,35 @@ export default {
         },
         gotoList(id) {
             this.goToList(id)
+        },
+        //刷新效果动画
+        loading() {
+            this.loadingShow = true
+            setTimeout(() => {
+                this.isRefresh = true
+                this.loadingShow = false
+            }, 1000);
+        },
+        // 下拉刷新
+        async downRefresh() {
+            let start = 0 //初始位置
+            let transitionHeight = 0  //移动距离
+            let This = this
+            this.$refs.container.addEventListener('touchstart', function (e) {
+                start = e.touches[0].pageY
+            }, false)
+            this.$refs.container.addEventListener('touchmove', async function (e) {
+                transitionHeight = e.touches[0].pageY - start //记录差值
+                if (transitionHeight > 0 && document.documentElement.scrollTop === 0) {
+                    if (transitionHeight > 250 && This.isRefresh) {
+                        This.isRefresh = false
+                        await This.getSongList(This.SongListId)
+                        This.updateSongListinStore(This.songList)
+                        This.loading()
+
+                    }
+                }
+            })
         }
     },
 }
@@ -107,6 +145,36 @@ export default {
 </script>
 
 <style lang='less' scoped>
+// 转转转动画
+@keyframes circle {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingBoxHome {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+
+    .loading {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e63434;
+        border-top-color: transparent;
+        border-radius: 100%;
+        animation: circle infinite 0.75s linear;
+    }
+}
+
 .container {
     width: 100%;
     height: 100%;
