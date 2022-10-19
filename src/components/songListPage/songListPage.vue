@@ -191,7 +191,9 @@ export default {
 ::v-deep(.el-card) {
   --el-card-padding: 0;
 }
-
+.songListPageContainer{
+  width: 100%;
+}
 .List {
   background: #151515;
   border-radius: 0;

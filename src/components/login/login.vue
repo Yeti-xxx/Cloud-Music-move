@@ -68,7 +68,6 @@
                         v-model="item.value" type="text" oninput="value=value.replace(/[^\d]/g,'')"
                         @input="onInput(index)" @keyup.delete="onDelete(index)" maxlength="1" />
                 </div>
-                <div class="next" @click="getLogin">下一步</div>
             </div>
         </div>
 
@@ -294,8 +293,8 @@ export default {
     height: 100%;
 
     .choose-login {
-        width: 375px;
-        height: 667px;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
 
         .top {

@@ -41,16 +41,16 @@ export default {
         position: 'fixed',
         bottom: '56px'
       },
-      showFlag:true
+      showFlag: true
     }
   },
   provide() {
     return {
       playMusictoApp: this.playMusicHandle,
-      showPlaytoApp:this.showPlayHandle,
-      changeMusicStoApp:this.changeMusicS,
-      playContainertoApp:this.playContainer,
-      DisplayMusictoApp:this.DisplayMusic
+      showPlaytoApp: this.showPlayHandle,
+      changeMusicStoApp: this.changeMusicS,
+      playContainertoApp: this.playContainer,
+      DisplayMusictoApp: this.DisplayMusic
     }
   },
   methods: {
@@ -63,14 +63,14 @@ export default {
       this.$refs.playmusic.showStyle()
       this.styleObject.bottom = '56px'
     },
-    changeMusicS(){
+    changeMusicS() {
       return this.$refs.playmusic.changeTheMusic()
     },
-    playContainer(){
+    playContainer() {
       this.$refs.playmusic.pause()
     },
     // 控制隐藏或者显示播放器
-    DisplayMusic(){
+    DisplayMusic() {
       this.showFlag = !this.showFlag;
     }
   }
@@ -85,5 +85,7 @@ export default {
 </template>
 
 <style scoped>
-
+body {
+  font-family: ”Microsoft YaHei”;
+}
 </style>

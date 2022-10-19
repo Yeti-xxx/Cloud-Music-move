@@ -123,12 +123,19 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 // import axios from '../axios/http.js'
 import playmusic from './playmusic/playmusic.vue'
 import Tabbar from './tababr/tabbar.vue'
 export default {
   name: 'home',
+  setup() {
+    const weListen = reactive([]);
+    return {
+      weListen
+    }
+  },
   components: {
     Tabbar,
     playmusic
@@ -139,7 +146,7 @@ export default {
   data() {
     return {
       musicList: {},
-      weListen: [],
+      // weListen: [],
       pageIndex: 1,
       musicUrl: '',
       isRefresh: true,
@@ -175,6 +182,7 @@ export default {
     async getWeListen() {
       const { result: res } = await this.$h.get('/personalized/newsong?limit=9')
       this.weListen = res
+
     },
     // 获取歌曲url
     async getMusicUrl(info) {
@@ -216,8 +224,8 @@ export default {
             This.loading()
             await This.getMusicList()
             await This.getWeListen()
-            This.updatedMusicListinStore(this.musicList)
-            This.updatedWeListeninStore(this.weListen)
+            This.updatedMusicListinStore(This.musicList)
+            This.updatedWeListeninStore(This.weListen)
           }
         }
       })
