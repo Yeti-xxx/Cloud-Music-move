@@ -180,6 +180,10 @@ export default {
     background-color: #2b2b2b;
 }
 
+body {
+    background: #2b2b2b;
+}
+
 .commentContainer {
     background: #2b2b2b;
 

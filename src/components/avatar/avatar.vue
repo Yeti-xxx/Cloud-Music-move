@@ -22,6 +22,9 @@ export default {
 </script>
 
 <style lang='less' scoped>
+::v-deep(.el-card) {
+  --el-card-padding: 0;
+}
 .avatarContainer{
     display:flex;
     flex-direction: column;

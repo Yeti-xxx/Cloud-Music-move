@@ -20,7 +20,7 @@
             <img class="cover" :src="SongListDetail.coverImgUrl" />
             <div class="right">
               <div class="title">{{SongListDetail.name}}</div>
-              <div class="author">
+              <div class="author" @click="gotoMyInfo">
                 <el-avatar :size="28" :src="author.avatarUrl" />
                 <span>{{author.nickname}}</span>
               </div>
@@ -81,6 +81,7 @@ export default {
       this.TsongBigListStore[0] = this.ListId
       // 获取长度
       await this.getSongList(this.ListId)
+      this.pushToStore()
     } else {
       this.ListId = this.TsongBigListStore[0]
       this.song = this.TsongBigListStore[1]
@@ -102,14 +103,14 @@ export default {
       const { songs: res } = await this.$h.get('/playlist/track/all?id=' + id)
       this.Listlength = res.length
       // 得到长度后,获取歌曲
-      this.getSong(id, this.Listlength)
+      await this.getSong(id, this.Listlength)
       // 获取详情
-      this.getSongListDetail(id)
+      await this.getSongListDetail(id)
     },
     // 获取歌单内的歌曲
     async getSong(id, length) {
       // this.updateTsongBigListStore([])//清空上一条的数据
-      for (let i = 0; i < 10; i += 10) {
+      for (let i = 0; i < 20; i += 10) {
         if (i >= length) {
           return
         }
@@ -179,7 +180,7 @@ export default {
           }
         }
       }, false)
-    }
+    },
 
   }
 
@@ -305,7 +306,7 @@ export default {
   border-radius: 0;
 
   .songItem {
-    width: 100%;
+    width: 95%;
     height: 50px;
     background: #151515;
     display: flex;
@@ -344,9 +345,10 @@ export default {
 }
 
 .loadingbox {
+  width: 100%;
   display: flex;
   padding-top: 100px;
-  height: 617px;
+  height: 900px;
   background: #151515;
   justify-content: center;
 

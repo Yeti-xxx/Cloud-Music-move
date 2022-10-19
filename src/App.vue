@@ -19,7 +19,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (to.path === '/songListPage') {
+      if (to.path === '/songListPage' || to.path === '/myInfo') {
         this.styleObject.bottom = '0'
       } else if (to.path === '/songPage') {
         this.styleObject.bottom = '116px'

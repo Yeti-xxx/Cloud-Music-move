@@ -43,6 +43,73 @@ export default {
                 }
             })
         },
-        
+        // 时间戳转时间
+        getDate(timeStr) {
+            let date = new Date(timeStr)
+            let Y = date.getFullYear()
+            let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1)
+            let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+            const time = {
+                Y,
+                M, D
+            }
+            return time
+        },
+        // 判断几零后
+        getAge(time) {
+            let Y = time.Y
+            let res1 = '神秘后'
+            switch (true) {
+                case 2030 > Y && Y >= 2020:
+                    res1 = '20后'
+                    break;
+                case 2020 > Y && Y >= 2010:
+                    res1 = '10后'
+                    break;
+                case 2010 > Y && Y >= 2000:
+                    res1 = '00后'
+                    break;
+                case 2000 > Y && Y >= 1990:
+                    res1 = '90后'
+                    break;
+                case 1990 > Y && Y >= 1980:
+                    res1 = '80后'
+                    break;
+                case 1980 > Y && Y >= 1970:
+                    res1 = '70后'
+                    break;
+                case 1970 > Y && Y >= 1960:
+                    res1 = '60后'
+                    break;
+                case 1960 > Y && Y >= 1950:
+                    res1 = '50后'
+                    break;
+                case 1950 > Y && Y >= 1940:
+                    res1 = '40后'
+                    break;
+                case 1940 > Y && Y >= 1930:
+                    res1 = '30后'
+                    break;
+                case 1930 > Y && Y >= 1920:
+                    res1 = '20后'
+                    break;
+
+            }
+            return res1
+        },
+        // 判断星座
+        getZodiac(time) {
+            const M = parseInt(time.M)
+            const D = parseInt(time.D)
+            // 星座判断表
+            const sdate = [20, 19, 21, 20, 21, 22, 23, 23, 23, 24, 23, 22]
+            // 星座表
+            const conts = ['摩羯座', '水瓶座', '双鱼座', '白羊座', '金牛座', '双子座', '巨蟹座', '狮子座', '处女座', '天秤座', '天蝎座', '射手座', '摩羯座']
+            if (D < sdate[M-1]) {
+                return conts[M-1]
+            }else{
+                return conts[M]
+            }
+        }
     },
 }

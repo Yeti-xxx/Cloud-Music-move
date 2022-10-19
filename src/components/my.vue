@@ -7,7 +7,7 @@
         <!-- 已登录 -->
         <div class="myConatiner" v-if="accountStore!=11">
             <!-- <span style="color:#fff">{{userInfo}}</span> -->
-            <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl">
+            <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl" @click="gotoMyInfo">
                 <div class="level">
                     <span>{{userInfo.profile.follows}}关注</span>
                     <span>{{userInfo.profile.followeds}}粉丝</span>
@@ -138,6 +138,10 @@ export default {
                     }
                 }
             })
+        },
+        // 前往myInfo页面
+        gotoMyInfo(){
+            this.$router.push('/myInfo')
         }
     },
 }
