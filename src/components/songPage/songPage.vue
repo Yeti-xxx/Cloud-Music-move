@@ -21,14 +21,20 @@
                 </div>
             </div>
             <div class="coverAndWord">
-                <!-- <div class="cover">
+                <div :class="['cover',coverOrlyric===false?'dis':'']" @click="ChangecoverOrlyric">
                     <img src="../../assets/img/playDefaultPic.png" />
                     <div class="pic" :class="[playIt ? 'active' : '']">
                         <img :src="song.al.picUrl" />
                     </div>
-                </div> -->
-                <div class="Word cover" @click="wordHandle">
-                    1111
+                </div>
+                <div :class="['Word cover',coverOrlyric===true?'dis':'']"  @click="ChangecoverOrlyric">
+                    <div class="wordBox">
+                        <div class="wordContent" ref="wordContentMove" :style="lyricMove">
+                            <div :class="['wordItem',currentRow===i?'current':'']" v-for="(item,i) in lyric" :key="i">
+                                {{item.text}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="bottom">
@@ -78,8 +84,12 @@ export default {
             fromPath: '11',
             prePath: '',
             word: '',
-            wordArray:[],
-            timeArray:[]
+            lyric: [],
+            lyricMove: {
+                top: window.innerHeight * 0.23 + 'px'
+            },
+            currentRow: 0,
+            coverOrlyric: true
         }
     },
     watch: {
@@ -88,6 +98,16 @@ export default {
                 this.song = this.songStore
                 // console.log(this.songStore);
             }
+        },
+        TlyricTime(newV, oldV) {
+            this.lyric.forEach((element, index) => {
+                if (this.TlyricTime === element.time) {
+                    let h = window.innerHeight * 0.23
+                    h += -index * 39
+                    this.lyricMove.top = h + 'px'
+                    this.currentRow = index
+                }
+            });
         }
     },
     beforeRouteUpdate(to, from) {
@@ -95,7 +115,7 @@ export default {
     },
     computed: {
         ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic', 'songStore', 'songListStore']),
-        ...mapState('t_play', ['TsongListStore', 'TsongPageIdStore'])
+        ...mapState('t_play', ['TsongListStore', 'TsongPageIdStore', 'TlyricTime'])
 
     },
     async created() {
@@ -108,6 +128,7 @@ export default {
         for (let i = 0; i < this.TsongListStore.length; i++) {
             if (this.TsongListStore[i].id == this.songId) {
                 this.song = this.TsongListStore[i]
+                this.word = this.song.word
                 flagToGet = false
                 break;
             }
@@ -116,11 +137,12 @@ export default {
             const res = await this.getMusicDetail(this.songId)  //获取歌曲信息
             this.word = (await this.getWord(this.songId)).lyric
             this.song = res.songs[0]
+            this.song.word = this.word
             this.TsongListStore.push(this.song)
-
 
         }
         this.updateShowPlay()
+        this.wordHandle()
         // this.prePath = this.$route.path
     },
     methods: {
@@ -169,17 +191,25 @@ export default {
             return res.lrc
         },
         // 歌词处理
-        wordHandle(){
+        wordHandle() {
             // console.log(this.word);
             //先通过“\n”将每行歌词存入数组之中
             let arr = this.word.split('\n')
             for (let i = 0; i < arr.length; i++) {
+                let lyricRow = {}   //将每行歌词及其出现的时间视为一个对象
                 let row = arr[i].split(']') //文本切割
                 let text = row[1]   //拿到当前行的真正的歌词
-                console.log(text);
+                let time_arr = row[0].substr(1, row[0].length - 1).split(":")   //将[01:13]秒转为["01","13"]用于先处理
+                let s = parseInt(time_arr[0]) * 60 + Math.ceil(time_arr[1])   //将时间统一转为秒
+                lyricRow.time = s   //向对象存入数据
+                lyricRow.text = text
+                // push进lyryc数组
+                this.lyric.push(lyricRow)
             }
-            
-
+        },
+        // 处理显示歌词还是封面
+        ChangecoverOrlyric(){
+            this.coverOrlyric = !this.coverOrlyric
         }
 
     },
@@ -265,6 +295,7 @@ export default {
         left: 50%;
         transform: translateX(-50%);
 
+
         img {
             height: 265px;
             width: 265px;
@@ -289,6 +320,43 @@ export default {
         }
     }
 
+    .Word {
+        height: 50%;
+        width: 300px;
+
+        .wordBox {
+            width: 100%;
+            height: 100%;
+            // border: 1px solid red;
+            position: relative;
+            overflow: hidden;
+
+            .wordContent {
+                top: 100px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 90%;
+                // border: 1px solid blue;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                transition: all .3s;
+
+                .wordItem {
+                    margin-top: 20px;
+                    font-size: 14px;
+                }
+
+                .current {
+                    color: #eff1f2;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+
+
     .bottom {
         display: flex;
         justify-content: space-around;
@@ -300,6 +368,11 @@ export default {
         // background:red;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    .dis{
+        display:none;
+        
     }
 }
 </style>
