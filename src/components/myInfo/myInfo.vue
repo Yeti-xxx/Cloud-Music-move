@@ -33,14 +33,22 @@
         </div>
       </el-card>
       <el-card class="userInfo comment">
-        <div class="title">我的评论</div>
-        <div class="form">
-          <div class="top">
-            <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-            <span class="name">xxxxxxxxxx</span>
+        <div class="title">已购</div>
+        <div class="tabsContainer">
+          <div class="tabsTop">
+            <div :class="['album',changeFlag==='album'?'show':'']" @click="change('album')">数字专辑</div>
+            <div :class="['song',changeFlag==='song'?'show':'']" @click="change('song')">单曲</div>
           </div>
-          <div class="commentContent">
-            xxxxxx
+          <div class="content">
+            <div class="item" v-for="(item,i) in BuyArray" :key="i" @click="playMusic(item.pic,item.title,item.id)">
+              <div class="pic">
+                <img :src="item.pic" alt="">
+              </div>
+              <div class="right">
+                <div class="songTitle">{{item.title}}</div>
+                <div class="author">{{item.author}}</div>
+              </div>
+            </div>
           </div>
         </div>
       </el-card>
@@ -49,11 +57,19 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 import Avatars from '../avatar/avatar.vue';
 import mixinItem from '../../mixins/mixin.js'
 export default {
   name: 'myInfo',
+  // setup() {
+  //   const BuyArray = reactive([]);
+  //   return {
+
+  //   }
+  // },
+  inject: ['playMusictoApp'],
   components: {
     Avatars
   },
@@ -71,7 +87,10 @@ export default {
       registerTime: {},
       cunAge: 0,
       AgeLater: '',
-      Zodiac: ''
+      Zodiac: '',
+      changeFlag: 'album',
+      BuyItem: {},
+      BuyArray: []
     }
   },
   created() {
@@ -91,11 +110,66 @@ export default {
     this.cunAge = (new Date()).getFullYear() - this.registerTime.Y
     this.AgeLater = this.getAge(this.birthdayTime)
     this.Zodiac = this.getZodiac(this.birthdayTime)
+    // 获取专辑
+    this.getAlbum()
   },
-  methods:{
+  methods: {
     // 返回上一页
-    Back(){
+    Back() {
       this.$router.go(-1)
+    },
+    // tab标签切换
+    change(flag) {
+      if (this.changeFlag === flag) {
+        return
+      }
+      this.changeFlag = flag
+      if (this.changeFlag === 'album') {
+        this.getAlbum()
+      } else if (this.changeFlag === 'song') {
+        this.getSong()
+      }
+
+    },
+    // 获取专辑
+    async getAlbum() {
+      const res = await this.$h.get('/digitalAlbum/purchased?limit=10')
+      this.BuyArray = []
+      for (let i = 0; i < res.total; i++) {
+        this.BuyItem = {}
+        this.BuyItem.title = res.paidAlbums[i].albumName
+        this.BuyItem.id = res.paidAlbums[i].albumId
+        this.BuyItem.pic = res.paidAlbums[i].cover
+        this.BuyItem.author = res.paidAlbums[i].artist.name
+        this.BuyArray.push(this.BuyItem)
+        console.log(this.BuyArray);
+      }
+
+    },
+    // 获取歌曲
+    async getSong() {
+      const { data: res } = await this.$h.get('/song/purchased?limit=10')
+      console.log(res.count);
+      this.BuyArray = []
+      for (let i = 0; i < res.count; i++) {
+        this.BuyItem = {}
+        this.BuyItem.title = res.list[i].name
+        this.BuyItem.id = res.list[i].songId
+        this.BuyItem.pic = res.list[i].picUrl
+        this.BuyItem.author = res.list[i].artistName
+        this.BuyArray.push(this.BuyItem)
+      }
+      console.log(this.BuyArray);
+    },
+    // 播放单曲
+    async playMusic(pic, name, id) {
+      if (this.changeFlag === 'album') {
+        return
+      } else if (this.changeFlag === 'song') {
+        const { data: res } = await this.getMusicUrl(id)
+        const url = res[0].url
+        this.playMusictoApp(url, pic, name, id)
+      }
     }
   }
 
@@ -111,6 +185,7 @@ export default {
 
 .myInfoContainer {
   width: 100%;
+  padding-bottom: 56px;
 
   .box-card {
     width: 100%;
@@ -121,11 +196,13 @@ export default {
   .backImg {
     height: 200px;
     overflow: hidden;
-    .back{
-      position:absolute;
-      left:10px;
-      top:10px;
+
+    .back {
+      position: absolute;
+      left: 10px;
+      top: 10px;
     }
+
     img {
       width: 100%;
 
@@ -200,9 +277,68 @@ export default {
       }
     }
 
-    .commentContent {
-      color: #d5d5d5;
+    .tabsContainer {
+      .tabsTop {
+        display: flex;
+        margin-top: 8px;
+        color: #b5b5b5;
+        font-size: 14px;
+        font-weight: 600;
+
+        .song {
+          margin-left: 15px;
+        }
+
+        .show {
+          color: #c52930;
+        }
+      }
+
+      .content {
+        margin-top: 20px;
+
+        .item {
+          margin-top: 10px;
+          display: flex;
+
+          .pic {
+            img {
+              border-radius: 8%;
+              width: 100px;
+              height: 100px;
+            }
+          }
+
+          .right {
+            margin-left: 15px;
+
+            .songTitle {
+              margin-top: 10px;
+              color: #e9e9e9;
+              font-weight: 600;
+              font-size: 17px;
+              /*将对象作为弹性伸缩盒子模型显示*/
+              display: -webkit-box;
+              /*设置子元素排列方式*/
+              -webkit-box-orient: vertical;
+              /*设置显示的行数，多出的部分会显示为...*/
+              -webkit-line-clamp: 1;
+              overflow: hidden;
+            }
+
+            .author {
+              margin-top: 5px;
+              color: #d5d5d5;
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
     }
+
+
+
   }
 }
 </style>

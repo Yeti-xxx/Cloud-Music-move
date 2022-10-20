@@ -20,10 +20,15 @@
                     </el-icon>
                 </div>
             </div>
-            <div class="cover">
-                <img src="../../assets/img/playDefaultPic.png" />
-                <div class="pic" :class="[playIt ? 'active' : '']">
-                    <img :src="song.al.picUrl" />
+            <div class="coverAndWord">
+                <!-- <div class="cover">
+                    <img src="../../assets/img/playDefaultPic.png" />
+                    <div class="pic" :class="[playIt ? 'active' : '']">
+                        <img :src="song.al.picUrl" />
+                    </div>
+                </div> -->
+                <div class="Word cover" @click="wordHandle">
+                    1111
                 </div>
             </div>
             <div class="bottom">
@@ -71,7 +76,10 @@ export default {
             songId: 0,
             song: {},
             fromPath: '11',
-            prePath: ''
+            prePath: '',
+            word: '',
+            wordArray:[],
+            timeArray:[]
         }
     },
     watch: {
@@ -105,9 +113,11 @@ export default {
             }
         }
         if (flagToGet) {
-            const res = await this.getMusicDetail(this.songId)
+            const res = await this.getMusicDetail(this.songId)  //获取歌曲信息
+            this.word = (await this.getWord(this.songId)).lyric
             this.song = res.songs[0]
             this.TsongListStore.push(this.song)
+
 
         }
         this.updateShowPlay()
@@ -151,6 +161,24 @@ export default {
                     id: 'sid' + this.songId,
                 }
             })
+
+        },
+        // 获取歌词
+        async getWord(id) {
+            const res = await this.$h.get('/lyric?id=' + id)
+            return res.lrc
+        },
+        // 歌词处理
+        wordHandle(){
+            // console.log(this.word);
+            //先通过“\n”将每行歌词存入数组之中
+            let arr = this.word.split('\n')
+            for (let i = 0; i < arr.length; i++) {
+                let row = arr[i].split(']') //文本切割
+                let text = row[1]   //拿到当前行的真正的歌词
+                console.log(text);
+            }
+            
 
         }
 
