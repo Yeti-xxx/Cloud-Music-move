@@ -27,10 +27,10 @@
                         <img :src="song.al.picUrl" />
                     </div>
                 </div>
-                <div :class="['Word cover',coverOrlyric===true?'dis':'']"  @click="ChangecoverOrlyric">
+                <div :class="['Word cover',coverOrlyric===true?'dis':'']" @click="ChangecoverOrlyric">
                     <div class="wordBox">
                         <div class="wordContent" ref="wordContentMove" :style="lyricMove">
-                            <div :class="['wordItem',currentRow===i?'current':'']" v-for="(item,i) in lyric" :key="i">
+                            <div ref="item" :class="['wordItem',currentRow===i?'current':'']" v-for="(item,i) in lyric" :key="i">
                                 {{item.text}}
                             </div>
                         </div>
@@ -124,6 +124,7 @@ export default {
             this.songId = this.$route.query.id
         } else {
             this.songId = this.TsongPageIdStore
+
         }
         for (let i = 0; i < this.TsongListStore.length; i++) {
             if (this.TsongListStore[i].id == this.songId) {
@@ -151,7 +152,7 @@ export default {
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
-            this.updateTsongPageIdStore('11')
+            // this.updateTsongPageIdStore('11')
             this.$router.go(-1)
         },
         // 暂停或播放音乐
@@ -160,20 +161,28 @@ export default {
         },
         // 切换音乐
         async changeTheMusic(direction) {
+            for (let i = 0; i < this.$refs.item.length; i++) {
+                this.$refs.item[i].innerHTML = ''
+                
+            }
             // console.log(this.song);
             this.updateChangeMusic(direction)
             this.playTotrue()
             const res = await this.changeMusicStoApp()
             if (typeof res == 'object') {
                 this.song = res[0]
+                // 说明当前歌曲无缓存 需要获取新的歌词
+                this.word = this.song.word
+                this.wordHandle()
             } else {
                 this.song = this.TsongListStore[res]
+                this.word = this.song.word
+                this.wordHandle()
                 this.songId = this.song.id
                 this.updateTsongPageIdStore(this.songId)
-                console.log(this.songId);
+
             }
 
-            // console.log(this.song);
 
         },
         gotoComment() {
@@ -208,7 +217,7 @@ export default {
             }
         },
         // 处理显示歌词还是封面
-        ChangecoverOrlyric(){
+        ChangecoverOrlyric() {
             this.coverOrlyric = !this.coverOrlyric
         }
 
@@ -370,9 +379,9 @@ export default {
         transform: translateX(-50%);
     }
 
-    .dis{
-        display:none;
-        
+    .dis {
+        display: none;
+
     }
 }
 </style>

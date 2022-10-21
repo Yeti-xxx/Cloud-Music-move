@@ -58,7 +58,9 @@ export default {
             songName: '',
             songId: 0,
             song: {},
-            audioIndex: 0
+            audioIndex: 0,
+            word:{},
+            lyric:{}
         };
     },
     created() {
@@ -257,15 +259,16 @@ export default {
             if (flagToget) {
                 // 调用获取歌曲详情函数
                 const data = await this.getMusicDetail(id)
+                this.word = (await this.getWord(id)).lyric
                 res = data.songs
+                // 歌词存入res
+                res[0].word = this.word
                 // 修改封面
                 this.songPic = res[0].al.picUrl
                 // 修改歌曲名称
                 this.songName = res[0].al.name
                 this.song = res[0].al
                 // 加入缓存中
-                console.log(1111);
-                console.log(this.TsongListStore);
                 this.TsongListStore.push(res[0])
             }
             this.songToStore(this.song)

@@ -110,6 +110,28 @@ export default {
             }else{
                 return conts[M]
             }
-        }
+        },
+        // 歌词处理
+        wordHandle() {
+            // console.log(this.word);
+            //先通过“\n”将每行歌词存入数组之中
+            let arr = this.word.split('\n')
+            for (let i = 0; i < arr.length; i++) {
+                let lyricRow = {}   //将每行歌词及其出现的时间视为一个对象
+                let row = arr[i].split(']') //文本切割
+                let text = row[1]   //拿到当前行的真正的歌词
+                let time_arr = row[0].substr(1, row[0].length - 1).split(":")   //将[01:13]秒转为["01","13"]用于先处理
+                let s = parseInt(time_arr[0]) * 60 + Math.ceil(time_arr[1])   //将时间统一转为秒
+                lyricRow.time = s   //向对象存入数据
+                lyricRow.text = text
+                // push进lyryc数组
+                this.lyric.push(lyricRow)
+            }
+        },
+        // 获取歌词
+        async getWord(id) {
+            const res = await this.$h.get('/lyric?id=' + id)
+            return res.lrc
+        },
     },
 }

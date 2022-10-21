@@ -110,7 +110,7 @@ export default {
     // 获取歌单内的歌曲
     async getSong(id, length) {
       // this.updateTsongBigListStore([])//清空上一条的数据
-      for (let i = 0; i < 20; i += 10) {
+      for (let i = 0; i < 10; i += 10) {
         if (i >= length) {
           return
         }
