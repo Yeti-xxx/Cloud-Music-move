@@ -59,8 +59,8 @@ export default {
             songId: 0,
             song: {},
             audioIndex: 0,
-            word:{},
-            lyric:{}
+            word: {},
+            lyric: {}
         };
     },
     created() {
@@ -104,7 +104,6 @@ export default {
         },
         // 点击单首歌曲时的方法
         OneclickPlay(url, pic, name, id) {
-            // console.log(6666);
             this.audioSrc = '' + url
             if (this.audioSrcs.indexOf(url + '@#' + id) === -1) {
                 this.audioSrcs.push(url + '@#' + id)
@@ -122,7 +121,6 @@ export default {
             this.isPlay = true;
         },
         pause() {
-            console.log(this.isPlay);
             if (this.isPlay === true) {
                 this.isPlay = false;
                 this.music.pause();
@@ -209,6 +207,7 @@ export default {
         async changeTheMusic() {
             let res = null
             const temp = this.audioSrc + '@#' + this.songId
+            console.log(this.songId);
             // 获取当前歌曲在歌曲数组中的位置
             for (let index = 0; index < this.audioSrcs.length; index++) {
                 if (temp === this.audioSrcs[index]) {
@@ -243,6 +242,7 @@ export default {
             const id = arr[1]
             let flagToget = true
             console.log(id);
+            this.songId = id
             // 判断缓存中是否存在歌曲的封面等信息，避免重复请求
             for (let i = 0; i < this.TsongListStore.length; i++) {
                 if (this.TsongListStore[i].id == id) {

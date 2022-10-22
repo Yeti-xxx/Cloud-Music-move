@@ -11,7 +11,7 @@
                     </el-icon>
                 </div>
                 <div class="title">
-                    <div class="name">{{song.name}}</div>
+                    <div class="name" @click="wait=!wait">{{song.name}}</div>
                     <div class="author">{{song.ar[0].name}}</div>
                 </div>
                 <div class="share" @click="gotoComment">
@@ -21,6 +21,7 @@
                 </div>
             </div>
             <div class="coverAndWord">
+
                 <div :class="['cover',coverOrlyric===false?'dis':'']" @click="ChangecoverOrlyric">
                     <img src="../../assets/img/playDefaultPic.png" />
                     <div class="pic" :class="[playIt ? 'active' : '']">
@@ -30,7 +31,8 @@
                 <div :class="['Word cover',coverOrlyric===true?'dis':'']" @click="ChangecoverOrlyric">
                     <div class="wordBox">
                         <div class="wordContent" ref="wordContentMove" :style="lyricMove">
-                            <div ref="item" :class="['wordItem',currentRow===i?'current':'']" v-for="(item,i) in lyric" :key="i">
+                            <div ref="item" :class="['wordItem',currentRow===i?'current':'']" v-for="(item,i) in lyric"
+                                :key="i">
                                 {{item.text}}
                             </div>
                         </div>
@@ -70,11 +72,18 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 import mixinItem from '../../mixins/mixin.js'
 import { useRoute } from "vue-router";
 export default {
     name: 'SongPage',
+    setup() {
+        const lyric = reactive([]);
+        return {
+            lyric
+        }
+    },
     mixins: [mixinItem],
     inject: ['showPlaytoApp', 'changeMusicStoApp', 'playContainertoApp'],
     data() {
@@ -84,12 +93,12 @@ export default {
             fromPath: '11',
             prePath: '',
             word: '',
-            lyric: [],
+            // lyric: [],
             lyricMove: {
                 top: window.innerHeight * 0.23 + 'px'
             },
             currentRow: 0,
-            coverOrlyric: true
+            coverOrlyric: true,
         }
     },
     watch: {
@@ -120,9 +129,11 @@ export default {
     },
     async created() {
         let flagToGet = true
-        if (this.TsongPageIdStore == '11') {
+        console.log(this.$route.query.id)
+        if (this.TsongPageIdStore == '11' || this.$route.query.id!=this.TsongPageIdStore) {
             this.songId = this.$route.query.id
-        } else {
+        }
+        else {
             this.songId = this.TsongPageIdStore
 
         }
@@ -152,7 +163,6 @@ export default {
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
-            // this.updateTsongPageIdStore('11')
             this.$router.go(-1)
         },
         // 暂停或播放音乐
@@ -161,13 +171,11 @@ export default {
         },
         // 切换音乐
         async changeTheMusic(direction) {
-            for (let i = 0; i < this.$refs.item.length; i++) {
-                this.$refs.item[i].innerHTML = ''
-                
-            }
-            // console.log(this.song);
+            this.lyric = []
+            this.updateTsongPageIdStore(this.songId)
             this.updateChangeMusic(direction)
             this.playTotrue()
+            // this.wait = true;
             const res = await this.changeMusicStoApp()
             if (typeof res == 'object') {
                 this.song = res[0]
@@ -355,6 +363,12 @@ export default {
                 .wordItem {
                     margin-top: 20px;
                     font-size: 14px;
+                    /*将对象作为弹性伸缩盒子模型显示*/
+                    display: -webkit-box;
+                    /*设置子元素排列方式*/
+                    -webkit-box-orient: vertical;
+                    /*设置显示的行数，多出的部分会显示为...*/
+                    -webkit-line-clamp: 1;
                 }
 
                 .current {
