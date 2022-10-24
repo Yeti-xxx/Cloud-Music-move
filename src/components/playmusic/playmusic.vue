@@ -191,8 +191,12 @@ export default {
                 // 修改封面
                 this.songPic = res[0].al.picUrl
                 // 修改歌曲名称
-                this.songName = res[0].al.name
+                this.songName = res[0].name
+                console.log(res[0])
                 this.song = res[0]
+                // 10.23晚处理
+                this.songId = res[0].id
+                this.song.Id = res[0].id
                 this.songToStore(this.song)
             }
             this.updateChangeMusic(this.changeMusic + '1')

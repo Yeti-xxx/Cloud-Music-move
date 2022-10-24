@@ -105,6 +105,8 @@ export default {
         changeMusic(newV, oldV) {
             if (newV !== 'next' || newV !== 'pre') {
                 this.song = this.songStore
+                // 10.23晚处理
+                this.songId = this.song.id
                 // console.log(this.songStore);
             }
         },
@@ -163,6 +165,7 @@ export default {
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
+            this.updateTsongPageIdStore(this.songId)
             this.$router.go(-1)
         },
         // 暂停或播放音乐
