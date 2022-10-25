@@ -47,7 +47,7 @@ export default {
         getDate(timeStr) {
             let date = new Date(timeStr)
             let Y = date.getFullYear()
-            let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1)
+            let M = parseInt((date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1))
             let D = parseInt((date.getDate() < 10 ? '0' + date.getDate() : date.getDate()))
             const time = {
                 Y,

@@ -15,7 +15,7 @@
         <el-card class="box-cardContainer">
             <div class="avatar col">
                 <span>头像</span>
-                <div class="avatarRevise" @click="calendarFlag = !calendarFlag">
+                <div class="avatarRevise">
                     <el-avatar :size="50" :src="userInfo.profile.avatarUrl" />
                 </div>
             </div>
@@ -29,9 +29,9 @@
             </div>
         </el-card>
         <el-card class="box-cardContainer">
-            <div class="gender col">
+            <div class="gender col" @click="changCalendarFlag">
                 <span>生日</span>
-                <span class="nicknameRevise right">{{ birthdayTime.Y + '-' + birthdayTime.M + '-' + birthdayTime.D
+                <span class="nicknameRevise right">{{ birthdayTimeInStore.Y + '-' + birthdayTimeInStore.M + '-' + birthdayTimeInStore.D
                 }}</span>
             </div>
             <div class="area col">
@@ -51,7 +51,8 @@ export default {
     mixins: [mixinItem],
     name: 'reviseMyInfo',
     computed: {
-        ...mapState('m_my', ['userInfo'])
+        ...mapState('m_my', ['userInfo']),
+        ...mapState('t_my', ['birthdayTimeInStore'])
     },
     components: {
         myCalendar: calendar
@@ -76,16 +77,25 @@ export default {
             this.sex = '保密'
         }
         this.cityIdtoArea()
-        // 获取生日时间戳
-        this.birthdayTimeStr = this.userInfo.profile.birthday
-        //调用公共方法，转为 YY-MM-DD
-        this.birthdayTime = this.getDate(this.birthdayTimeStr)
+        // // 获取生日时间戳
+        // this.birthdayTimeStr = this.userInfo.profile.birthday
+        // //调用公共方法，转为 YY-MM-DD
+        // this.birthdayTime = this.getDate(this.birthdayTimeStr)
         const res = await this.$h.get('/user/update?gender=0&signature=测试签名&city=440300&nickname=庚希xx&birthday=1525918298004&province=440000')
         console.log(res);
+    },
+    provide() {
+        return {
+            changCalendarFlag:this.changCalendarFlag
+        }
     },
     methods: {
         close() {
             this.$router.go(-1)
+        },
+        // 控制日历组件的创建与销毁
+        changCalendarFlag() {
+            this.calendarFlag = !this.calendarFlag
         }
     }
 }
