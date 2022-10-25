@@ -12,23 +12,29 @@
       <div class="avatarContainer">
         <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl">
           <div class="level">
-            <span>{{userInfo.profile.follows}}关注</span>
-            <span>{{userInfo.profile.followeds}}粉丝</span>
-            <span>LV.{{userInfo.level}}</span>
+            <span>{{ userInfo.profile.follows }}关注</span>
+            <span>{{ userInfo.profile.followeds }}粉丝</span>
+            <span>LV.{{ userInfo.level }}</span>
           </div>
         </Avatars>
       </div>
       <el-card class="userInfo">
-        <div class="title">基本信息</div>
+        <div class="top">
+          <div class="title">基本信息</div>
+          <div class="revise" @click="gotoRevise">编辑资料</div>
+        </div>
         <div class="form">
           <span class="cun">村龄:
-            <span>{{cunAge}}年({{registerTime.Y}}年{{registerTime.M}}月注册)</span>
+            <span>{{ cunAge }}年({{ registerTime.Y }}年{{ registerTime.M }}月注册)</span>
           </span>
           <span class="gender">性别:
-            <span>{{sex}}</span>
+            <span>{{ sex }}</span>
           </span>
           <span class="age">年龄:
-            <span>{{AgeLater}} {{Zodiac}}</span>
+            <span>{{ AgeLater }} {{ Zodiac }}</span>
+          </span>
+          <span class="age">简介:
+            <span>{{userInfo.profile.signature}}</span>
           </span>
         </div>
       </el-card>
@@ -36,17 +42,17 @@
         <div class="title">已购</div>
         <div class="tabsContainer">
           <div class="tabsTop">
-            <div :class="['album',changeFlag==='album'?'show':'']" @click="change('album')">数字专辑</div>
-            <div :class="['song',changeFlag==='song'?'show':'']" @click="change('song')">单曲</div>
+            <div :class="['album', changeFlag === 'album' ? 'show' : '']" @click="change('album')">数字专辑</div>
+            <div :class="['song', changeFlag === 'song' ? 'show' : '']" @click="change('song')">单曲</div>
           </div>
           <div class="content">
-            <div class="item" v-for="(item,i) in BuyArray" :key="i" @click="playMusic(item.pic,item.title,item.id)">
+            <div class="item" v-for="(item, i) in BuyArray" :key="i" @click="playMusic(item.pic, item.title, item.id)">
               <div class="pic">
                 <img :src="item.pic" alt="">
               </div>
               <div class="right">
-                <div class="songTitle">{{item.title}}</div>
-                <div class="author">{{item.author}}</div>
+                <div class="songTitle">{{ item.title }}</div>
+                <div class="author">{{ item.author }}</div>
               </div>
             </div>
           </div>
@@ -75,7 +81,8 @@ export default {
   },
   mixins: [mixinItem],
   computed: {
-    ...mapState('m_my', ['userInfo'])
+    ...mapState('m_my', ['userInfo']),
+    ...mapState('t_my',['birthdayTimeInStore'])
   },
   data() {
     return {
@@ -102,10 +109,14 @@ export default {
     this.gender = this.userInfo.profile.gender
     if (this.gender !== 1) {
       this.sex = '女'
-    } else {
+    } else if (this.gender !== 0) {
       this.sex = '男'
+    } else {
+      this.sex = '保密'
     }
+
     this.birthdayTime = this.getDate(this.birthdayTimeStr)
+    this.updatedBirthdayTimeInStore(this.birthdayTime)
     this.registerTime = this.getDate(this.registerTimeStr)
     this.cunAge = (new Date()).getFullYear() - this.registerTime.Y
     this.AgeLater = this.getAge(this.birthdayTime)
@@ -114,6 +125,8 @@ export default {
     this.getAlbum()
   },
   methods: {
+    // 存储生日对象方法
+    ...mapMutations('t_my',['updatedBirthdayTimeInStore']),
     // 返回上一页
     Back() {
       this.$router.go(-1)
@@ -142,7 +155,6 @@ export default {
         this.BuyItem.pic = res.paidAlbums[i].cover
         this.BuyItem.author = res.paidAlbums[i].artist.name
         this.BuyArray.push(this.BuyItem)
-        console.log(this.BuyArray);
       }
 
     },
@@ -159,7 +171,6 @@ export default {
         this.BuyItem.author = res.list[i].artistName
         this.BuyArray.push(this.BuyItem)
       }
-      console.log(this.BuyArray);
     },
     // 播放单曲
     async playMusic(pic, name, id) {
@@ -170,6 +181,10 @@ export default {
         const url = res[0].url
         this.playMusictoApp(url, pic, name, id)
       }
+    },
+    //进入资料编辑页面
+    gotoRevise() {
+      this.$router.push('./reviseMyInfo')
     }
   }
 
@@ -236,10 +251,32 @@ export default {
     margin-top: 20px;
     padding: 15px 10px;
 
-    .title {
-      color: #e9e9e9;
-      font-weight: 600;
+    .top {
+      display: flex;
+      justify-content: space-between;
 
+      .title {
+        color: #e9e9e9;
+        font-weight: 600;
+
+      }
+
+      .revise {
+        color: #e9e9e9;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .revise::after {
+        content: '';
+        top: 13px;
+        right: 3px;
+        height: 20px;
+        width: 65px;
+        position: absolute;
+        border: 1px solid #fff;
+        border-radius: 5%;
+      }
     }
 
     .form {

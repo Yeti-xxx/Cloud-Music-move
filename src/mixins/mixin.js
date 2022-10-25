@@ -3,7 +3,7 @@ export default {
     methods: {
         async getUserInfo(uid) {
             console.log(uid);
-            const { profile: res } = await this.$h.get('/user/detail?uid=' + uid)
+            const res = await this.$h.get('/user/detail?uid=' + uid)
             return res
 
         },
@@ -48,7 +48,7 @@ export default {
             let date = new Date(timeStr)
             let Y = date.getFullYear()
             let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1)
-            let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+            let D = parseInt((date.getDate() < 10 ? '0' + date.getDate() : date.getDate()))
             const time = {
                 Y,
                 M, D
@@ -105,11 +105,15 @@ export default {
             const sdate = [20, 19, 21, 20, 21, 22, 23, 23, 23, 24, 23, 22]
             // 星座表
             const conts = ['摩羯座', '水瓶座', '双鱼座', '白羊座', '金牛座', '双子座', '巨蟹座', '狮子座', '处女座', '天秤座', '天蝎座', '射手座', '摩羯座']
-            if (D < sdate[M-1]) {
-                return conts[M-1]
-            }else{
+            if (D < sdate[M - 1]) {
+                return conts[M - 1]
+            } else {
                 return conts[M]
             }
+        },
+        // 读取身份证开头四位对应省市地区
+        cityIdtoArea() {
+
         },
         // 歌词处理
         wordHandle() {

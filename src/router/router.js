@@ -7,6 +7,7 @@ import songListPage from '../components/songListPage/songListPage.vue'
 import songPage from '../components/songPage/songPage.vue'
 import comment from '../components/comment/comment.vue'
 import myInfo from '../components/myInfo/myInfo.vue'
+import reviseMyInfo from '../components/reviseMyInfo/reviseMyInfo.vue'
 
 const Router = createRouter({
     history: createWebHashHistory(),
@@ -20,7 +21,8 @@ const Router = createRouter({
         { path: '/songListPage', component: songListPage, name: 'songListPage' },
         { path: '/songPage', component: songPage, name: 'songPage' },
         { path: '/comment', component: comment, name: 'comment' },
-        { path: '/myInfo', component: myInfo, name: 'myInfo' }
+        { path: '/myInfo', component: myInfo, name: 'myInfo' },
+        { path: '/reviseMyInfo', component: reviseMyInfo, name: 'reviseMyInfo' }
 
     ]
 })

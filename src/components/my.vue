@@ -80,6 +80,7 @@ export default {
         this.downRefresh()
     },
     async created() {
+        this.UserId = this.userInfo.profile.userId
         if (this.accountStore != 11) {
             // console.log(this.accountStore);
             // this.SongListId = this.accountStore.account.id//测试使用
@@ -91,12 +92,11 @@ export default {
                 this.updateSongListinStore(this.songList)
             }
             this.songList = this.songListinStore
-
         }
 
     },
     methods: {
-        ...mapMutations('m_my', ['updateSongListinStore']),
+        ...mapMutations('m_my', ['updateSongListinStore','updateUserInfo']),
         // 获取用户歌单
         async getSongList(uid) {
             const { playlist: res } = await this.$h.get('https://netease-cloud-music-api-nxzt.vercel.app/user/playlist?uid=' + uid)
@@ -132,9 +132,10 @@ export default {
                     if (transitionHeight > 250 && This.isRefresh) {
                         This.isRefresh = false
                         await This.getSongList(This.SongListId)
+                        const res =  await This.getUserInfo(This.UserId)
+                        This.updateUserInfo(res)
                         This.updateSongListinStore(This.songList)
                         This.loading()
-
                     }
                 }
             })
