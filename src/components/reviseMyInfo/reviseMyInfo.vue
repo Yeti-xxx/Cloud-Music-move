@@ -14,7 +14,7 @@
             <div class="saveRevise" @click="saveRevise">保存</div>
         </div>
         <el-card class="box-cardContainer">
-            <div class="avatar col">
+            <div class="avatar col" @click="clickSvatarInput">
                 <span>头像</span>
                 <div class="avatarRevise">
                     <el-avatar :size="50" :src="userInfo.profile.avatarUrl" />
@@ -62,12 +62,15 @@
         </div>
         <!-- 模态框 -->
         <div class="modal" v-if="modalFlag"></div>
+        <input ref="avatarInput" type="file" @change="getImg($event)" v-show="none"/>
+        <myCopper v-show="cropperFlag" v-bind:imgurl="url"></myCopper>
     </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
 import Avatars from '../avatar/avatar.vue';
+import Copper from '../cropper/cropper.vue'
 import mixinItem from '../../mixins/mixin.js'
 import calendar from '../calendar/calendar.vue'
 import { ElMessage } from 'element-plus'
@@ -79,7 +82,8 @@ export default {
         ...mapState('t_my', ['birthdayTimeInStore'])
     },
     components: {
-        myCalendar: calendar
+        myCalendar: calendar,
+        myCopper: Copper
     },
     data() {
         return {
@@ -92,7 +96,9 @@ export default {
             GenderBoxFlag: false,
             modalFlag: false,
             signatureBoxFlag: false,
-            sex: ''
+            sex: '',
+            cropperFlag: false,
+            url: ''
         }
     },
     watch: {
@@ -116,12 +122,13 @@ export default {
         } else {
             this.sex = '保密'
         }
-        const res = await this.$h.get('/user/update?nickname=庚希xx')
-        console.log(res);
+        // const res = await this.$h.get('/user/update?nickname=庚希xx')
+
     },
     provide() {
         return {
-            changCalendarFlag: this.changCalendarFlag
+            changCalendarFlag: this.changCalendarFlag,
+            closeCropper: this.closeCropper
         }
     },
     methods: {
@@ -155,6 +162,27 @@ export default {
                 return ElMessage('保存失败！')
             }
 
+        },
+        // 模拟点击input
+        clickSvatarInput() {
+            this.$refs.avatarInput.click()
+        },
+        // 获取file对象
+        getImg(e) {
+            console.log(111);
+            let file = e.target.files[0]
+            let This = this
+            const reader = new FileReader()
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+                This.url = 'data:image/png;base64,' + this.result.substring(this.result.indexOf(',') + 1);
+            }
+            this.cropperFlag = true
+            this.$refs.avatarInput.value = null
+        },
+        // 关闭图片裁剪组件
+        closeCropper(){
+            this.cropperFlag = false
         }
     }
 }

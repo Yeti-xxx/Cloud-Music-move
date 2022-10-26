@@ -3,7 +3,8 @@ export default {
     state: () => ({
         accountStore: '11',
         userInfo: '{}',
-        songListinStore:'11'
+        songListinStore: '11',
+        cookie: ''
 
     }),
     mutations: {
@@ -15,8 +16,11 @@ export default {
             state.userInfo = userInfo
 
         },
-        updateSongListinStore(state,songListinStore){
+        updateSongListinStore(state, songListinStore) {
             state.songListinStore = songListinStore
+        },
+        updateCookie(state, cookie) {
+            state.cookie = cookie
         }
     },
     getters: {

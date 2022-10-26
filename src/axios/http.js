@@ -26,7 +26,7 @@ instance.defaults.validateStatus = function () {
 // 请求拦截器
 instance.interceptors.request.use(
   config => {
-    
+
     return config
   },
   error => {
