@@ -9,8 +9,9 @@
                 <el-icon :size="24" color="#f2eeeb">
                     <Back />
                 </el-icon>
+                <span>我的资料</span>
             </div>
-            <span>我的资料</span>
+            <div class="saveRevise" @click="saveRevise">保存</div>
         </div>
         <el-card class="box-cardContainer">
             <div class="avatar col">
@@ -23,7 +24,7 @@
                 <span>昵称</span>
                 <span class="nicknameRevise right">{{ userInfo.profile.nickname }}</span>
             </div>
-            <div class="gender col">
+            <div class="gender col" @click="GenderBoxFlag = true; modalFlag = true">
                 <span>性别</span>
                 <span class="nicknameRevise right">{{ sex }}</span>
             </div>
@@ -31,14 +32,36 @@
         <el-card class="box-cardContainer">
             <div class="gender col" @click="changCalendarFlag">
                 <span>生日</span>
-                <span class="nicknameRevise right">{{ birthdayTimeInStore.Y + '-' + birthdayTimeInStore.M + '-' + birthdayTimeInStore.D
+                <span class="nicknameRevise right">{{ birthdayTimeInStore.Y + '-' + birthdayTimeInStore.M + '-' +
+                        birthdayTimeInStore.D
                 }}</span>
             </div>
-            <div class="area col">
+            <div class="area col" @click="signatureBoxFlag = true; modalFlag = true">
                 <span>签名</span>
-                <span class="nicknameRevise right">{{ userInfo.profile.signature }}</span>
+                <span class="nicknameRevise right">{{ signature }}</span>
             </div>
         </el-card>
+        <!-- 性别选择面板 -->
+        <div class="genderChooseBox" v-if="GenderBoxFlag">
+            <div class="genderItem" @click="gender = 1; GenderBoxFlag = false; modalFlag = false">男</div>
+            <div class="genderItem" @click="gender = 2; GenderBoxFlag = false; modalFlag = false">女</div>
+            <div class="closeDote" @click="GenderBoxFlag = false; modalFlag = false">
+                <el-icon>
+                    <CloseBold />
+                </el-icon>
+            </div>
+        </div>
+        <!-- 签名修改面板 -->
+        <div class="signatureBox genderChooseBox" v-if="signatureBoxFlag">
+            <textarea ref="textareaInput"></textarea>
+            <div class="closeDote signatureClose" @click="signatureText">
+                <el-icon>
+                    <CloseBold />
+                </el-icon>
+            </div>
+        </div>
+        <!-- 模态框 -->
+        <div class="modal" v-if="modalFlag"></div>
     </div>
 </template>
 
@@ -47,6 +70,7 @@ import { mapState, mapMutations } from 'vuex'
 import Avatars from '../avatar/avatar.vue';
 import mixinItem from '../../mixins/mixin.js'
 import calendar from '../calendar/calendar.vue'
+import { ElMessage } from 'element-plus'
 export default {
     mixins: [mixinItem],
     name: 'reviseMyInfo',
@@ -61,13 +85,29 @@ export default {
         return {
             birthdayTimeStr: '',
             gender: 0,
+            signature: '',
             birthdayTime: {},
             area: '',
             calendarFlag: false,
-
+            GenderBoxFlag: false,
+            modalFlag: false,
+            signatureBoxFlag: false,
+            sex: ''
+        }
+    },
+    watch: {
+        gender(newV, oldV) {
+            if (this.gender !== 1) {
+                this.sex = '女'
+            } else if (this.gender !== 0) {
+                this.sex = '男'
+            } else {
+                this.sex = '保密'
+            }
         }
     },
     async created() {
+        this.signature = this.userInfo.profile.signature
         this.gender = this.userInfo.profile.gender
         if (this.gender !== 1) {
             this.sex = '女'
@@ -76,17 +116,12 @@ export default {
         } else {
             this.sex = '保密'
         }
-        this.cityIdtoArea()
-        // // 获取生日时间戳
-        // this.birthdayTimeStr = this.userInfo.profile.birthday
-        // //调用公共方法，转为 YY-MM-DD
-        // this.birthdayTime = this.getDate(this.birthdayTimeStr)
-        const res = await this.$h.get('/user/update?gender=0&signature=测试签名&city=440300&nickname=庚希xx&birthday=1525918298004&province=440000')
+        const res = await this.$h.get('/user/update?nickname=庚希xx')
         console.log(res);
     },
     provide() {
         return {
-            changCalendarFlag:this.changCalendarFlag
+            changCalendarFlag: this.changCalendarFlag
         }
     },
     methods: {
@@ -96,6 +131,30 @@ export default {
         // 控制日历组件的创建与销毁
         changCalendarFlag() {
             this.calendarFlag = !this.calendarFlag
+        },
+        // 保存签名到data中
+        signatureText() {
+            this.signature = this.$refs.textareaInput.value
+            this.signatureBoxFlag = false
+            this.modalFlag = false
+
+        },
+        // 保存修改的资料
+        async saveRevise() {
+            // 获取选中的生日日期时间戳
+            let d = new Date(this.birthdayTimeInStore.Y, this.birthdayTimeInStore.M - 1, this.birthdayTimeInStore.D)
+            let timeStr = d.getTime(d)
+            console.log(timeStr);
+            const res = await this.$h.get('/user/update?gender=' + this.gender + '&signature=' + this.signature + '&city=' + this.userInfo.profile.city + '&nickname=' + this.userInfo.profile.nickname + '&birthday=' + timeStr + '&province=' + this.userInfo.profile.province)
+            if (res.code === 200) {
+                return ElMessage({
+                    message: '保存成功！',
+                    type: 'success',
+                })
+            } else {
+                return ElMessage('保存失败！')
+            }
+
         }
     }
 }
@@ -115,13 +174,94 @@ export default {
 //     transform: translateX(-50%);
 // }
 
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .genderChooseBox {
+        position: absolute;
+        width: 85%;
+        height: 15%;
+        background-color: #1c1c1e;
+        left: 50%;
+        top: 40%;
+        transform: translateX(-50%);
+        z-index: 999;
+        border-radius: 3%;
+
+        textarea {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            padding-top: 5px;
+            background-color: #1c1c1e;
+            width: 90%;
+            height: 90%;
+            /*别忘了文本域的box-sizing属性值是border-box;所有的边框和padding都是在你固定的宽高的基础上绘制*/
+            /*去除点击出现轮廓颜色*/
+            outline: none;
+            /*如果有需要，去掉右下角的可拉伸变大小的图标和功能*/
+            resize: none;
+            border: 0;
+            color: #e9e9e7;
+            font-size: 15px;
+            font-weight: 800;
+            /*padding已在重置样式中去除，如果没有去除，记得有padding哦*/
+        }
+
+        .closeDote {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #999999;
+            margin-top: 20%;
+            color: #fff;
+        }
+
+        .signatureClose {
+            margin-top: 40%;
+        }
+
+        .genderItem {
+            box-sizing: border-box;
+            padding-left: 20px;
+            padding-top: 15px;
+            margin-top: 5px;
+            width: 100%;
+            height: 35%;
+            color: #e9e9e9;
+            font-weight: 500;
+        }
+    }
+
+    .modal {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .4);
+    }
+}
 
 .Top {
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding-left: 10px;
     background-color: #2b2b2b;
+
+    .Back {
+        display: flex;
+        align-items: center;
+    }
 
     span {
         margin-left: 10px;
@@ -129,6 +269,17 @@ export default {
         font-weight: 600;
 
     }
+
+    .saveRevise {
+        margin-right: 4.2%;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
+.saveRevise {
+    margin-right: 10px;
 }
 
 .box-cardContainer {
