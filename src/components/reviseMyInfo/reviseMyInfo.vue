@@ -20,7 +20,7 @@
                     <el-avatar :size="50" :src="userInfo.profile.avatarUrl" />
                 </div>
             </div>
-            <div class="nickname col">
+            <div class="nickname col" @click="nickNameFlag = true, modalFlag = true">
                 <span>昵称</span>
                 <span class="nicknameRevise right">{{ userInfo.profile.nickname }}</span>
             </div>
@@ -60,9 +60,17 @@
                 </el-icon>
             </div>
         </div>
+        <!-- 昵称修改面板 -->
+        <div class="signatureBox genderChooseBox NickNameBox" v-show="nickNameFlag">
+            <input ref="nickInput" />
+            <div :class="nickMclass" ref="nickM"></div>
+            <div class="closeDote signatureClose" @click="closeAndSaveNickname">
+                <el-icon><Select /></el-icon>
+            </div>
+        </div>
         <!-- 模态框 -->
         <div class="modal" v-if="modalFlag"></div>
-        <input ref="avatarInput" type="file" @change="getImg($event)" v-show="none"/>
+        <input ref="avatarInput" type="file" @change="getImg($event)" v-show="none" />
         <myCopper v-show="cropperFlag" v-bind:imgurl="url"></myCopper>
     </div>
 </template>
@@ -96,9 +104,13 @@ export default {
             GenderBoxFlag: false,
             modalFlag: false,
             signatureBoxFlag: false,
+            nickNameFlag: false,
             sex: '',
             cropperFlag: false,
-            url: ''
+            nickMclass: '',
+            url: '',
+            timer: null,
+            nickNameSucc: false
         }
     },
     watch: {
@@ -109,6 +121,11 @@ export default {
                 this.sex = '男'
             } else {
                 this.sex = '保密'
+            }
+        },
+        nickNameFlag(newV, oldV) {
+            if (newV === true) {
+                this.nickNameText()
             }
         }
     },
@@ -130,6 +147,9 @@ export default {
             changCalendarFlag: this.changCalendarFlag,
             closeCropper: this.closeCropper
         }
+    },
+    mounted() {
+        // this.nickNameText()
     },
     methods: {
         close() {
@@ -181,9 +201,48 @@ export default {
             this.$refs.avatarInput.value = null
         },
         // 关闭图片裁剪组件
-        closeCropper(){
+        closeCropper() {
             this.cropperFlag = false
+        },
+        // 
+        nickNameText() {
+            let This = this
+            this.$refs.nickInput.addEventListener('input', function (timer) {
+                clearTimeout(This.timer)
+                This.timer = setTimeout(() => {
+                    //输入完成之后首先判断是否合法
+                    if (This.$refs.nickInput.value.length < 4) {
+                        This.$refs.nickM.innerHTML = '昵称不能少于两个汉字或4个英文字符'
+                        This.nickMclass = 'errM'
+                        This.nickNameSucc = false
+                    } else {
+                        //合法时发送请求查看名字是否存在
+                        This.$h.get('/user/update?nickname=' + This.$refs.nickInput.value).then(res => {
+                            if (res.code === 200) {
+                                This.$refs.nickM.innerHTML = '昵称可用~'
+                                This.nickMclass = 'succM'
+                                This.nickNameSucc = true
+                            }
+                        }).catch(err => {
+                            This.$refs.nickM.innerHTML = '昵称被占用，试试其他的吧'
+                            This.nickMclass = 'errM'
+                            This.nickNameSucc = false
+                        })
+                    }
+                }, 1000)
+            })
+
+
+        },
+        // 关闭昵称修改框并保存
+        closeAndSaveNickname() {
+            this.nickNameFlag = false
+            this.modalFlag = false
+            if (this.nickNameSucc) {
+                this.userInfo.profile.nickname = this.$refs.nickInput.value
+            }
         }
+
     }
 }
 
@@ -266,6 +325,33 @@ export default {
             height: 35%;
             color: #e9e9e9;
             font-weight: 500;
+        }
+    }
+
+    .NickNameBox {
+        height: 12%;
+        padding-left: 15px;
+
+        input {
+            width: 90%;
+            height: 60%;
+            outline: none;
+            /*如果有需要，去掉右下角的可拉伸变大小的图标和功能*/
+            resize: none;
+            border: 0;
+            font-size: 18px;
+            background-color: #1c1c1e;
+            color: #fff;
+        }
+
+        .errM {
+            color: #fd3a39;
+            font-size: 13px;
+        }
+
+        .succM {
+            color: #cfcfcf;
+            font-size: 13px;
         }
     }
 
