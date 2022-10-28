@@ -16,16 +16,16 @@
       <span class="demonstration"></span>
       <el-carousel trigger="click" height="120px" arrow="never">
         <el-carousel-item>
-          <img src="https://p1.music.126.net/4x-Bb_lQjE6CVYAMBwOCUA==/109951167908016146.jpg?imageView&quality=89" />
+          <img src="https://p1.music.126.net/npfDzCpjFJPgSyJSjtR-vQ==/109951168006154995.jpg?imageView&quality=89" />
         </el-carousel-item>
         <el-carousel-item>
-          <img src="https://p1.music.126.net/FizHXcyfaQ9VBfdixMeqEQ==/109951167908041093.jpg?imageView&quality=89" />
+          <img src="https://p1.music.126.net/BslMskq6ErHDp0Ofs8twtA==/109951168005893915.jpg?imageView&quality=89" />
         </el-carousel-item>
         <el-carousel-item>
-          <img src="https://p1.music.126.net/0-q3AZqok0fkG0EucQyoqw==/109951167908035565.jpg?imageView&quality=89" />
+          <img src="http://p1.music.126.net/JD41xXDJOm6JeBY2Tl1JCA==/109951168008178362.jpg?imageView&quality=89" />
         </el-carousel-item>
         <el-carousel-item>
-          <img src="https://p1.music.126.net/Z4JpVcBpiT6FOuuFXH1m7A==/109951167908040334.jpg?imageView&quality=89" />
+          <img src="http://p1.music.126.net/2qz-OK92qCCp2_eE7hP1sQ==/109951168006173044.jpg?imageView&quality=89" />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -69,9 +69,9 @@
       <div class="title" style="color:#fff;margin:13px;">推荐歌单</div>
       <el-scrollbar>
         <div class="scrollbar-flex-content">
-          <div v-for="(item,i) in musicList" :key="i" class="scrollbar-demo-item" @click="goToList(item.id)">
+          <div v-for="(item, i) in musicList" :key="i" class="scrollbar-demo-item" @click="goToList(item.id)">
             <img class="ListImg" :src="item.picUrl" alt="">
-            <div class="ListTitle">{{item.name}}</div>
+            <div class="ListTitle">{{ item.name }}</div>
           </div>
         </div>
       </el-scrollbar>
@@ -83,32 +83,32 @@
       <el-scrollbar>
         <div class="scrollbar-flex-content">
           <div class="scrollbar-demo-item">
-            <div class="WeListen-item" v-for="(item,index) in weListen.slice(0,3)" :key="index"
+            <div class="WeListen-item" v-for="(item, index) in weListen.slice(0, 3)" :key="index"
               @click="playMusic(item)">
               <div class="Welisten-item-song">
                 <img :src="item.picUrl" class="song-img" />
-                <div class="song-item">{{item.name}}</div>
-                <div class="song-artists">-{{item.song.artists[0].name}}</div>
+                <div class="song-item">{{ item.name }}</div>
+                <div class="song-artists">-{{ item.song.artists[0].name }}</div>
               </div>
             </div>
           </div>
           <div class="scrollbar-demo-item">
-            <div class="WeListen-item" v-for="(item,index) in weListen.slice(3,6)" :key="index"
+            <div class="WeListen-item" v-for="(item, index) in weListen.slice(3, 6)" :key="index"
               @click="playMusic(item)">
               <div class="Welisten-item-song">
                 <img :src="item.picUrl" class="song-img" />
-                <div class="song-item">{{item.name}}</div>
-                <div class="song-artists">-{{item.song.artists[0].name}}</div>
+                <div class="song-item">{{ item.name }}</div>
+                <div class="song-artists">-{{ item.song.artists[0].name }}</div>
               </div>
             </div>
           </div>
           <div class="scrollbar-demo-item">
-            <div class="WeListen-item" v-for="(item,index) in weListen.slice(6,9)" :key="index"
+            <div class="WeListen-item" v-for="(item, index) in weListen.slice(6, 9)" :key="index"
               @click="playMusic(item)">
               <div class="Welisten-item-song">
                 <img :src="item.picUrl" class="song-img" />
-                <div class="song-item">{{item.name}}</div>
-                <div class="song-artists">-{{item.song.artists[0].name}}</div>
+                <div class="song-item">{{ item.name }}</div>
+                <div class="song-artists">-{{ item.song.artists[0].name }}</div>
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default {
     playmusic
   },
   computed: {
-    ...mapState('m_home', ['musicListinStore', 'weListeninStore'])
+    ...mapState('m_home', ['musicListinStore', 'weListeninStore', 'refreshTime'])
   },
   data() {
     return {
@@ -154,6 +154,7 @@ export default {
     }
   },
   async created() {
+    // 无缓存
     if (this.musicListinStore == '11' && this.weListeninStore == '22') {
       // 获取推荐歌单
       await this.getMusicList()
@@ -162,6 +163,24 @@ export default {
       this.updatedMusicListinStore(this.musicList)
       this.updatedWeListeninStore(this.weListen)
     }
+    // 设置时间戳，用于每隔一小时进行一次刷新获取新数据
+    if (this.refreshTime === '0') {
+      let startDate = new Date()
+      this.uodateRefreshTime(startDate.getTime() + '')
+    } else {
+      let nowDate = new Date()
+      const nowtime = nowDate.getTime() //获取当前时间
+      if (nowtime - parseInt(this.refreshTime) > 1000 * 60 * 60) {
+        this.uodateRefreshTime(nowtime + '')
+        // 获取推荐歌单
+        await this.getMusicList()
+        // 获取大家都在听
+        await this.getWeListen()
+        this.updatedMusicListinStore(this.musicList)
+        this.updatedWeListeninStore(this.weListen)
+      }
+    }
+    // 有缓存
     this.musicList = this.musicListinStore
     this.weListen = this.weListeninStore
 
@@ -171,7 +190,7 @@ export default {
   },
   inject: ['playMusictoApp'],
   methods: {
-    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore']),
+    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore', 'uodateRefreshTime']),
     // 获取歌单数据
     async getMusicList() {
       const { result: res } = await this.$h.get('/personalized?limit=6')
@@ -217,6 +236,7 @@ export default {
         start = e.touches[0].pageY
       }, false)
       this.$refs.container.addEventListener('touchmove', async function (e) {
+        e.preventDefault();
         transitionHeight = e.touches[0].pageY - start //记录差值
         if (transitionHeight > 0 && document.documentElement.scrollTop === 0) {
           if (transitionHeight > 250 && This.isRefresh) {
@@ -228,7 +248,7 @@ export default {
             This.updatedWeListeninStore(This.weListen)
           }
         }
-      })
+      }, { passive: false })
     },
     //刷新效果动画
     loading() {

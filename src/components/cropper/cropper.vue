@@ -85,7 +85,6 @@ export default {
                 },
                 data: formData,
             })
-            console.log(res);
             if (res.code === 200) {
                 ElMessage({
                     message: '保存成功！',
