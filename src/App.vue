@@ -2,12 +2,15 @@
 <script>
 import home from './components/home.vue'
 import playmusic from './components/playmusic/playmusic.vue'
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
+import mixinItem from './mixins/mixin.js'
+import { ElMessage } from 'element-plus'
 export default {
   name: 'APP',
   computed: {
     // ...mapState('m_my', ['accountStore']),
-    ...mapState('m_play', ['showPlay'])
+    ...mapState('m_play', ['showPlay']),
+    ...mapState('t_play', ['downloadFlag'])
   },
   // 子组件点击歌曲触发播放器组件
   components: {
@@ -17,6 +20,7 @@ export default {
   created() {
     // this.DisplayMusic()
   },
+  mixins: [mixinItem],
   watch: {
     $route(to, from) {
       if (to.path === '/songListPage' || to.path === '/myInfo' || to.path === '/reviseMyInfo') {
@@ -30,6 +34,21 @@ export default {
     },
     showPlay(newV, oldV) {
       this.$refs.playmusic.noneStyle()
+    },
+    downloadFlag(newV, oldV) {
+      if (newV === 'start') {
+        const from = this.$refs.playmusic.downLoadForm()
+        this.downloadFile(from.url, from.name + '-' + from.id, this.updatedDownloadFlag('succ'));
+
+      } else if (newV === 'succ') {
+        ElMessage({
+          showClose: false,
+          message: '下载完成',
+          center: true,
+          type: 'success'
+        })
+        this.updatedDownloadFlag('wait')
+      }
     }
   },
   data() {
@@ -54,6 +73,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('t_play', ['updatedDownloadFlag']),
     playMusicHandle(url, pic, name, id) {
       // console.log(url)
       this.$refs.playmusic.OneclickPlay(url, pic, name, id)

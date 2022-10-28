@@ -1,7 +1,7 @@
 <template>
     <div class="music" ref="big">
         <div class="music__main">
-            <div :class="['music__main__cover',isPlay ? 'active' : '']" ref="cover" @click="pause">
+            <div :class="['music__main__cover', isPlay ? 'active' : '']" ref="cover" @click="pause">
                 <img :src="songPic" />
             </div>
             <div class="music__main__timeBar">
@@ -10,7 +10,7 @@
                     <span>{{ totalMusicTime }}</span>
                 </div> -->
                 <div class="title" ref="title" @click="gotoSongPage">
-                    <spna>{{songName}}</spna>
+                    <spna>{{ songName }}</spna>
                 </div>
                 <div class="bar" ref="bar" @click="handClickBar">
                     <div class="bar__slid" ref="slid" @click="handClickBar"></div>
@@ -323,8 +323,14 @@ export default {
                 }
                 this.totalMusicTime = minutes + ":" + seconds;
             };
-        }
-    }
+        },
+        downLoadForm() {
+            let form = {}
+            form.id = this.songId
+            form.name = this.songName
+            form.url = this.audioSrc
+            return form
+    }   }
 };
 </script>
 <style lang="less">
