@@ -1,5 +1,5 @@
 <template>
-    <div class="container" :style="{'--height':'100%'}">
+    <div class="container" :style="{ '--height': '100%' }">
         <el-card class="box-card content" v-if="song">
             <div class="background">
                 <img :src="song.al.picUrl" />
@@ -11,8 +11,8 @@
                     </el-icon>
                 </div>
                 <div class="title">
-                    <div class="name" @click="wait=!wait">{{song.name}}</div>
-                    <div class="author">{{song.ar[0].name}}</div>
+                    <div class="name" @click="wait = !wait">{{ song.name }}</div>
+                    <div class="author">{{ song.ar[0].name }}</div>
                 </div>
                 <div class="share" @click="gotoComment">
                     <el-icon :size="20">
@@ -22,18 +22,18 @@
             </div>
             <div class="coverAndWord">
 
-                <div :class="['cover',coverOrlyric===false?'dis':'']" @click="ChangecoverOrlyric">
+                <div :class="['cover', coverOrlyric === false ? 'dis' : '']" @click="ChangecoverOrlyric">
                     <img src="../../assets/img/playDefaultPic.png" />
                     <div class="pic" :class="[playIt ? 'active' : '']">
                         <img :src="song.al.picUrl" />
                     </div>
                 </div>
-                <div :class="['Word cover',coverOrlyric===true?'dis':'']" @click="ChangecoverOrlyric">
+                <div :class="['Word cover', coverOrlyric === true ? 'dis' : '']" @click="ChangecoverOrlyric">
                     <div class="wordBox">
                         <div class="wordContent" ref="wordContentMove" :style="lyricMove">
-                            <div ref="item" :class="['wordItem',currentRow===i?'current':'']" v-for="(item,i) in lyric"
+                            <div ref="item" :class="['wordItem', currentRow === i ? 'current' : '']" v-for="(item, i) in lyric"
                                 :key="i">
-                                {{item.text}}
+                                {{ item.text }}
                             </div>
                         </div>
                     </div>
@@ -55,9 +55,14 @@
                 </div>
                 <div class="right" @click="changeTheMusic('next')">
                     <el-icon :size="20" color="#dfd6d6">
-                        <ArrowRightBold />
+                        <ArrowRightBold/>
                     </el-icon>
                 </div>
+            </div>
+            <div class="downSong" @click="downSong">
+                <el-icon :size="20" color="#dfd6d6">
+                    <Download />
+                </el-icon>
             </div>
         </el-card>
         <!-- 数据未完成加载时 -->
@@ -126,13 +131,13 @@ export default {
     },
     computed: {
         ...mapState('m_play', ['showPlay', 'playIt', 'changeMusic', 'songStore', 'songListStore']),
-        ...mapState('t_play', ['TsongListStore', 'TsongPageIdStore', 'TlyricTime'])
+        ...mapState('t_play', ['TsongListStore', 'TsongPageIdStore', 'TlyricTime','downloadFlag'])
 
     },
     async created() {
         let flagToGet = true
         console.log(this.$route.query.id)
-        if (this.TsongPageIdStore == '11' || this.$route.query.id!=this.TsongPageIdStore) {
+        if (this.TsongPageIdStore == '11' || this.$route.query.id != this.TsongPageIdStore) {
             this.songId = this.$route.query.id
         }
         else {
@@ -161,7 +166,7 @@ export default {
     },
     methods: {
         ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic', 'playTotrue']),
-        ...mapMutations('t_play', ['updateTsongPageIdStore']),
+        ...mapMutations('t_play', ['updateTsongPageIdStore','updatedDownloadFlag']),
         // 关闭SongPage
         closed() {
             this.showPlaytoApp()
@@ -230,6 +235,10 @@ export default {
         // 处理显示歌词还是封面
         ChangecoverOrlyric() {
             this.coverOrlyric = !this.coverOrlyric
+        },
+        // 下载歌曲
+        downSong(){
+            this.updatedDownloadFlag('start')
         }
 
     },
@@ -400,5 +409,10 @@ export default {
         display: none;
 
     }
+}
+.downSong{
+    position: absolute;
+    top: 13px;
+    right:10%
 }
 </style>

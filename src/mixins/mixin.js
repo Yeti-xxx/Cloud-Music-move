@@ -137,5 +137,43 @@ export default {
             const res = await this.$h.get('/lyric?id=' + id)
             return res.lrc
         },
+        // 文件下载
+        downloadFile(url, fileName, cb) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            // 响应类型设置为blob
+            xhr.responseType = 'blob';
+            // 请求成功
+            xhr.addEventListener('load', function () {
+                if (xhr.status === 200) {
+                    const a = document.createElement('a');
+                    a.href = window.URL.createObjectURL(xhr.response);
+                    a.download = fileName;
+                    // 将a标签添加到body中是为了更好的兼容性，谷歌浏览器可以不用添加
+                    document.body.appendChild(a);
+                    a.click();
+                    // 移除
+                    a.remove();
+                    // 释放url
+                    window.URL.revokeObjectURL(a.href);
+                }
+                cb | cb()   //完成后判断是否调用回调函数
+            });
+            // 监听下载进度
+            let percent = xhr.addEventListener('progress', function (e) {
+                return Math.trunc(e.loaded / e.total * 100);
+            });
+            if (percent === 100) {
+                console.log(47477);
+            }
+            // 错误处理
+            xhr.addEventListener('error', function (e) {
+                // todo
+            });
+            // 发送请求
+            xhr.send();
+
+        }
+
     },
 }
