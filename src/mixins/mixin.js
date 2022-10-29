@@ -156,8 +156,8 @@ export default {
                     a.remove();
                     // 释放url
                     window.URL.revokeObjectURL(a.href);
-                }
-                cb | cb()   //完成后判断是否调用回调函数
+                    cb | cb()   //完成后判断是否调用回调函数
+                }           
             });
             // 监听下载进度
             let percent = xhr.addEventListener('progress', function (e) {
