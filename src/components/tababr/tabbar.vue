@@ -50,20 +50,20 @@
           <div class="ActiveHome-item">
             <div class="back">
               <el-icon color="#fff" :size="24">
-                <Mic />
+                <MostlyCloudy />
               </el-icon>
             </div>
-            <p style="fontSize:12px;color:#fff;margin-top:5px;">播客</p>
+            <p style="fontSize:12px;color:#fff;margin-top:5px;">云盘</p>
           </div>
         </div>
         <div class="noActiveHome" v-else>
           <div class="noActive-item">
             <div class="no-back">
               <el-icon color="#747378" :size="24">
-                <Mic />
+                <MostlyCloudy />
               </el-icon>
             </div>
-            <p style="fontSize:12px;color:#747378;margin-top:5px;">播客</p>
+            <p style="fontSize:12px;color:#747378;margin-top:5px;">云盘</p>
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default {
       }else if(num===2){
         this.$router.push('/my')
       }else if(num===3){
-        this.$router.push('/play')
+        this.$router.push('/cloudPan')
       }else if(num===4){
         this.$router.push('/commune')
       }

@@ -4,6 +4,7 @@ export default {
         accountStore: '11',
         userInfo: '{}',
         songListinStore: '11',
+        // cloudPanSongArray: '11',
         cookie: ''
 
     }),
@@ -21,7 +22,7 @@ export default {
         },
         updateCookie(state, cookie) {
             state.cookie = cookie
-        }
+        },
     },
     getters: {
 

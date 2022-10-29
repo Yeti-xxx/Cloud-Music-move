@@ -236,7 +236,6 @@ export default {
         start = e.touches[0].pageY
       }, false)
       this.$refs.container.addEventListener('touchmove', async function (e) {
-        e.preventDefault();
         transitionHeight = e.touches[0].pageY - start //记录差值
         if (transitionHeight > 0 && document.documentElement.scrollTop === 0) {
           if (transitionHeight > 250 && This.isRefresh) {

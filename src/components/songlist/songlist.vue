@@ -17,7 +17,7 @@ export default {
     props: {
         songImg: String,
         title: String,
-        count: String
+        count: Number
     }
 }
 

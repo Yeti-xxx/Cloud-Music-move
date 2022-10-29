@@ -192,7 +192,7 @@ export default {
                 this.songPic = res[0].al.picUrl
                 // 修改歌曲名称
                 this.songName = res[0].name
-                console.log(res[0])
+                // console.log(res[0])
                 this.song = res[0]
                 // 10.23晚处理
                 this.songId = res[0].id
@@ -211,7 +211,7 @@ export default {
         async changeTheMusic() {
             let res = null
             const temp = this.audioSrc + '@#' + this.songId
-            console.log(this.songId);
+            // console.log(this.songId);
             // 获取当前歌曲在歌曲数组中的位置
             for (let index = 0; index < this.audioSrcs.length; index++) {
                 if (temp === this.audioSrcs[index]) {
@@ -310,7 +310,7 @@ export default {
             // 当媒体文件可以播放的时候会触发oncanplay事件,也可以用oncanplay
             this.music.oncanplaythrough = () => {
                 let time = this.music.duration;
-                console.log(time);
+                // console.log(time);
                 //分钟
                 let minutes = parseInt(time / 60);
                 if (minutes < 10) {
@@ -329,6 +329,7 @@ export default {
             form.id = this.songId
             form.name = this.songName
             form.url = this.audioSrc
+            // form.author = this.
             return form
     }   }
 };

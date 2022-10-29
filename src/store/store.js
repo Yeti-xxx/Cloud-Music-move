@@ -3,6 +3,7 @@ import modulesMy from './my.js'
 import modulesPlay from './play.js'
 import modulesHome from './home.js'
 import playTemp from './play-temp.js'
+import cloud from './cloud.js'
 import createPersistedState from 'vuex-persistedstate';
 import myTemp from './my-temp'
 
@@ -14,10 +15,11 @@ const store = new Vuex.Store({
         m_play: modulesPlay,
         m_home: modulesHome,
         t_play: playTemp,
-        t_my: myTemp
+        m_cloud: cloud,
+        t_my: myTemp,
     },
     plugins: [createPersistedState({
-        paths: ["m_my", "m_play", "m_home"]
+        paths: ["m_my", "m_play", "m_home", "m_cloud"]
     })]
 })
 

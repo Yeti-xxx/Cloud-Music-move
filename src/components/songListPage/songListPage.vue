@@ -39,8 +39,6 @@
             <div class="songAuthor">{{item.ar[0].name}}</div>
           </div>
         </div>
-
-
       </el-card>
     </div>
     <!-- 数据未完成加载时 -->

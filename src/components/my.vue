@@ -73,7 +73,7 @@ export default {
             UserId: 0,
             songList: {},
             isRefresh: true,
-            loadingShow: false
+            loadingShow: false,
         }
     },
     mounted() {
