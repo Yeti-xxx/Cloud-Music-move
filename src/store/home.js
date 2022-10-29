@@ -2,7 +2,8 @@ export default {
     namespaced: true,
     state: () => ({
         musicListinStore: '11',
-        weListeninStore: '22'
+        weListeninStore: '22',
+        refreshTime: '0'
     }),
     mutations: {
         updatedMusicListinStore(state, musicListinStore) {
@@ -10,6 +11,10 @@ export default {
         },
         updatedWeListeninStore(state, weListeninStore) {
             state.weListeninStore = weListeninStore
+        },
+        uodateRefreshTime(state,refreshTime){
+            console.log(refreshTime);
+            state.refreshTime = refreshTime
         }
     },
     getters: {
