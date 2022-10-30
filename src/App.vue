@@ -38,7 +38,7 @@ export default {
     downloadFlag(newV, oldV) {
       if (newV === 'start') {
         const form = this.$refs.playmusic.downLoadForm()
-        this.downloadFile(from.url, form.name + '@#@' + form.id, this.updatedDownloadFlag('succ'));
+        this.downloadFile(form.url, form.name + '@#@' + form.id, this.updatedDownloadFlag('succ'));
 
       } else if (newV === 'succ') {
         ElMessage({

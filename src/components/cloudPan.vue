@@ -4,15 +4,16 @@
     <div class="loading"></div>
   </div>
   <div class="cloudContainer" ref="container">
+    <input type="file" ref="songFileInput" accept="audio/mp3" @change="uploadSong" v-show="false"/>
     <el-card class="box-card">
-      <div class="top">
+      <div class="top" v-show="!searchFlag">
         <div class="topLeft">
           <el-icon :size="27" color="#fdfdfd">
             <MostlyCloudy />
           </el-icon>
           <div class="titleAndDetail">
             <div class="title">音乐云盘</div>
-            <div class="detail">{{ (size.useSize / 1024 / 1024 / 1024).toFixed(2) }}/{{ size.maxSize / 1024 / 1024 /
+            <div class="detail">{{ (size.useSize / 1024 / 1024 / 1024).toFixed(2) }} / {{ size.maxSize / 1024 / 1024 /
                 1024
             }}G</div>
           </div>
@@ -23,11 +24,21 @@
               <Folder />
             </el-icon>
           </div>
-          <div class="search">
+          <div class="search" @click="goSearch">
             <el-icon :size="25" color="#fdfdfd">
               <Search />
             </el-icon>
           </div>
+        </div>
+      </div>
+      <div class="top topSearch" v-show="searchFlag">
+        <div class="closeSearch" @click="goNormal">
+          <el-icon :size="24" color="#fdfdfd">
+            <ArrowLeft />
+          </el-icon>
+        </div>
+        <div class="SearchInputBox">
+          <input placeholder="搜索云盘内的歌曲" class="SearchInput" ref="SearchInput" />
         </div>
       </div>
       <div class="content">
@@ -43,6 +54,12 @@
             </div>
           </div>
         </div>
+        <!-- 上传按钮 -->
+        <div class="uploadBox" v-show="!searchFlag" @click="clickInput">
+          <el-icon :size="23" color="#fdfdfd">
+            <Upload />
+          </el-icon>
+        </div>
       </div>
     </el-card>
     <tabbar :pageNum="pageIndex"></tabbar>
@@ -54,12 +71,16 @@ import { mapMutations, mapState } from 'vuex'
 import Tabbar from './tababr/tabbar.vue'
 import mixinItem from '../mixins/mixin.js'
 import { reactive } from 'vue'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
 export default {
   name: 'cloudPan',
   setup() {
     const songArray = reactive([]);
+    const temp2 = reactive([]);
     return {
-      songArray
+      songArray,
+      temp2
     }
   },
   components: {
@@ -67,11 +88,14 @@ export default {
   },
   mixins: [mixinItem],
   computed: {
-    ...mapState('m_cloud', ['cloudPanSongArray', 'sizeStore'])
+    ...mapState('m_cloud', ['cloudPanSongArray', 'sizeStore']),
+    ...mapState('m_my', ['cookie'])
   },
   watch: {
-    flag(newV, oldV) {
-
+    searchFlag(newV, oldV) {
+      if (newV) {
+        this.searchSong()
+      }
     }
   },
   data() {
@@ -81,7 +105,9 @@ export default {
       flag: false,
       size: {},
       isRefresh: true,
-      loadingShow: false
+      loadingShow: false,
+      searchFlag: false,
+      tempArray: [],
     }
   },
   async created() {
@@ -130,6 +156,7 @@ export default {
           songDetail.id = element.songId
           songDetail.pic = element.simpleSong.al.picUrl
           const { data: url } = await This.getMusicUrl(songDetail.id)
+          console.log(url[0].url);
           songDetail.url = url[0].url
         }
         this.songArray.push(songDetail)
@@ -137,6 +164,75 @@ export default {
       this.flag = true
       console.log(this.songArray);
       this.updatedCloudPanSongArray(this.songArray)
+    },
+    // 点击搜索按钮发生的事件
+    goSearch() {
+      this.searchFlag = true
+      this.tempArray = this.songArray
+      this.songArray = this.temp2
+    },
+    //  从搜索状态退出
+    goNormal() {
+      this.songArray = this.cloudPanSongArray
+      this.searchFlag = false
+      this.temp2.length = 0
+      this.$refs.SearchInput.value = ''
+    },
+    // 输入关键词对数据进行处理
+    searchSong() {
+      let This = this
+      this.$refs.SearchInput.addEventListener('input', function () {
+        clearTimeout(This.timer)
+        This.timer = setTimeout(() => {
+          if (!This.$refs.SearchInput.value) {
+            return
+          } else {
+            This.temp2.length = 0
+            const imKey = This.$refs.SearchInput.value
+            for (let i = 0; i < This.tempArray.length; i++) {
+              const songNameItem = This.tempArray[i].name;
+              if (songNameItem.indexOf(imKey) !== -1) {
+                This.songArray.push(This.tempArray[i])
+              }
+            }
+          }
+        }, 1000)
+      })
+
+    },
+    // 模拟点击input
+    clickInput() {
+      this.$refs.songFileInput.click()
+    },
+    // 上传歌曲
+    uploadSong(e) {
+      let file = e.target.files[0]
+      let This = this
+      let formData = new FormData()
+      formData.append('songFile', file)
+      ElMessage({
+        showClose: false,
+        message: '上传中...',
+        center: true,
+      })
+      axios({
+        method: 'post',
+        url: 'https://netease-cloud-music-api-nxzt.vercel.app/cloud?time=' + Date.now() + '&cookie=' + This.cookie,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData,
+      }).then(res => {
+        ElMessage({
+          showClose: false,
+          message: '上传成功',
+          type:'succ',
+          center: true,
+        })
+      }).catch(err => {
+        console.log(err);
+      })
+
     },
     // 下拉刷新
     downRefresh() {
@@ -157,7 +253,7 @@ export default {
             This.size.maxSize = res.maxSize
             This.size.useSize = res.size
             This.updatedSize(This.size)
-            This.$router.go(0)
+            // This.$router.go(0)
           }
         }
       }, { passive: false })
@@ -206,6 +302,7 @@ export default {
         }
 
         .detail {
+          font-size: 14px;
           color: #979797;
         }
 
@@ -217,6 +314,31 @@ export default {
 
       .setting {
         margin-right: 25px;
+      }
+    }
+  }
+
+
+  .topSearch {
+
+    .closeSearch {
+      width: 10%;
+    }
+
+    .SearchInputBox {
+      position: relative;
+      left: -10px;
+      width: 84%;
+      padding-right: 5px;
+
+      .SearchInput {
+        outline: none;
+        border: none;
+        background-color: #2b2b2b;
+        width: 100% !important;
+        font-size: 16px;
+        border-bottom: 1px solid #5f6065;
+        color: #5f6065;
       }
     }
   }
@@ -255,6 +377,20 @@ export default {
           color: #aeaaab;
         }
       }
+    }
+
+    .uploadBox {
+      position: absolute;
+      bottom: 130px;
+      left: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      border: 1px solid #fdfdfd;
+      width: 40px;
+      height: 40px;
+      background-color: #e63434;
     }
   }
 }

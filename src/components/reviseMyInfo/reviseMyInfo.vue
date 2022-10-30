@@ -189,7 +189,7 @@ export default {
         },
         // 获取file对象
         getImg(e) {
-            console.log(111);
+            // console.log(111);
             let file = e.target.files[0]
             let This = this
             const reader = new FileReader()
