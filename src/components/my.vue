@@ -131,11 +131,12 @@ export default {
                 if (transitionHeight > 0 && document.documentElement.scrollTop === 0) {
                     if (transitionHeight > 250 && This.isRefresh) {
                         This.isRefresh = false
+                        This.loading()
                         await This.getSongList(This.SongListId)
                         const res =  await This.getUserInfo(This.UserId)
                         This.updateUserInfo(res)
                         This.updateSongListinStore(This.songList)
-                        This.loading()
+                        
                     }
                 }
             })

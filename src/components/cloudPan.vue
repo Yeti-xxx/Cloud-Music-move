@@ -4,7 +4,7 @@
     <div class="loading"></div>
   </div>
   <div class="cloudContainer" ref="container">
-    <input type="file" ref="songFileInput" accept="audio/mp3" @change="uploadSong" v-show="false"/>
+    <input type="file" ref="songFileInput" accept="audio/mp3" @change="uploadSong" v-show="false" />
     <el-card class="box-card">
       <div class="top" v-show="!searchFlag">
         <div class="topLeft">
@@ -19,9 +19,9 @@
           </div>
         </div>
         <div class="topRight">
-          <div class="setting">
+          <div class="setting delete" @click="gotoDelete">
             <el-icon :size="25" color="#fdfdfd">
-              <Folder />
+              <Delete />
             </el-icon>
           </div>
           <div class="search" @click="goSearch">
@@ -42,10 +42,13 @@
         </div>
       </div>
       <div class="content">
-        <div class="cloudItem" v-for="(item, i) in songArray" :key="i"
-          @click="playMusictoApp(item.url, item.pic, item.name, item.id)">
-          <span class="index">{{ i + 1 }}</span>
-          <div class="song">
+        <div class="cloudItem" v-for="(item, i) in songArray" :key="i">
+          <div class="index check">
+            <span v-if="!deleteItem">{{ i + 1 }}</span>
+            <div class="checkBox" :style="item.isDelete ? 'background:#fe3a3b;border: 2px solid #fe3a3b;' : ''"
+              v-if="deleteItem" @click="checkItem(item)"></div>
+          </div>
+          <div class="song" @click="playMusictoApp(item.url, item.pic, item.name, item.id)">
             <div class="songName">
               {{ item.name }}
             </div>
@@ -60,10 +63,23 @@
             <Upload />
           </el-icon>
         </div>
+        <!-- 上传进度 -->
+        <div class="progress" v-show="!searchFlag">
+          <el-progress type="dashboard" :width="50" :percentage="complete" color="#2b2b2b" :status="'#777a80'"
+            :stroke-width="4" />
+        </div>
+        <!-- 确认删除按钮 -->
+        <div class="setting deleteBox" v-if="deleteItem" @click="deleteInCloudPan">
+          <el-icon :size="25" color="#fdfdfd">
+            <Delete />
+          </el-icon>
+        </div>
       </div>
     </el-card>
     <tabbar :pageNum="pageIndex"></tabbar>
   </div>
+
+
 </template>
 
 <script>
@@ -78,9 +94,11 @@ export default {
   setup() {
     const songArray = reactive([]);
     const temp2 = reactive([]);
+    const deletArray = reactive([])
     return {
       songArray,
-      temp2
+      temp2,
+      deletArray
     }
   },
   components: {
@@ -108,6 +126,8 @@ export default {
       loadingShow: false,
       searchFlag: false,
       tempArray: [],
+      complete: 0,
+      deleteItem: false
     }
   },
   async created() {
@@ -143,21 +163,24 @@ export default {
         if (element.fileName.indexOf('@#@') !== -1) {
           const temp = element.fileName.split('@#@')
           songDetail.name = temp[0]
+          songDetail.deletId = element.simpleSong.id
           songDetail.id = temp[1].split('.')[0]
           const { songs: res1 } = await This.getMusicDetail(songDetail.id)
           const { data: url } = await This.getMusicUrl(songDetail.id)
           songDetail.url = url[0].url
           songDetail.author = res1[0].ar[0].name
           songDetail.pic = res1[0].al.picUrl
-
+          songDetail.isDelete = false
         } else {
           songDetail.name = element.simpleSong.name
           songDetail.author = element.simpleSong.ar[0].name
           songDetail.id = element.songId
+          songDetail.deletId = element.songId
           songDetail.pic = element.simpleSong.al.picUrl
           const { data: url } = await This.getMusicUrl(songDetail.id)
           console.log(url[0].url);
           songDetail.url = url[0].url
+          songDetail.isDelete = false
         }
         this.songArray.push(songDetail)
       }
@@ -222,17 +245,72 @@ export default {
           'Content-Type': 'multipart/form-data',
         },
         data: formData,
+        onUploadProgress: progressEvent => {
+          This.complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+
+        }
       }).then(res => {
+        console.log(res);
+        This.complete = 0
         ElMessage({
           showClose: false,
           message: '上传成功',
-          type:'succ',
+          type: 'success',
           center: true,
         })
       }).catch(err => {
         console.log(err);
       })
 
+    },
+    // 点击垃圾桶,进入删除状态
+    gotoDelete() {
+      if (this.deleteItem) {
+        this.deleteItem = false
+      } else {
+        this.deleteItem = true
+
+      }
+    },
+    // item被选中或取消选中
+    checkItem(item) {
+      if (item.isDelete) {
+        // 传进来是true...
+        item.isDelete = false
+        this.deletArray.splice(this.deletArray.indexOf(item.deletId), 1)
+      } else {
+        // 传进来是false
+        item.isDelete = true
+        this.deletArray.push(item.deletId)
+      }
+      console.log(this.deletArray);
+    },
+    // 点击最终删除按钮
+    async deleteInCloudPan() {
+      if (this.deletArray.length === 0) {
+        return ElMessage({
+          showClose: false,
+          message: '未选中歌曲',
+          type: 'error',
+          center: true,
+        })
+      } else {
+        const str = this.deletArray.join(',')
+        const res = await this.$h.get('/user/cloud/del?id=' + str)
+        for (let i = 0; i < this.deletArray.length; i++) {
+          if (this.songArray.deletId === this.deletArray) {
+            this.songArray.splice(i,1)
+          }
+        }
+        if (res.code === 200) {
+          const res = await this.$h.get('/user/cloud')
+          this.handleRes(res.data)
+          this.size.maxSize = res.maxSize
+          this.size.useSize = res.size
+          this.updatedSize(this.size)
+          this.deletArray.length = 0
+        }
+      }
     },
     // 下拉刷新
     downRefresh() {
@@ -253,7 +331,7 @@ export default {
             This.size.maxSize = res.maxSize
             This.size.useSize = res.size
             This.updatedSize(This.size)
-            // This.$router.go(0)
+
           }
         }
       }, { passive: false })
@@ -357,6 +435,13 @@ export default {
         color: #949494;
       }
 
+      .checkBox {
+        border: 2px solid #6e7176;
+        width: 13px;
+        height: 13px;
+        border-radius: 20%;
+      }
+
       .song {
         margin-left: 20px;
         display: flex;
@@ -391,6 +476,28 @@ export default {
       width: 40px;
       height: 40px;
       background-color: #e63434;
+      z-index: 999;
+    }
+
+    .progress {
+      position: absolute;
+      bottom: 122px;
+      left: 6px;
+    }
+
+    .deleteBox {
+      position: absolute;
+      bottom: 130px;
+      right: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      border: 1px solid #fdfdfd;
+      width: 40px;
+      height: 40px;
+      background-color: #e63434;
+      z-index: 999;
     }
   }
 }

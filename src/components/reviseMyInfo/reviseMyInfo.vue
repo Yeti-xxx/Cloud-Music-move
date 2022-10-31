@@ -171,6 +171,7 @@ export default {
             // 获取选中的生日日期时间戳
             let d = new Date(this.birthdayTimeInStore.Y, this.birthdayTimeInStore.M - 1, this.birthdayTimeInStore.D)
             let timeStr = d.getTime(d)
+            console.log(d);
             console.log(timeStr);
             const res = await this.$h.get('/user/update?gender=' + this.gender + '&signature=' + this.signature + '&city=' + this.userInfo.profile.city + '&nickname=' + this.userInfo.profile.nickname + '&birthday=' + timeStr + '&province=' + this.userInfo.profile.province)
             if (res.code === 200) {
