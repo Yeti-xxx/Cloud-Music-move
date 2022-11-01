@@ -7,9 +7,18 @@
 
     <!-- 导航栏区域 -->
     <div class="nav">
-      <el-icon color="#eee" :size="24">
+      <el-icon color="#eee" :size="28">
         <Expand />
       </el-icon>
+      <div class="searchBox" @click="gotoSearch">
+        <div class="content">
+          <div class="iconSearch">
+            <el-icon :size="18" color="#777777">
+              <Search />
+            </el-icon><span>搜一搜</span>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- 轮播图区域 -->
     <div class="block text-center swiper-container" m="t-4">
@@ -150,7 +159,8 @@ export default {
       pageIndex: 1,
       musicUrl: '',
       isRefresh: true,
-      loadingShow: false
+      loadingShow: false,
+      searchHotArray:[]
     }
   },
   async created() {
@@ -160,8 +170,12 @@ export default {
       await this.getMusicList()
       // 获取大家都在听
       await this.getWeListen()
+      // 获取热搜数据
+      await this.getSearchHot()
       this.updatedMusicListinStore(this.musicList)
       this.updatedWeListeninStore(this.weListen)
+      this.updatedSerachHot(this.searchHotArray)
+
     }
     // 设置时间戳，用于每隔一小时进行一次刷新获取新数据
     if (this.refreshTime === '0') {
@@ -176,8 +190,11 @@ export default {
         await this.getMusicList()
         // 获取大家都在听
         await this.getWeListen()
+        // 获取热搜数据
+        await this.getSearchHot()
         this.updatedMusicListinStore(this.musicList)
         this.updatedWeListeninStore(this.weListen)
+        this.updatedSerachHot(this.searchHotArray)
       }
     }
     // 有缓存
@@ -190,7 +207,7 @@ export default {
   },
   inject: ['playMusictoApp'],
   methods: {
-    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore', 'uodateRefreshTime']),
+    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore', 'uodateRefreshTime','updatedSerachHot']),
     // 获取歌单数据
     async getMusicList() {
       const { result: res } = await this.$h.get('/personalized?limit=6')
@@ -243,8 +260,10 @@ export default {
             This.loading()
             await This.getMusicList()
             await This.getWeListen()
+            await This.getSearchHot()
             This.updatedMusicListinStore(This.musicList)
             This.updatedWeListeninStore(This.weListen)
+            This.updatedSerachHot(This.searchHotArray)
           }
         }
       }, { passive: false })
@@ -256,6 +275,15 @@ export default {
         this.isRefresh = true
         this.loadingShow = false
       }, 1000);
+    },
+    // 前往搜索页面
+    gotoSearch() {
+      this.$router.push('/search')
+    },
+    // 获取搜索界面的热搜数据
+    async getSearchHot() {
+      const { data: res } = await this.$h.get('/search/hot/detail')
+      this.searchHotArray = res
     }
   }
 
@@ -276,6 +304,60 @@ export default {
 .nav {
   padding-top: 5px;
   padding-left: 5px;
+
+  .searchBox {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 65px;
+
+    .content {
+      position: relative;
+      margin-top: 7px;
+      height: 30px;
+      width: 70%;
+      background-color: #3d3d3d;
+
+      .iconSearch {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 15px;
+        position: absolute;
+        top: 7px;
+        left: 35%;
+
+        span {
+          margin-left: 5px;
+          font-weight: 600;
+          color: #646464;
+        }
+      }
+
+    }
+
+    .content::after {
+      position: absolute;
+      right: -20px;
+      display: inline-block;
+      content: "";
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      background-color: #3d3d3d;
+    }
+
+    .content::before {
+      position: relative;
+      left: -20px;
+      display: inline-block;
+      content: "";
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      background-color: #3d3d3d;
+    }
+  }
 }
 
 .swiper-container {

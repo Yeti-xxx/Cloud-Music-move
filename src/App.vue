@@ -23,7 +23,7 @@ export default {
   mixins: [mixinItem],
   watch: {
     $route(to, from) {
-      if (to.path === '/songListPage' || to.path === '/myInfo' || to.path === '/reviseMyInfo') {
+      if (to.path === '/songListPage' || to.path === '/myInfo' || to.path === '/reviseMyInfo' || to.path === '/search') {
         this.styleObject.bottom = '0'
       } else if (to.path === '/songPage') {
         this.styleObject.bottom = '116px'

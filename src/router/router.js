@@ -8,6 +8,7 @@ import songPage from '../components/songPage/songPage.vue'
 import comment from '../components/comment/comment.vue'
 import myInfo from '../components/myInfo/myInfo.vue'
 import reviseMyInfo from '../components/reviseMyInfo/reviseMyInfo.vue'
+import search from '../components/search/search.vue'
 
 const Router = createRouter({
     history: createWebHashHistory(),
@@ -22,8 +23,8 @@ const Router = createRouter({
         { path: '/songPage', component: songPage, name: 'songPage' },
         { path: '/comment', component: comment, name: 'comment' },
         { path: '/myInfo', component: myInfo, name: 'myInfo' },
-        { path: '/reviseMyInfo', component: reviseMyInfo, name: 'reviseMyInfo' }
-
+        { path: '/reviseMyInfo', component: reviseMyInfo, name: 'reviseMyInfo' },
+        { path: '/search', component: search, name: 'search' }
     ]
 })
 // Router.beforeEach((to, from, next) => {
