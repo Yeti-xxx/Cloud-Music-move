@@ -1,9 +1,9 @@
 # 简单的仿网易云项目
 前端：vue3 + elementPlus + vueX \
-后端：感谢Binaryify大佬[https://github.com/Binaryify]提供的接口
+后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口
 
 ## 在线演示
-🛸🛸仿网易云[https://cloud-music-move.vercel.app/#/home]
+🛸🛸[仿网易云](https://cloud-music-move.vercel.app/#/home)
 ps:由于项目部署到Vercel上，所以需要挂梯子访问
 
 ##功能
