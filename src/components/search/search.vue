@@ -15,17 +15,17 @@
                         </el-icon>
                     </div>
                     <div class="inputMid">
-                        <input />
+                        <input ref="searchInput" />
                     </div>
                     <div class="inputRight"></div>
                 </div>
                 <div class="right">
-                    <span>搜索</span>
+                    <span @click="searchKeyword">搜索</span>
                 </div>
             </div>
-            <!-- content分为初始状态和搜索结果展示状态 -->
+            <!-- content分为初始状态 搜索建议 搜索结果展示状态 三个状态-->
             <!-- 初始状态包含历史和热搜榜 -->
-            <div class="searchInit">
+            <div class="searchInit" v-if="searchContentFlag === 'init'">
                 <div class="historyBox">
                     <div class="historyBoxTop">
                         <span>历史</span>
@@ -53,6 +53,35 @@
                     </div>
                 </div>
             </div>
+            <!-- 搜索建议展示 -->
+            <div class="searchSuggest" v-if="searchContentFlag === 'suggest'">
+                <div class="suggestItem" v-for="(item, i) in searchSuggestArray" :key="i">
+                    <div class="icon">
+                        <el-icon :size="16" color="#777777">
+                            <Search />
+                        </el-icon>
+                    </div>
+                    <div class="keywords">
+                        {{ item.keyword }}
+                    </div>
+                </div>
+            </div>
+            <!-- 搜索结果展示 -->
+            <div class="searchResult" v-if="searchContentFlag === 'result'">
+                <div class="searchResultBox">
+                    <div class="resultItem" v-for="(item, i) in searchResult">
+                        <div class="ItemLeft">
+                            <el-avatar :size="50" :src="item[0].picUrl">
+
+                            </el-avatar>
+                        </div>
+                        <div class="ItemRight">
+                            <!-- <div class="order">{{}}</div> -->
+                            <div class="name">{{ item[0].name }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </el-card>
     </div>
 </template>
@@ -63,7 +92,10 @@ export default {
     name: 'search',
     data() {
         return {
-            searchHotArray: []
+            searchHotArray: [],
+            searchContentFlag: 'init',
+            searchSuggestArray: [],
+            searchResult: []
         }
     },
     computed: {
@@ -71,11 +103,59 @@ export default {
     },
     created() {
         this.searchHotArray = this.searchHot
-        console.log(this.searchHotArray);
+    },
+    mounted() {
+        this.searchInputLisenter()
     },
     methods: {
         goBack() {
             this.$router.go(-1)
+        },
+        // 通过input内容发送请求 获取搜索建议
+        getSearchSuggest(value) {
+            return this.$h.get('/search/suggest?keywords=' + value + '&type=mobile')
+        },
+        // 获取搜索结果
+        getSearchResult(value) {
+            return this.$h.get('/search/multimatch?keywords=' + value)
+        },
+        //按键监听函数
+        searchInputLisenter() {
+            let This = this
+            let timer = null
+            this.$refs.searchInput.addEventListener('input', function () {
+                const keyWords = This.$refs.searchInput.value.replace(/\s/g, '') //去除空格
+                clearTimeout(timer)
+                timer = setTimeout(async () => {
+                    if (!keyWords) {
+                        return This.searchContentFlag = 'init'
+                    } else {
+                        This.searchContentFlag = 'suggest'
+                        This.searchSuggestArray = []
+                        const res = await This.getSearchSuggest(keyWords)
+                        This.searchSuggestArray = res.result.allMatch
+                    }
+                }, 400)
+            })
+        },
+        //点击搜索按钮
+        async searchKeyword() {
+            const keyword = this.$refs.searchInput.value.replace(/\s/g, '')
+            if (!keyword) {
+                return
+            } else {
+                this.searchContentFlag = 'result'
+                this.searchResult = []
+                const { result: res } = await this.getSearchResult(keyword)
+                Object.keys(res).forEach(v => {
+                    let o = {}
+                    o[v] = res[v]
+                    // o[v][0].order = v
+                    this.searchResult.push(o[v])
+                })
+                console.log(this.searchResult);
+                this.searchResult.pop()
+            }
         }
 
     },
@@ -196,6 +276,60 @@ export default {
                     background-color: #2d2d2d;
                     color: #b8b8b8;
                     border-radius: 20%;
+                }
+            }
+
+        }
+    }
+
+    .searchSuggest {
+        .suggestItem {
+            display: flex;
+            height: 30px;
+            align-items: center;
+            padding: 8px 0;
+
+            .icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 10%
+            }
+
+            .keywords {
+                line-height: 30px;
+                width: 90%;
+                border-bottom: 1px solid #202020;
+                color: #ececec;
+            }
+
+        }
+    }
+
+    .searchResult {
+        .searchResultBox {
+            margin-top: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            background-color: #2b2b2b;
+            border-radius: 3%;
+
+            .resultItem {
+                padding: 7px;
+                display: flex;
+                align-items: center;
+
+                .ItemRight {
+                    margin-left: 20px;
+                    display: flex;
+                    align-items: center;
+                    color: #eeecef;
+
+                    .name {
+                        margin-left: 8px;
+                    }
                 }
             }
 
