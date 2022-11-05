@@ -29,15 +29,15 @@
                 <div class="historyBox">
                     <div class="historyBoxTop">
                         <span>历史</span>
-                        <div class="deleteBtn">
+                        <div class="deleteBtn" @click="deleteSearchArray">
                             <el-icon :size="20" color="#848484">
                                 <Delete />
                             </el-icon>
                         </div>
                     </div>
                     <div class="historyContent">
-                        <div class="historyItem">
-                            sad
+                        <div class="historyItem" v-for="(item, i) in histories" :key="i" @click="clickItem(item)">
+                            {{ item }}
                         </div>
                     </div>
                 </div>
@@ -46,9 +46,9 @@
                         <span>热搜榜</span>
                     </div>
                     <div class="searchHotContent" v-for="(item, i) in searchHotArray" :key="i">
-                        <div class="searchHotItem">
+                        <div class="searchHotItem" >
                             <div :class="[(i + 1) <= 3 ? 'hotIndex' : 'index']">{{ i + 1 }}</div>
-                            <div class="searchcontent">{{ item.searchWord }}</div>
+                            <div class="searchcontent" @click="clickItem(item.searchWord)">{{ item.searchWord }}</div>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                             <Search />
                         </el-icon>
                     </div>
-                    <div class="keywords">
+                    <div class="keywords" @click="clickItem(item.keyword)">
                         {{ item.keyword }}
                     </div>
                 </div>
@@ -95,19 +95,28 @@ export default {
             searchHotArray: [],
             searchContentFlag: 'init',
             searchSuggestArray: [],
-            searchResult: []
+            searchResult: [],
+            searchHistoryArray: []
         }
     },
     computed: {
-        ...mapState('m_home', ['searchHot'])
+        ...mapState('m_home', ['searchHot', 'searchHistory']),
+        histories() {
+            return [...this.searchHistoryArray].reverse()
+        }
     },
     created() {
         this.searchHotArray = this.searchHot
+        if (this.searchHistory !== '11') {
+            this.searchHistoryArray = this.searchHistory
+        }
+        
     },
     mounted() {
         this.searchInputLisenter()
     },
     methods: {
+        ...mapMutations('m_home', ['updatedSearchHistory']),
         goBack() {
             this.$router.go(-1)
         },
@@ -146,17 +155,36 @@ export default {
             } else {
                 this.searchContentFlag = 'result'
                 this.searchResult = []
+                this.savaSearchHistory(keyword)
                 const { result: res } = await this.getSearchResult(keyword)
                 Object.keys(res).forEach(v => {
                     let o = {}
                     o[v] = res[v]
-                    // o[v][0].order = v
                     this.searchResult.push(o[v])
                 })
                 console.log(this.searchResult);
                 this.searchResult.pop()
             }
+        },
+        // 保存搜索历史
+        savaSearchHistory(keyword) {
+            // this.searchHistoryArray.push(keyword)
+            const set = new Set(this.searchHistoryArray)
+            set.delete(keyword)
+            set.add(keyword)
+            this.searchHistoryArray = Array.from(set)
+            this.updatedSearchHistory(this.searchHistoryArray)
+        },
+        // 清空搜索历史
+        deleteSearchArray(){
+            this.searchHistoryArray = []
+            this.updatedSearchHistory('11')
+        },
+        clickItem(key){
+            this.$refs.searchInput.value = key
+            this.searchKeyword()
         }
+
 
     },
 }

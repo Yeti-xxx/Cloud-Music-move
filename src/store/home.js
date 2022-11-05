@@ -4,7 +4,8 @@ export default {
         musicListinStore: '11',
         weListeninStore: '22',
         refreshTime: '0',
-        searchHot: '11'
+        searchHot: '11',
+        searchHistory:'11'
     }),
     mutations: {
         updatedMusicListinStore(state, musicListinStore) {
@@ -14,13 +15,15 @@ export default {
             state.weListeninStore = weListeninStore
         },
         uodateRefreshTime(state, refreshTime) {
-            console.log(refreshTime);
             state.refreshTime = refreshTime
         },
         updatedSerachHot(state, searchHot) {
             console.log(searchHot);
             state.searchHot = searchHot
         },
+        updatedSearchHistory(state,searchHistory){
+            state.searchHistory = searchHistory
+        }
     },
     getters: {
 
