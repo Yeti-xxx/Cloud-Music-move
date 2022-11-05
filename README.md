@@ -1,4 +1,5 @@
 # 简单的仿网易云项目
+学完vue独立做的第一个项目，缺陷很多，希望得到大家的斧正^_^
 前端：vue3 + elementPlus + vueX \
 后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口
 

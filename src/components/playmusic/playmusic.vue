@@ -118,6 +118,7 @@ export default {
         },
         play() {
             this.music.play();
+            // console.log(this.music);
             this.isPlay = true;
         },
         pause() {
