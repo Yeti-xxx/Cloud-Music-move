@@ -119,7 +119,7 @@ export default {
             }, 1000);
         },
         // 下拉刷新
-        async downRefresh() {
+        downRefresh() {
             let start = 0 //初始位置
             let transitionHeight = 0  //移动距离
             let This = this

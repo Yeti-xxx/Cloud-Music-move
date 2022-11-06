@@ -1,27 +1,25 @@
 <template>
-  <div class="communeContainer">
+  <div class="communeContainer" ref="communeContainer">
+    <!-- 下拉刷新loading -->
+    <div class="loadingBoxHome" v-if="loadingShow">
+      <div class="loading"></div>
+    </div>
     <el-card class="box-card">
-      <div class="box">
-        <div class="videoItem">
+      <div class="box" v-for="(item, i) in videoArray" :key="i">
+        <div class="videoItem" v-if="item.data.urlInfo">
           <div class="videoBox">
             <!-- 视频组件 -->
-            <Video v-bind:videoUrl="'http://vodkgeyttp9.vod.126.net/vodkgeyttp8/o4rlm8jK_3012571283_hd.mp4?ts=1667448442&rid=12F6A5F104A4061CCF0D66C830EC263A&rl=3&rs=nvMzMCChKdKINeokKpjeXDCnTtkoObmm&sign=97bb1b3ab76f541419584ad05d80cc55&ext=3bukQInLhy6VJOmxZuAB0vF0xT32BZaC%2F1p%2FgaapceRMhHldUPaROCMLIlTGiTv9CuPp%2F3o9sN1DBbQgykQhDKB4P4Q2wtPgQe4%2F8TB5jeuqxaUeoUFYaQ1Bj%2B0GigrW0ui6BlV2CRNpLjb9NRfTTqXYyvhy%2BWSWJMHz20mRm2tn5stgi4wp57hhEhnAbg5HBQIHB5K8eYDLQVaMmrGmBmtWn37zEnKBqYrBqQvULaEh8b%2BBQw8Jrebo%2FnCF%2BKoo'"></Video>
+            <VideoPlay v-bind:videoUrl="item.data.urlInfo.url"></VideoPlay>
           </div>
           <div class="bottomBox">
-            <div class="title">xxxxx</div>
+            <div class="title">{{ item.data.title }}</div>
             <div class="information">
               <div class="authorAvator">
-                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" :size="30" />
+                <el-avatar :src="item.data.creator.avatarUrl" :size="30" />
               </div>
-              <div class="authorNickname">xxxx</div>
+              <div class="authorNickname">{{ item.data.creator.nickname }}</div>
             </div>
           </div>
-        </div>
-        <div class="videoItem">
-          2
-        </div>
-        <div class="videoItem">
-          3
         </div>
       </div>
     </el-card>
@@ -30,28 +28,159 @@
 </template>
   
 <script>
+import { mapState, mapMutations } from 'vuex'
 import Tabbar from './tababr/tabbar.vue'
-import Video from './video/video.vue'
+import VideoPlay from './video/video.vue'
 export default {
   name: 'commune',
+  data() {
+    return {
+      videoArray: [],
+      page: 1,
+      fresh: true,
+      isRefresh: true,
+      loadingShow: false
+      // VideoscrollTop: 0
+    }
+  },
+  computed: {
+    ...mapState('m_video', ['videoPageInstore', 'videoArrayInstore']),
+    ...mapState('t_video', ['videoScrollTop'])
+  },
   components: {
     Tabbar,
-    Video
-  }
+    VideoPlay
+  },
+  watch: {
+
+  },
+  created() {
+    // 获取视频资源
+    if (this.videoArrayInstore === '11') {
+      this.getVideo()
+    } else {
+      this.videoArray = this.videoArrayInstore
+    }
+    this.videoPage = this.videoPageInstore
+  },
+  mounted() {
+    document.documentElement.scrollTop = this.videoScrollTop
+    this.upFresh()
+    this.downRefresh()
+    this.MoveScrollTop()
+  },
+  beforeUnmount() {
+    // 离开时记录scrollTop
+    this.getScrollTop()
+  },
+  methods: {
+    ...mapMutations('m_video', ['updatedVideoPageInstore', 'updatedVideoArrayInstore']),
+    ...mapMutations('t_video', ['updatedVideoScrollTop', 'updatedToPlayScrollTop']),
+    // 获取视频
+    async getVideo() {
+      const { datas: res } = await this.$h.get('/video/timeline/recommend?offset=' + this.page)
+      this.videoArray = [...this.videoArray, ...res]
+      this.updatedVideoArrayInstore(this.videoArray)
+      this.page++
+    },
+    // 上拉加载视频
+    upFresh() {
+      let This = this
+      this.$refs.communeContainer.addEventListener('touchstart', async function (e) {
+        let clientHeight = document.documentElement.clientHeight; //浏览器高度
+        let scrollHeight = document.body.scrollHeight;
+        let scrollTop = document.documentElement.scrollTop;
+        let distance = 20  //距离可视窗口多高时发起请求
+        // 已经触底 发起请求
+        if ((scrollTop + clientHeight) >= (scrollHeight - distance)) {
+          if (This.fresh) {
+            This.fresh = false
+            await This.getVideo()
+            This.fresh = true
+          }
+        }
+      }, false)
+
+    },
+    // 下拉刷新
+    downRefresh() {
+      let start = 0 //初始位置
+      let transitionHeight = 0  //移动距离
+      let This = this
+      this.$refs.communeContainer.addEventListener('touchstart', function (e) {
+        start = e.touches[0].pageY
+      }, false)
+      this.$refs.communeContainer.addEventListener('touchmove', async function (e) {
+        transitionHeight = e.touches[0].pageY - start //记录差值
+        if (transitionHeight > 0 && document.documentElement.scrollTop === 0) {
+          if (transitionHeight > 250 && This.isRefresh) {
+            This.isRefresh = false
+            This.loading()
+            This.videoArray = []
+            This.getVideo()
+            This.updatedVideoScrollTop(0)
+          }
+        }
+      })
+    },
+    // 当屏幕发生滚动时，我们需要记录scrollTop值，用于判断应该播放当前的哪一个视频
+    MoveScrollTop() {
+      this.$refs.communeContainer.addEventListener('touchmove', e => {
+        this.updatedToPlayScrollTop(Math.ceil(document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop))
+
+      })
+    },
+    // 动画函数
+    loading() {
+      this.loadingShow = true
+      setTimeout(() => {
+        this.isRefresh = true
+        this.loadingShow = false
+      }, 1000);
+    },
+    // 获取滚动条的位置
+    getScrollTop() {
+      this.updatedVideoScrollTop(document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop)
+    }
+  },
+
 }
 
 </script>
   
 <style lang='less' scoped>
+@keyframes circle {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 ::v-deep(.el-card) {
   --el-card-padding: 0;
   border: 0;
   background-color: #141414;
+  padding-bottom: 200px;
 }
 
 .communeContainer {
   width: 100%;
   height: 100%;
+
+  .loading {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e63434;
+    border-top-color: transparent;
+    border-radius: 100%;
+    animation: circle infinite 0.75s linear;
+  }
 
   .box {
     display: flex;
@@ -87,7 +216,6 @@ export default {
         color: #eaeaea;
         width: 100%;
         height: 50%;
-        padding: 0 8px;
       }
 
       .information {

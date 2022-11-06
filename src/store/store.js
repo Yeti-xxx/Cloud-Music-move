@@ -6,6 +6,8 @@ import playTemp from './play-temp.js'
 import cloud from './cloud.js'
 import createPersistedState from 'vuex-persistedstate';
 import myTemp from './my-temp'
+import myVideo from './video'
+import videoTemp from './video-temp'
 
 
 const store = new Vuex.Store({
@@ -17,9 +19,11 @@ const store = new Vuex.Store({
         t_play: playTemp,
         m_cloud: cloud,
         t_my: myTemp,
+        m_video: myVideo,
+        t_video: videoTemp
     },
     plugins: [createPersistedState({
-        paths: ["m_my", "m_play", "m_home", "m_cloud"]
+        paths: ["m_my", "m_play", "m_home", "m_cloud", "m_video"]
     })]
 })
 
