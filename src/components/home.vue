@@ -24,10 +24,10 @@
     <div class="block text-center swiper-container" m="t-4">
       <span class="demonstration"></span>
       <el-carousel trigger="click" height="120px" arrow="never">
-        <el-carousel-item>
-          <img src="https://p1.music.126.net/npfDzCpjFJPgSyJSjtR-vQ==/109951168006154995.jpg?imageView&quality=89" />
+        <el-carousel-item v-for="(item, i) in bannerArray.slice(0, 4)">
+          <img :src="item.pic" />
         </el-carousel-item>
-        <el-carousel-item>
+        <!-- <el-carousel-item>
           <img src="https://p1.music.126.net/BslMskq6ErHDp0Ofs8twtA==/109951168005893915.jpg?imageView&quality=89" />
         </el-carousel-item>
         <el-carousel-item>
@@ -35,7 +35,7 @@
         </el-carousel-item>
         <el-carousel-item>
           <img src="http://p1.music.126.net/2qz-OK92qCCp2_eE7hP1sQ==/109951168006173044.jpg?imageView&quality=89" />
-        </el-carousel-item>
+        </el-carousel-item> -->
       </el-carousel>
     </div>
     <!-- 功能导航栏 -->
@@ -150,7 +150,7 @@ export default {
     playmusic
   },
   computed: {
-    ...mapState('m_home', ['musicListinStore', 'weListeninStore', 'refreshTime'])
+    ...mapState('m_home', ['musicListinStore', 'weListeninStore', 'refreshTime', 'bannerArrayinStore'])
   },
   data() {
     return {
@@ -160,21 +160,25 @@ export default {
       musicUrl: '',
       isRefresh: true,
       loadingShow: false,
-      searchHotArray:[]
+      searchHotArray: [],
+      bannerArray: []
     }
   },
   async created() {
     // 无缓存
     if (this.musicListinStore == '11' && this.weListeninStore == '22') {
+      // 获取轮播图
+      this.getBanner()
       // 获取推荐歌单
-      await this.getMusicList()
+      this.getMusicList()
       // 获取大家都在听
-      await this.getWeListen()
+      this.getWeListen()
       // 获取热搜数据
-      await this.getSearchHot()
+      this.getSearchHot()
       this.updatedMusicListinStore(this.musicList)
       this.updatedWeListeninStore(this.weListen)
       this.updatedSerachHot(this.searchHotArray)
+      this.updatedBannerArrayinStore(this.bannerArray)
 
     }
     // 设置时间戳，用于每隔一小时进行一次刷新获取新数据
@@ -186,20 +190,25 @@ export default {
       const nowtime = nowDate.getTime() //获取当前时间
       if (nowtime - parseInt(this.refreshTime) > 1000 * 60 * 60) {
         this.uodateRefreshTime(nowtime + '')
+        // 获取轮播图
+        this.getBanner()
         // 获取推荐歌单
-        await this.getMusicList()
+        this.getMusicList()
         // 获取大家都在听
-        await this.getWeListen()
+        this.getWeListen()
         // 获取热搜数据
-        await this.getSearchHot()
+        this.getSearchHot()
         this.updatedMusicListinStore(this.musicList)
         this.updatedWeListeninStore(this.weListen)
         this.updatedSerachHot(this.searchHotArray)
+        this.updatedBannerArrayinStore(this.bannerArray)
+
       }
     }
     // 有缓存
     this.musicList = this.musicListinStore
     this.weListen = this.weListeninStore
+    this.bannerArray = this.bannerArrayinStore
 
   },
   mounted() {
@@ -207,7 +216,12 @@ export default {
   },
   inject: ['playMusictoApp'],
   methods: {
-    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore', 'uodateRefreshTime','updatedSerachHot']),
+    ...mapMutations('m_home', ['updatedMusicListinStore', 'updatedWeListeninStore', 'uodateRefreshTime', 'updatedSerachHot', 'updatedBannerArrayinStore']),
+    // 获取轮播图数据
+    async getBanner() {
+      const { banners: res } = await this.$h.get('/banner?type=2')
+      this.bannerArray = res
+    },
     // 获取歌单数据
     async getMusicList() {
       const { result: res } = await this.$h.get('/personalized?limit=6')
@@ -261,9 +275,12 @@ export default {
             await This.getMusicList()
             await This.getWeListen()
             await This.getSearchHot()
+            await This.getBanner()
+            This.updatedBannerArrayinStore(This.bannerArray)
             This.updatedMusicListinStore(This.musicList)
             This.updatedWeListeninStore(This.weListen)
             This.updatedSerachHot(This.searchHotArray)
+
           }
         }
       }, { passive: false })

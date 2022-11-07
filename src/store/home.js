@@ -5,7 +5,8 @@ export default {
         weListeninStore: '22',
         refreshTime: '0',
         searchHot: '11',
-        searchHistory:'11'
+        searchHistory: '11',
+        bannerArrayinStore: '11'
     }),
     mutations: {
         updatedMusicListinStore(state, musicListinStore) {
@@ -21,8 +22,12 @@ export default {
             console.log(searchHot);
             state.searchHot = searchHot
         },
-        updatedSearchHistory(state,searchHistory){
+        updatedSearchHistory(state, searchHistory) {
             state.searchHistory = searchHistory
+        },
+        updatedBannerArrayinStore(state,bannerArrayinStore){
+            console.log(bannerArrayinStore);
+            state.bannerArrayinStore = bannerArrayinStore
         }
     },
     getters: {

@@ -25,7 +25,6 @@ export default {
     },
     watch: {
         toPlayScrollTop(newV, oldV) {
-            console.log(newV);
             if (this.$refs.videoContainer.offsetTop - newV < 250 && -100 < this.$refs.videoContainer.offsetTop - newV) {
                 this.$refs.videoPlay.play()
                 this.play = true
