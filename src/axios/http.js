@@ -3,9 +3,9 @@ import qs from 'qs'
 
 let api_base_url = ''
 if (import.meta.env.MODE === 'development') {
-  api_base_url = 'https://netease-cloud-music-api-nxzt.vercel.app'
+  api_base_url = 'https://netease-cloud-music-api-azure-alpha.vercel.app/'
 } else if (import.meta.env.MODE === 'production') {
-  api_base_url = 'https://netease-cloud-music-api-nxzt.vercel.app'
+  api_base_url = 'https://netease-cloud-music-api-azure-alpha.vercel.app/'
 }
 let instance = axios.create({
   timeout: 1000 * 80,

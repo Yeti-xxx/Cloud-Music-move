@@ -8,7 +8,7 @@ export default defineConfig({
     cors: true, // 默认启用并允许任何源
     proxy: {
       '/agent': {
-        target: 'https://netease-cloud-music-api-nxzt.vercel.app',
+        target: 'https://netease-cloud-music-api-azure-alpha.vercel.app/',
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/agent/, '')
       },
