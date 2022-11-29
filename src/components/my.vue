@@ -99,7 +99,7 @@ export default {
         ...mapMutations('m_my', ['updateSongListinStore','updateUserInfo']),
         // 获取用户歌单
         async getSongList(uid) {
-            const { playlist: res } = await this.$h.get('https://netease-cloud-music-api-nxzt.vercel.app/user/playlist?uid=' + uid)
+            const { playlist: res } = await this.$h.get('https://netease-cloud-music-api-azure-alpha.vercel.app/user/playlist?uid=' + uid)
             this.songList = res
         },
         // 退出登录
