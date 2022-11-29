@@ -4,7 +4,7 @@
 后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口
 
 ## 在线演示
-🛸🛸[仿网易云](https://cloud-music-move.vercel.app/#/home)\
+🛸🛸[仿网易云](https://cloud-music-move-yeti-xxx.vercel.app/)\
 ps:由于项目部署到Vercel上，所以需要挂梯子访问
 
 <<<<<<< HEAD
