@@ -13,7 +13,7 @@ import search from '../components/search/search.vue'
 const Router = createRouter({
     history: createWebHashHistory(),
     // 声明路由规则
-    routes: [
+    routes: [ 
         { path: '/', redirect: '/home' },
         { path: '/home', component: home, name: 'home' },
         { path: '/my', component: my, name: 'my' },

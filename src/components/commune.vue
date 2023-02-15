@@ -83,7 +83,9 @@ export default {
       this.updatedVideoArrayInstore(this.videoArray)
       this.page++
     },
-    // 上拉加载视频
+    /**
+     * 上拉加载视频
+     */
     upFresh() {
       let This = this
       this.$refs.communeContainer.addEventListener('touchstart', async function (e) {
@@ -102,7 +104,9 @@ export default {
       }, false)
 
     },
-    // 下拉刷新
+    /**
+     * 下拉刷新
+     */
     downRefresh() {
       let start = 0 //初始位置
       let transitionHeight = 0  //移动距离

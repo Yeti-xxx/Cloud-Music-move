@@ -5,7 +5,7 @@
 
 ## 在线演示
 🛸🛸[仿网易云](https://cloud-music-move-yeti-xxx.vercel.app/)\
-ps:由于项目部署到Vercel上，所以需要挂梯子访问
+ps:由于项目部署到Vercel上，所以需要挂梯子访问,(由于接口问题，暂时无法进行登录，所以仅支持首页的功能！！)
 
 <<<<<<< HEAD
 ## 功能
