@@ -56,10 +56,10 @@ export default {
     },
     data() {
         return {
-            type: null,         //判断需要获取的是 0: 歌曲 1: mv 2: 歌单 的评论
             id: null,
-            sortType: '1',       //排序方式, 1:按推荐排序, 2:按热度排序, 3:按时间排序
-            commentArray: [],     //评论数组
+            type: null,         //判断需要获取的是 0: 歌曲 1: mv 2: 歌单 的评论
+            sortType: '1',        //排序方式, 1:按推荐排序, 2:按热度排序, 3:按时间排序
+            commentArray: [],    //评论数组
             prePath: '',        //保存上一页面地址
             getNum: 1
 

@@ -10,7 +10,6 @@ export default defineConfig({
       '/agent': {
         target: 'https://netease-cloud-music-api-azure-alpha.vercel.app/',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/agent/, '')
       },
     }
   },

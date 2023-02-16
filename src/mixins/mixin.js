@@ -12,13 +12,11 @@ export default {
             console.log(songInfo);
             const res = await this.getMusicUrl(songInfo);
             if (res) {
-                // console.log(this.musicUrl);
                 this.playMusictoApp(this.musicUrl, songInfo.picUrl, songInfo.name)
             }
         },
         // 获取歌曲url
         async getMusicUrl(id) {
-            // const res = await this.$h.get('/song/url?id=' + id)
             const res = await this.$h.get('/song/url/v1?id=' + id + '&level=standard')
             if (res.data[0].url === null) {
                 return 'urlNull'
@@ -55,7 +53,7 @@ export default {
             }
             return time
         },
-        // 判断几零后
+        // 判断年代
         getAge(time) {
             let Y = time.Y
             let res1 = '神秘后'
@@ -168,7 +166,7 @@ export default {
             }
             // 错误处理
             xhr.addEventListener('error', function (e) {
-                // todo
+
             });
             // 发送请求
             xhr.send();

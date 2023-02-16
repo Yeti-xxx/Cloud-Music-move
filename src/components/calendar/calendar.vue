@@ -92,7 +92,6 @@ export default {
         }
     },
     created() {
-        // console.log(this.birthdayTimeInStore);
         //初始化选中日期
         this.selectData.Day = this.birthdayTimeInStore.D
         this.selectData.Mouth = this.birthdayTimeInStore.M
