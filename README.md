@@ -1,9 +1,8 @@
 # 简单的仿网易云项目
-学完vue独立做的第一个项目，缺陷很多，希望得到大家的斧正^_^
-前端：vue3 + elementPlus + vueX 
-后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口
-
-**ps:目前因接口问题，暂时无法进行登录，所以仅支持首页的功能**！！
+学完vue独立做的第一个项目，缺陷很多，希望得到大家的斧正^_^  
+前端：vue3 + elementPlus + vueX  
+后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口  
+**ps:目前因接口问题，暂时无法进行登录，所以仅支持首页的功能**！!  
 
 ##安装
 
@@ -60,7 +59,7 @@ ps:由于项目部署到Vercel上，所以需要挂梯子访问
   
 ### 🎬社区功能：
   1.实现听音乐的同时，刷刷视频,感觉某些地方的逻辑怪怪的，后续找到问题会修复的
-  
+
   ![image](https://user-images.githubusercontent.com/100813306/200152945-ee3c40f6-9399-4f0f-b758-fa14c058ac4d.png)
 
   
