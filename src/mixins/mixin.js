@@ -115,7 +115,6 @@ export default {
         },
         // 歌词处理
         wordHandle() {
-            // console.log(this.word);
             //先通过“\n”将每行歌词存入数组之中
             let arr = this.word.split('\n')
             for (let i = 0; i < arr.length; i++) {

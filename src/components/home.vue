@@ -27,15 +27,6 @@
         <el-carousel-item v-for="(item, i) in bannerArray.slice(0, 4)">
           <img :src="item.pic" />
         </el-carousel-item>
-        <!-- <el-carousel-item>
-          <img src="https://p1.music.126.net/BslMskq6ErHDp0Ofs8twtA==/109951168005893915.jpg?imageView&quality=89" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <img src="http://p1.music.126.net/JD41xXDJOm6JeBY2Tl1JCA==/109951168008178362.jpg?imageView&quality=89" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <img src="http://p1.music.126.net/2qz-OK92qCCp2_eE7hP1sQ==/109951168006173044.jpg?imageView&quality=89" />
-        </el-carousel-item> -->
       </el-carousel>
     </div>
     <!-- 功能导航栏 -->
@@ -124,9 +115,7 @@
         </div>
       </el-scrollbar>
     </div>
-    <!-- 音乐播放器
-    <playmusic></playmusic> -->
-    <!-- tabbar -->
+    <!-- 音乐播放器单独写了一个组件 -->
     <tabbar :pageNum="pageIndex"></tabbar>
   </div>
 </template>
@@ -155,7 +144,6 @@ export default {
   data() {
     return {
       musicList: {},
-      // weListen: [],
       pageIndex: 1,
       musicUrl: '',
       isRefresh: true,
@@ -202,7 +190,6 @@ export default {
         this.updatedWeListeninStore(this.weListen)
         this.updatedSerachHot(this.searchHotArray)
         this.updatedBannerArrayinStore(this.bannerArray)
-
       }
     }
     // 有缓存
@@ -242,10 +229,8 @@ export default {
     },
     // 向父组件中的音乐播放器组件传入数据
     async playMusic(songInfo) {
-      // console.log(songInfo);
       const res = await this.getMusicUrl(songInfo);
       if (res) {
-        // console.log(this.musicUrl);
         this.playMusictoApp(this.musicUrl, songInfo.picUrl, songInfo.name, songInfo.id)
       }
     },
@@ -280,7 +265,6 @@ export default {
             This.updatedMusicListinStore(This.musicList)
             This.updatedWeListeninStore(This.weListen)
             This.updatedSerachHot(This.searchHotArray)
-
           }
         }
       }, { passive: false })
@@ -314,7 +298,6 @@ export default {
   background-color: #242424;
   width: 100%;
   padding-bottom: 123px;
-  // height: 750px;
 
 }
 
@@ -425,17 +408,11 @@ export default {
 }
 
 .scrollbar-demo-item {
-  // flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  // align-items: center;
-  // justify-content: center;
   width: 180px;
   height: 134px;
   margin: 10px;
-  // text-align: center;
-  // border-radius: 4px;
-  // background: var(--el-color-danger-light-9);
   color: #fff;
 
   .ListImg {
@@ -458,7 +435,6 @@ export default {
 .WeListen {
   .scrollbar-demo-item {
     flex-shrink: 0;
-    // background-color: red;
     width: 300px;
     height: 160px;
   }

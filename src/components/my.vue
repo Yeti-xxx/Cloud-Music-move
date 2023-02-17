@@ -6,7 +6,6 @@
         </div>
         <!-- 已登录 -->
         <div class="myConatiner" v-if="accountStore!=11">
-            <!-- <span style="color:#fff">{{userInfo}}</span> -->
             <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl" @click="gotoMyInfo">
                 <div class="level">
                     <span>{{userInfo.profile.follows}}关注</span>
@@ -14,14 +13,6 @@
                     <span>LV.{{userInfo.level}}</span>
                 </div>
             </Avatars>
-            <!-- 测试使用 -->
-            <!-- <Avatars v-bind:nickname="accountStore.profile.nickname" v-bind:avatarUrl="accountStore.profile.avatarUrl">
-                <div class="level">
-                    <span>{{accountStore.profile.follows}}关注</span>
-                    <span>{{accountStore.profile.followeds}}粉丝</span>
-                    <span>LV.{{accountStore.level}}</span>
-                </div>
-            </Avatars> -->
             <!-- 我喜欢的歌单 -->
             <div class="myLove">
                 <Songlist v-bind:title="songList[0].name" v-bind:count="songList[0].trackCount"
@@ -38,10 +29,8 @@
             <el-card class="box-card logOut-box" @click="LogOut">
                 <div class="logOut">退出登录</div>
             </el-card>
-
         </div>
         <!-- 未登录 -->
-
         <Login v-else></Login>
         <Tabbar :pageNum="2"></Tabbar>
     </div>
@@ -82,13 +71,9 @@ export default {
     async created() {
         this.UserId = this.userInfo.profile.userId
         if (this.accountStore != 11) {
-            // console.log(this.accountStore);
-            // this.SongListId = this.accountStore.account.id//测试使用
             this.SongListId = this.accountStore.id
             if (this.songListinStore == '11') {
-                // console.log('songListNo');
                 await this.getSongList(this.SongListId)
-                // console.log(this.songList);
                 this.updateSongListinStore(this.songList)
             }
             this.songList = this.songListinStore

@@ -40,7 +40,6 @@ export default {
       fresh: true,
       isRefresh: true,
       loadingShow: false
-      // VideoscrollTop: 0
     }
   },
   computed: {
@@ -232,7 +231,6 @@ export default {
 
         .authorNickname {
           margin-left: 6px;
-
         }
       }
     }
