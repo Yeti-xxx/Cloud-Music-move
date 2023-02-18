@@ -9,6 +9,7 @@ export default defineConfig({
     proxy: {
       '/agent': {
         target: 'https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release/',
+          //原先接口部署在vercel上，虽然免费但是太慢了......
         changeOrigin: true,
       },
     }
