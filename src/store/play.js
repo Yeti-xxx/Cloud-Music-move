@@ -2,7 +2,7 @@ export default {
     namespaced: true,
     state: () => ({
         showPlay: true,
-        playIt: false,
+        playIt: true,   //若设为false可能导致第一次进入play页面时 唱片不进行旋转并且播放按钮为暂停状态
         changeMusic: '',
         songStore:{},
         songListStore:[]
@@ -27,7 +27,6 @@ export default {
             }else{
                 state.changeMusic = direction
             }
-            // console.log(11);
         },
         updatesongStore(state,songStore){
             state.songStore = songStore

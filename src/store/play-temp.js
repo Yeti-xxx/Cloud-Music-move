@@ -14,7 +14,6 @@ export default {
       state.TsongBigListStore = TsongBigListStore
     },
     updateTsongPageIdStore(state, TsongPageIdStore) {
-      console.log(TsongPageIdStore);
       state.TsongPageIdStore = TsongPageIdStore
     },
     updateTListNowStore(state, TListNowStore) {
