@@ -193,8 +193,6 @@ export default {
   }
 
   .videoItem {
-    // position: absolute;
-    // transform: translateX(-50%);
     margin-top: 10px;
     left: 50%;
     width: 94%;

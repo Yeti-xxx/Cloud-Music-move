@@ -1,8 +1,7 @@
 # 简单的仿网易云项目
 学完vue独立做的第一个项目，缺陷很多，希望得到大家的斧正^_^  
 前端：vue3 + elementPlus + vueX  
-后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口  
-**ps:目前因接口问题，暂时无法进行登录，所以仅支持首页的功能**！!  
+后端：感谢[Binaryify大佬](https://github.com/Binaryify)提供的接口   
 
 ##安装
 
@@ -12,8 +11,8 @@
 
 ## 在线演示
 🛸🛸[仿网易云](https://cloud-music-move-yeti-xxx.vercel.app/)
-ps:由于项目部署到Vercel上，所以需要挂梯子访问
-
+ps:请打开谷歌浏览器的移动端模式。
+**目前因接口问题，暂时无法进行登录，所以仅支持首页的功能(如果首页无数据，请尝试下拉刷新)**！! 
 ## 功能
 
 ### 🏚️home页面:

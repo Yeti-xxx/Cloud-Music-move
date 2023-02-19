@@ -8,7 +8,6 @@ import { ElMessage } from 'element-plus'
 export default {
   name: 'APP',
   computed: {
-    // ...mapState('m_my', ['accountStore']),
     ...mapState('m_play', ['showPlay']),
     ...mapState('t_play', ['downloadFlag'])
   },
@@ -97,8 +96,6 @@ export default {
 }
 </script>
 <template>
-  <!-- <home /> -->
-  <!-- 音乐播放器 -->
   <playmusic class="playmusic" :style="styleObject" ref="playmusic" v-show="showFlag">
   </playmusic>
   <router-view></router-view>
