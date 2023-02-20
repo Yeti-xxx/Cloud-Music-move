@@ -65,13 +65,6 @@
                 </el-icon>
             </div>
         </el-card>
-        <!-- 数据未完成加载时 -->
-        <!-- <el-card class="loadingbox" v-else>
-            <div class="loading">
-
-            </div>
-            <div class="text">加载中....</div>
-        </el-card> -->
     </div>
 
 </template>
@@ -112,7 +105,6 @@ export default {
                 this.song = this.songStore
                 // 10.23晚处理
                 this.songId = this.song.id
-                // console.log(this.songStore);
             }
         },
         TlyricTime(newV, oldV) {
@@ -162,7 +154,6 @@ export default {
         }
         this.updateShowPlay()
         this.wordHandle()
-        // this.prePath = this.$route.path
     },
     methods: {
         ...mapMutations('m_play', ['updateShowPlay', 'updateplayIt', 'updateChangeMusic', 'playTotrue']),
@@ -196,10 +187,7 @@ export default {
                 this.wordHandle()
                 this.songId = this.song.id
                 this.updateTsongPageIdStore(this.songId)
-
             }
-
-
         },
         gotoComment() {
             this.$router.push({

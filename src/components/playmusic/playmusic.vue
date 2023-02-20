@@ -212,12 +212,10 @@ export default {
         async changeTheMusic() {
             let res = null
             const temp = this.audioSrc + '@#' + this.songId
-            // console.log(this.songId);
             // 获取当前歌曲在歌曲数组中的位置
             for (let index = 0; index < this.audioSrcs.length; index++) {
                 if (temp === this.audioSrcs[index]) {
                     this.audioIndex = index
-                    // console.log(this.audioIndex);+
                     break;
                 }
 
@@ -258,7 +256,6 @@ export default {
                     res = i
                     break;
                 }
-
             }
             // 缓存中不存在歌曲的信息
             if (flagToget) {
@@ -286,7 +283,6 @@ export default {
             return res
         },
         songToStore(song) {
-            // console.log(111);
             this.updatesongStore(song)
         },
         //使用事件监听方式捕捉事件
@@ -311,7 +307,6 @@ export default {
             // 当媒体文件可以播放的时候会触发oncanplay事件,也可以用oncanplay
             this.music.oncanplaythrough = () => {
                 let time = this.music.duration;
-                // console.log(time);
                 //分钟
                 let minutes = parseInt(time / 60);
                 if (minutes < 10) {

@@ -74,11 +74,9 @@ export default {
   methods: {
     ...mapMutations('t_play', ['updatedDownloadFlag']),
     playMusicHandle(url, pic, name, id) {
-      // console.log(url)
       this.$refs.playmusic.OneclickPlay(url, pic, name, id)
     },
     showPlayHandle() {
-      // console.log(111);
       this.$refs.playmusic.showStyle()
       this.styleObject.bottom = '56px'
     },
