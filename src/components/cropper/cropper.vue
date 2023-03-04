@@ -79,7 +79,9 @@ export default {
             console.log(axios);
             const { data: res } = await axios({
                 method: 'post',
-                url: 'https://netease-cloud-music-api-nxzt.vercel.app/avatar/upload?cookie=' + This.cookie + 'imgSize=375',
+                // https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release
+                url: 'https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release/avatar/upload?cookie=' + This.cookie + 'imgSize=375',
+                // url: 'https://netease-cloud-music-api-nxzt.vercel.app/avatar/upload?cookie=' + This.cookie + 'imgSize=375',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

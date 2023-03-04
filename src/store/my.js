@@ -4,7 +4,6 @@ export default {
         accountStore: '11',
         userInfo: '{}',
         songListinStore: '11',
-        // cloudPanSongArray: '11',
         cookie: ''
 
     }),
@@ -13,7 +12,6 @@ export default {
             state.accountStore = account
         },
         updateUserInfo(state, userInfo) {
-            // console.log(11);
             state.userInfo = userInfo
 
         },

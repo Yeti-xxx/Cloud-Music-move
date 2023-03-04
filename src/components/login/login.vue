@@ -1,7 +1,6 @@
 <template>
     <div class="login-container">
-        
-        <!-- 登录方式选择 -->
+
         <div class="choose-login" v-if="gotoPage">
             <div class="top">
                 <div class="text">
@@ -15,7 +14,18 @@
                 </div>
             </div>
         </div>
+        <!-- 二维码登录 -->
         <div class="login-page" v-if="gotoLogin">
+            <div class="qr"
+                style="width: 200px;height: 200px;margin: auto;margin-top: 100px;display: flex;flex-direction: column;justify-content: space-between;align-items: center;">
+                <div class="qrText" style="color: azure;">
+                    扫描二维码进行登录
+                </div>
+                <img :src="qrCode">
+            </div>
+        </div>
+        <!-- 手机号码登录 -->
+        <!-- <div class="login-page" v-if="gotoLogin">
             <div class="top">
                 <div class="back">
                     <el-icon :size="26">
@@ -69,13 +79,15 @@
                         @input="onInput(index)" @keyup.delete="onDelete(index)" maxlength="1" />
                 </div>
             </div>
-        </div>
+        </div> -->
 
     </div>
 </template>
 <script>
+import vueQr from 'vue-qr/src/packages/vue-qr.vue' //二维码渲染库
 import { mapState, mapMutations } from 'vuex'
 import { ElMessage } from 'element-plus'
+import axios from 'axios'
 export default {
     name: 'login',
     computed: {
@@ -83,7 +95,7 @@ export default {
 
     },
     created() {
-        console.log(this.$store);
+
     },
     data() {
         return {
@@ -106,50 +118,84 @@ export default {
                 }
             ],
             check: '',
-            account: {}
+            account: {},
+            qrKey: '',  //生成二维吗的key
+            qrCode: '',   //生成二维码信息
+            qrState: ''
         }
     },
     methods: {
-        ...mapMutations('m_my', ['updateAccount', 'updateUserInfo','updateCookie']),
-        gotoPageChange() {
+        ...mapMutations('m_my', ['updateAccount', 'updateUserInfo', 'updateCookie']),
+        async gotoPageChange() {
             this.gotoPage = !this.gotoPage
             this.gotoLogin = !this.gotoLogin
+            const res = await this.$h.get('/login/qr/key?' + 'timestamp=' + Date.now())
+            this.qrKey = res.data.unikey
+            const qrRes = await this.$h.get('/login/qr/create?qrimg=true&key=' + this.qrKey + '&' + 'timestamp=' + Date.now())
+            this.qrCode = qrRes.data.qrimg
+            this.getQrCodeState()
+        },
+        // 轮训二维码扫码状态
+        getQrCodeState() {
+            let timer = setInterval(async () => {
+                const statusRes = await this.$h.get('/login/qr/check?key=' + this.qrKey + '&' + 'timestamp=' + Date.now())
+                if (statusRes.code === 800) {
+                    alert('二维码已过期,请重新获取')
+                    clearInterval(timer)
+                }
+                if (statusRes.code === 803) {
+                    // 这一步会返回cookie
+                    clearInterval(timer)
+                    const status = await this.getLoginStatus(statusRes.cookie)
+                    console.log(status);
+                    this.getUserInfo(status.data.data.account.id)
+                    // console.log(status);
+                }
+            }, 3000)
+        },
+        // 检查登录状态
+        async getLoginStatus(cookie) {
+            const res = await axios({
+                url: `https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release/login/status?timestamp=${Date.now()}`,
+                method: 'post',
+                data: {
+                    cookie,
+                },
+            })
+            return res
         },
         clearInput() {
             this.$refs.inputPhone.value = '';
         },
-        async getLogin() {
-            if (this.$refs.inputPhone.value.length !== 11) {
-                return ElMessage('请输入11位数字的手机号')
-            }
-            this.phone = this.$refs.inputPhone.value
-            // 验证通过后
-            const res = await this.$h.get('/captcha/sent?phone=' + this.$refs.inputPhone.value)
-            if (res.code === 200 && res.data === true) {
-            //     console.log(111);
-                this.gotoLogin = !this.gotoLogin
-                this.gotoCheck = !this.gotoCheck
-                
-            }
-            
+        // async getLogin() {
+        //     if (this.$refs.inputPhone.value.length !== 11) {
+        //         return ElMessage('请输入11位数字的手机号')
+        //     }
+        //     this.phone = this.$refs.inputPhone.value
+        //     // 验证通过后
+        //     const res = await this.$h.get('/captcha/sent?phone=' + this.$refs.inputPhone.value)
+        //     if (res.code === 200 && res.data === true) {
+        //         this.gotoLogin = !this.gotoLogin
+        //         this.gotoCheck = !this.gotoCheck
+        //     }
+        // },
+        // // 校验 验证码
+        // async getCheck(check) {
+        //     const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
+        //     this.account = res.account
+        //     this.updateAccount(this.account)
+        //     this.updateCookie(res.cookie)
+        //     // this.getUserInfo(this.account.account.id)//测试时使用
+        //     this.getUserInfo(this.account.id)
+        //     setTimeout(() => {
+        //         this.$router.go(0) 
+        //     }, 2000);
 
-        },
-        // 校验 验证码
-        async getCheck(check) {
-            const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
-            this.account = res.account
-            this.updateAccount(this.account)
-            this.updateCookie(res.cookie)
-            // this.getUserInfo(this.account.account.id)//测试时使用
-            this.getUserInfo(this.account.id)
-            setTimeout(() => {
-                this.$router.go(0) 
-            }, 2000);
-
-        },
+        // },
         // 获取用户基本信息
         async getUserInfo(uid) {
             const res = await this.$h.get('/user/detail?uid=' + uid)
+            // const res = await this.$h.get('/user/detail?cookie=' + encodeURIComponent(localStorage.getItem('cookie')))
             if (res.code !== 200) {
                 ElMessage({
                     showClose: true,
@@ -158,8 +204,10 @@ export default {
                 })
                 return this.reload
             }
-            // console.log(res);
             this.updateUserInfo(res)
+            setTimeout(() => {
+                this.$router.go(0)
+            }, 2000);
 
         },
         onInput(index) {
