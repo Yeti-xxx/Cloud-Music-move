@@ -149,7 +149,6 @@ export default {
                     const status = await this.getLoginStatus(statusRes.cookie)
                     console.log(status);
                     this.getUserInfo(status.data.data.account.id)
-                    // console.log(status);
                 }
             }, 3000)
         },

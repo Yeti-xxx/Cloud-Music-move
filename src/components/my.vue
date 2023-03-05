@@ -72,6 +72,7 @@ export default {
         this.UserId = this.userInfo.profile.userId
         if (this.accountStore != 11) {
             this.SongListId = this.accountStore.id
+            console.log(this.SongListId);
             if (this.songListinStore == '11') {
                 await this.getSongList(this.SongListId)
                 this.updateSongListinStore(this.songList)

@@ -12,6 +12,7 @@ export default {
             state.accountStore = account
         },
         updateUserInfo(state, userInfo) {
+            state.accountStore = 'true'
             state.userInfo = userInfo
 
         },
