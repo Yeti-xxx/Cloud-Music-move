@@ -33,7 +33,7 @@
             <div class="gender col" @click="changCalendarFlag">
                 <span>生日</span>
                 <span class="nicknameRevise right">{{ birthdayTimeInStore.Y + '-' + birthdayTimeInStore.M + '-' +
-                        birthdayTimeInStore.D
+                    birthdayTimeInStore.D
                 }}</span>
             </div>
             <div class="area col" @click="signatureBoxFlag = true; modalFlag = true">
@@ -168,6 +168,9 @@ export default {
         },
         // 保存修改的资料
         async saveRevise() {
+            // 获取工具cookie
+            const tempCookie = await this.$h.get(`/register/anonimous?timestamp=${Date.now()}`)
+            document.cookie = tempCookie.cookie
             // 获取选中的生日日期时间戳
             let d = new Date(this.birthdayTimeInStore.Y, this.birthdayTimeInStore.M - 1, this.birthdayTimeInStore.D)
             let timeStr = d.getTime(d)
