@@ -284,7 +284,6 @@ export default {
     // 获取搜索界面的热搜数据
     async getSearchHot() {
       const { data: res } = await this.$h.get('/search/hot/detail')
-      // const { data: res } = 
       this.searchHotArray = res
     }
   }

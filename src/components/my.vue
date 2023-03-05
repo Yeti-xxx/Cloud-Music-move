@@ -5,13 +5,12 @@
             <div class="loading"></div>
         </div>
         <!-- 已登录 -->
-        <div class="myConatiner" v-if="accountStore != 11">
-            <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl"
-                @click="gotoMyInfo">
+        <div class="myConatiner" v-if="accountStore!=11">
+            <Avatars v-bind:nickname="userInfo.profile.nickname" v-bind:avatarUrl="userInfo.profile.avatarUrl" @click="gotoMyInfo">
                 <div class="level">
-                    <span>{{ userInfo.profile.follows }}关注</span>
-                    <span>{{ userInfo.profile.followeds }}粉丝</span>
-                    <span>LV.{{ userInfo.level }}</span>
+                    <span>{{userInfo.profile.follows}}关注</span>
+                    <span>{{userInfo.profile.followeds}}粉丝</span>
+                    <span>LV.{{userInfo.level}}</span>
                 </div>
             </Avatars>
             <!-- 我喜欢的歌单 -->
@@ -21,8 +20,8 @@
             </div>
             <!-- 其他歌单 -->
             <div class="songListOther">
-                <div class="title">歌单({{ songList.length - 1 }}个)</div>
-                <Songlist v-for="(item, i) in songList.slice(1, songList.length - 1)" :key="i" v-bind:title="item.name"
+                <div class="title">歌单({{songList.length-1}}个)</div>
+                <Songlist v-for="(item,i) in songList.slice(1,songList.length-1)" :key="i" v-bind:title="item.name"
                     v-bind:count="item.trackCount" v-bind:songImg="item.coverImgUrl" @click="gotoList(item.id)">
                 </Songlist>
             </div>
@@ -72,8 +71,7 @@ export default {
     async created() {
         this.UserId = this.userInfo.profile.userId
         if (this.accountStore != 11) {
-            // this.SongListId = this.accountStore.id
-            this.SongListId = this.userInfo.userPoint.userId
+            this.SongListId = this.accountStore.id
             if (this.songListinStore == '11') {
                 await this.getSongList(this.SongListId)
                 this.updateSongListinStore(this.songList)
@@ -83,16 +81,14 @@ export default {
 
     },
     methods: {
-        ...mapMutations('m_my', ['updateSongListinStore', 'updateUserInfo']),
+        ...mapMutations('m_my', ['updateSongListinStore','updateUserInfo']),
         // 获取用户歌单
         async getSongList(uid) {
             const { playlist: res } = await this.$h.get('https://netease-cloud-music-api-azure-alpha.vercel.app/user/playlist?uid=' + uid)
             this.songList = res
         },
         // 退出登录
-        async LogOut() {
-            const res = this.$h.get('/logout')
-            console.log(res);
+        LogOut() {
             localStorage.removeItem('vuex')
             this.$router.go(0)
         },
@@ -122,16 +118,16 @@ export default {
                         This.isRefresh = false
                         This.loading()
                         await This.getSongList(This.SongListId)
-                        const res = await This.getUserInfo(This.UserId)
+                        const res =  await This.getUserInfo(This.UserId)
                         This.updateUserInfo(res)
                         This.updateSongListinStore(This.songList)
-
+                        
                     }
                 }
             })
         },
         // 前往myInfo页面
-        gotoMyInfo() {
+        gotoMyInfo(){
             this.$router.push('/myInfo')
         }
     },

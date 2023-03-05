@@ -9,17 +9,15 @@ if (import.meta.env.MODE === 'development') {
 }
 let instance = axios.create({
   timeout: 1000 * 80,
-  crossDomain: true,
-  withCredentials: true,
   baseURL: api_base_url
 })
 instance.defaults.responseType = 'json'
+instance.defaults.withCredentials = true
 instance.defaults.transformRequest = [
   data => {
     return qs.stringify(data)
   }
 ]
-// document.cookie = localStorage.getItem('cookie')
 instance.defaults.validateStatus = function () {
   // return status >= 200 && status < 400; // 200- 399  resolve  其他状态码 reject
   // 如果在响应拦截设置了状态码判断，这里设置返回 true
@@ -67,7 +65,7 @@ let api = {}
 api.get = function (url) {
   return new Promise((resolve, reject) => {
     instance
-      .get(url, { headers: { 'Cookie': 'jjj' } })
+      .get(url)
       .then(response => {
         resolve(response)
       })
