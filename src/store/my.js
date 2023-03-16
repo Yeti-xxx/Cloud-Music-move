@@ -20,6 +20,7 @@ export default {
             state.songListinStore = songListinStore
         },
         updateCookie(state, cookie) {
+            console.log(11);
             state.cookie = cookie
         },
     },

@@ -86,7 +86,7 @@ export default {
     mixins: [mixinItem],
     name: 'reviseMyInfo',
     computed: {
-        ...mapState('m_my', ['userInfo']),
+        ...mapState('m_my', ['userInfo','cookie']),
         ...mapState('t_my', ['birthdayTimeInStore'])
     },
     components: {
@@ -171,9 +171,7 @@ export default {
             // 获取选中的生日日期时间戳
             let d = new Date(this.birthdayTimeInStore.Y, this.birthdayTimeInStore.M - 1, this.birthdayTimeInStore.D)
             let timeStr = d.getTime(d)
-            console.log(d);
-            console.log(timeStr);
-            const res = await this.$h.get('/user/update?gender=' + this.gender + '&signature=' + this.signature + '&city=' + this.userInfo.profile.city + '&nickname=' + this.userInfo.profile.nickname + '&birthday=' + timeStr + '&province=' + this.userInfo.profile.province)
+            const res = await this.$h.get('/user/update'+'?cookie='+localStorage.getItem('wyCookie')+'?gender=' + this.gender + '&signature=' + this.signature + '&city=' + this.userInfo.profile.city + '&nickname=' + this.userInfo.profile.nickname + '&birthday=' + timeStr + '&province=' + this.userInfo.profile.province)
             if (res.code === 200) {
                 return ElMessage({
                     message: '保存成功！',

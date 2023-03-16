@@ -92,7 +92,7 @@ export default {
     name: 'login',
     computed: {
         ...mapState('m_my', ['accountStore', 'userInfo']),
-
+        ...mapMutations('m_my',['updateCookie'])
     },
     created() {
 
@@ -146,6 +146,8 @@ export default {
                 if (statusRes.code === 803) {
                     // 这一步会返回cookie
                     clearInterval(timer)
+                    // this.updateCookie(statusRes.cookie)
+                    localStorage.setItem('wyCookie',statusRes.cookie)
                     const status = await this.getLoginStatus(statusRes.cookie)
                     console.log(status);
                     this.getUserInfo(status.data.data.account.id)
