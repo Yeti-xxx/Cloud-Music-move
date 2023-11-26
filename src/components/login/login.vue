@@ -15,7 +15,7 @@
             </div>
         </div>
         <!-- 二维码登录 -->
-        <div class="login-page" v-if="gotoLogin">
+        <!-- <div class="login-page" v-if="gotoLogin">
             <div class="qr"
                 style="width: 200px;height: 200px;margin: auto;margin-top: 100px;display: flex;flex-direction: column;justify-content: space-between;align-items: center;">
                 <div class="qrText" style="color: azure;">
@@ -23,9 +23,9 @@
                 </div>
                 <img :src="qrCode">
             </div>
-        </div>
+        </div> -->
         <!-- 手机号码登录 -->
-        <!-- <div class="login-page" v-if="gotoLogin">
+        <div class="login-page" v-if="gotoLogin">
             <div class="top">
                 <div class="back">
                     <el-icon :size="26">
@@ -79,7 +79,7 @@
                         @input="onInput(index)" @keyup.delete="onDelete(index)" maxlength="1" />
                 </div>
             </div>
-        </div> -->
+        </div>
 
     </div>
 </template>
@@ -92,7 +92,7 @@ export default {
     name: 'login',
     computed: {
         ...mapState('m_my', ['accountStore', 'userInfo']),
-        ...mapMutations('m_my',['updateCookie'])
+        ...mapMutations('m_my', ['updateCookie'])
     },
     created() {
 
@@ -129,70 +129,75 @@ export default {
         async gotoPageChange() {
             this.gotoPage = !this.gotoPage
             this.gotoLogin = !this.gotoLogin
-            const res = await this.$h.get('/login/qr/key?' + 'timestamp=' + Date.now())
-            this.qrKey = res.data.unikey
-            const qrRes = await this.$h.get('/login/qr/create?qrimg=true&key=' + this.qrKey + '&' + 'timestamp=' + Date.now())
-            this.qrCode = qrRes.data.qrimg
-            this.getQrCodeState()
+            // const cookie = localStorage.getItem('cookie')   //先获取状态？
+            // this.getLoginStatus(cookie)
+            // const res = await this.$h.get('/login/qr/key?' + 'timestamp=' + Date.now())
+            // this.qrKey = res.data.unikey
+            // const qrRes = await this.$h.get('/login/qr/create?qrimg=true&key=' + this.qrKey + '&' + 'timestamp=' + Date.now())
+            // this.qrCode = qrRes.data.qrimg
+            // this.getQrCodeState()
         },
-        // 轮训二维码扫码状态
-        getQrCodeState() {
-            let timer = setInterval(async () => {
-                const statusRes = await this.$h.get('/login/qr/check?key=' + this.qrKey + '&' + 'timestamp=' + Date.now())
-                if (statusRes.code === 800) {
-                    alert('二维码已过期,请重新获取')
-                    clearInterval(timer)
-                }
-                if (statusRes.code === 803) {
-                    // 这一步会返回cookie
-                    clearInterval(timer)
-                    // this.updateCookie(statusRes.cookie)
-                    localStorage.setItem('wyCookie',statusRes.cookie)
-                    const status = await this.getLoginStatus(statusRes.cookie)
-                    console.log(status);
-                    this.getUserInfo(status.data.data.account.id)
-                }
-            }, 3000)
-        },
-        // 检查登录状态
-        async getLoginStatus(cookie) {
-            const res = await axios({
-                url: `https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release/login/status?timestamp=${Date.now()}`,
-                method: 'post',
-                data: {
-                    cookie,
-                },
-            })
-            return res
-        },
+        // // 轮训二维码扫码状态
+        // getQrCodeState() {
+        //     let timer = setInterval(async () => {
+        //         const statusRes = await this.$h.get('/login/qr/check?key=' + this.qrKey + '&' + 'timestamp=' + Date.now())
+        //         if (statusRes.code === 800) {
+        //             alert('二维码已过期,请重新获取')
+        //             clearInterval(timer)
+        //         }
+        //         if (statusRes.code === 803) {
+        //             // 这一步会返回cookie
+        //             clearInterval(timer)
+        //             // this.updateCookie(statusRes.cookie)
+        //             localStorage.setItem('wyCookie', statusRes.cookie)
+        //             const status = await this.getLoginStatus(statusRes.cookie)
+        //             console.log(status);
+        //             this.getUserInfo(status.data.data.account.id)
+        //         }
+        //     }, 3000)
+        // },
+        
+        // // 检查登录状态
+        // async getLoginStatus(cookie = '') {
+        //     const res = await axios({
+        //         url: `https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release/login/status?timestamp=${Date.now()}`,
+        //         method: 'post',
+        //         data: {
+        //             cookie,
+        //         },
+        //     })
+        //     console.log(res);
+        //     return res
+        // },
+        
         clearInput() {
             this.$refs.inputPhone.value = '';
         },
-        // async getLogin() {
-        //     if (this.$refs.inputPhone.value.length !== 11) {
-        //         return ElMessage('请输入11位数字的手机号')
-        //     }
-        //     this.phone = this.$refs.inputPhone.value
-        //     // 验证通过后
-        //     const res = await this.$h.get('/captcha/sent?phone=' + this.$refs.inputPhone.value)
-        //     if (res.code === 200 && res.data === true) {
-        //         this.gotoLogin = !this.gotoLogin
-        //         this.gotoCheck = !this.gotoCheck
-        //     }
-        // },
-        // // 校验 验证码
-        // async getCheck(check) {
-        //     const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
-        //     this.account = res.account
-        //     this.updateAccount(this.account)
-        //     this.updateCookie(res.cookie)
-        //     // this.getUserInfo(this.account.account.id)//测试时使用
-        //     this.getUserInfo(this.account.id)
-        //     setTimeout(() => {
-        //         this.$router.go(0) 
-        //     }, 2000);
+        async getLogin() {
+            if (this.$refs.inputPhone.value.length !== 11) {
+                return ElMessage('请输入11位数字的手机号')
+            }
+            this.phone = this.$refs.inputPhone.value
+            // 验证通过后
+            const res = await this.$h.get('/captcha/sent?phone=' + this.$refs.inputPhone.value)
+            if (res.code === 200 && res.data === true) {
+                this.gotoLogin = !this.gotoLogin
+                this.gotoCheck = !this.gotoCheck
+            }
+        },
+        // 校验 验证码
+        async getCheck(check) {
+            const res = await this.$h.get('/login/cellphone?phone=' + this.phone + '&captcha=' + check)
+            this.account = res.account
+            this.updateAccount(this.account)
+            // this.updateCookie(res.cookie)
+            // this.getUserInfo(this.account.account.id)//测试时使用
+            this.getUserInfo(this.account.id)
+            setTimeout(() => {
+                this.$router.go(0) 
+            }, 2000);
 
-        // },
+        },
         // 获取用户基本信息
         async getUserInfo(uid) {
             const res = await this.$h.get('/user/detail?uid=' + uid)
@@ -205,6 +210,7 @@ export default {
                 })
                 return this.reload
             }
+            console.log(res);
             this.updateUserInfo(res)
             setTimeout(() => {
                 this.$router.go(0)

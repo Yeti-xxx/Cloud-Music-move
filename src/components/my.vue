@@ -72,7 +72,6 @@ export default {
     async created() {
         this.UserId = this.userInfo.profile.userId
         if (this.accountStore != 11) {
-            // this.SongListId = this.accountStore.id
             this.SongListId = this.userInfo.userPoint.userId
             if (this.songListinStore == '11') {
                 await this.getSongList(this.SongListId)
@@ -86,7 +85,7 @@ export default {
         ...mapMutations('m_my', ['updateSongListinStore', 'updateUserInfo']),
         // 获取用户歌单
         async getSongList(uid) {
-            const { playlist: res } = await this.$h.get('https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release/user/playlist?uid=' + uid)
+            const { playlist: res } = await this.$h.get('https://netease-cloud-music-api-azure-alpha.vercel.app/user/playlist?uid=' + uid)
             this.songList = res
         },
         // 退出登录

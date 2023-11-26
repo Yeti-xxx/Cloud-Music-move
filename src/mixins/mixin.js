@@ -109,10 +109,6 @@ export default {
                 return conts[M]
             }
         },
-        // 读取身份证开头四位对应省市地区
-        cityIdtoArea() {
-
-        },
         // 歌词处理
         wordHandle() {
             //先通过“\n”将每行歌词存入数组之中
