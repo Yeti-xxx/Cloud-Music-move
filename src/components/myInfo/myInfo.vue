@@ -161,7 +161,6 @@ export default {
     // 获取歌曲
     async getSong() {
       const { data: res } = await this.$h.get('/song/purchased?limit=10')
-      console.log(res.count);
       this.BuyArray = []
       for (let i = 0; i < res.count; i++) {
         this.BuyItem = {}

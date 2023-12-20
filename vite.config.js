@@ -7,7 +7,7 @@ export default defineConfig({
     cors: true, // 默认启用并允许任何源
     proxy: {
       '/agent': {
-        target: 'https://netease-cloud-music-api-azure-alpha.vercel.app/',
+        target: 'http://111.67.195.237:8886/',
           //原先接口部署在vercel上，虽然免费但是太慢了......
         changeOrigin: true,
       },

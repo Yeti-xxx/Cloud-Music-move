@@ -162,7 +162,7 @@ export default {
                     o[v] = res[v]
                     this.searchResult.push(o[v])
                 })
-                console.log(this.searchResult);
+                (this.searchResult);
                 this.searchResult.pop()
             }
         },

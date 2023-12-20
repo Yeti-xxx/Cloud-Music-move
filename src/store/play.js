@@ -12,7 +12,7 @@ export default {
             state.showPlay = !state.showPlay
         },
         updateplayIt(state) {
-            // console.log(11);
+            // (11);
             state.playIt = !state.playIt
         },
         // 覆盖play为true

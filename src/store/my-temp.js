@@ -5,7 +5,7 @@ export default {
     }),
     mutations: {
         updatedBirthdayTimeInStore(state, birthdayTimeInStore) {
-            console.log(birthdayTimeInStore);
+            (birthdayTimeInStore);
             state.birthdayTimeInStore = birthdayTimeInStore
         },
     },

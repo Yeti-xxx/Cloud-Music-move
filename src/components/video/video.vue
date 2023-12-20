@@ -64,7 +64,7 @@ export default {
         },
         // 处理点击进度条
         handlerClickTimeBar(e) {
-            // console.log(e);
+            // (e);
             const barTotalWidth = this.$refs.timeBar.offsetWidth
             const rect = e.target.getBoundingClientRect() //元素右边距离页面边距的距离 返回上下左右
             let length = e.pageX - rect.left;   //获取点击的长度

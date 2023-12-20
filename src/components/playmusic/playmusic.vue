@@ -118,7 +118,7 @@ export default {
         },
         play() {
             this.music.play();
-            // console.log(this.music);
+            // (this.music);
             this.isPlay = true;
         },
         pause() {
@@ -157,7 +157,7 @@ export default {
             let x = ((this.music.currentTime / duration) * 100).toFixed(2) + "%";
             slid.style.width = x;
             let y = 281 * (this.music.currentTime / duration).toFixed(2);
-            // console.log(y);
+            // (y);
             head.style.marginLeft = y + 'px';
         },
         // 处理点击进度条事件
@@ -177,7 +177,7 @@ export default {
             const preaudioSrc = this.audioSrc
             this.isPlay = false;
             this.audioIndex = Math.floor(Math.random() * this.audioSrcs.length)
-            // console.log(this.audioIndex);
+            // (this.audioIndex);
             const str = this.audioSrcs[this.audioIndex];
             // 获取到随机值后
             const arr = str.split('@#')
@@ -193,7 +193,7 @@ export default {
                 this.songPic = res[0].al.picUrl
                 // 修改歌曲名称
                 this.songName = res[0].name
-                // console.log(res[0])
+                // (res[0])
                 this.song = res[0]
                 // 10.23晚处理
                 this.songId = res[0].id
@@ -244,7 +244,6 @@ export default {
             // 获取id
             const id = arr[1]
             let flagToget = true
-            console.log(id);
             this.songId = id
             // 判断缓存中是否存在歌曲的封面等信息，避免重复请求
             for (let i = 0; i < this.TsongListStore.length; i++) {

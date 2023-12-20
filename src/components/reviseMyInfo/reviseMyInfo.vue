@@ -216,7 +216,6 @@ export default {
                     } else {
                         //合法时发送请求查看名字是否存在
                         This.$h.get('/nickname/check?nickname=' + This.$refs.nickInput.value).then(res => {
-                            console.log(res);
                             if (res.duplicated === false) {
                                 This.$refs.nickM.innerHTML = '昵称可用~'
                                 This.nickMclass = 'succM'

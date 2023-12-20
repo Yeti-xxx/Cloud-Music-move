@@ -128,7 +128,6 @@ export default {
     },
     async created() {
         let flagToGet = true
-        console.log(this.$route.query.id)
         if (this.TsongPageIdStore == '11' || this.$route.query.id != this.TsongPageIdStore) {
             this.songId = this.$route.query.id
         }

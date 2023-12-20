@@ -3,9 +3,9 @@ import qs from 'qs'
 
 let api_base_url = ''
 if (import.meta.env.MODE === 'development') {
-  api_base_url = 'https://netease-cloud-music-api-azure-alpha.vercel.app/'
+  api_base_url = 'http://111.67.195.237:8886/'
 } else if (import.meta.env.MODE === 'production') {
-  api_base_url = 'https://netease-cloud-music-api-azure-alpha.vercel.app/'
+  api_base_url = 'http://111.67.195.237:8886/'
 }
 let instance = axios.create({
   timeout: 1000 * 80,
@@ -30,7 +30,6 @@ instance.interceptors.request.use(
     return config
   },
   error => {
-    console.log('请求超时！');
     return Promise.reject(error)
   }
 )
@@ -40,25 +39,20 @@ instance.interceptors.response.use(
   response => {
     // {data: {…}, status: 200, statusText: "OK", headers: {…}, config: {…}, request:{…}}
     let data = response.data     //响应的数据部分
-    console.log('响应数据：', data);
     let status = response.status  //标准状态码
     if (status === 200) {  //如果响应正常则放行 数据
       return Promise.resolve(data) //  *响应拦截器，只取数据部分*
     }
 
     else if (status >= 400 && status <= 499) {
-      console.log('客户端请求错误码：', status);
       return
     }
     else {
       //其他错误
-      console.log('服务器错误,错误码：', status);
       return Promise.reject(response)
     }
   },
   error => {
-    console.log('响应错误信息：')
-    console.log(error)
   }
 )
 let api = {}

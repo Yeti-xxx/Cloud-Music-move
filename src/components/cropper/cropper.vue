@@ -76,7 +76,6 @@ export default {
             let This = this
             const formData = new FormData()
             formData.append('imgFile', file)
-            console.log(axios);
             const { data: res } = await axios({
                 method: 'post',
                 // https://service-mlkn7ujm-1310291392.gz.apigw.tencentcs.com/release

@@ -20,7 +20,6 @@ export default {
         TlyricTime(newV, oldV) {
             this.lyricArray.forEach((element, index) => {
                 if (this.TlyricTime === element.time) {
-                    console.log(111);
                     let h = window.innerHeight * 0.23
                     h += -index * 39
                     this.lyricMove.top = h + 'px'
@@ -38,7 +37,7 @@ export default {
         }
     },
     created() {
-        console.log(this.lyricArray);
+
     },
 }
 
@@ -120,7 +119,7 @@ export default {
     methods: {
         // 歌词处理
         wordHandle() {
-            // console.log(this.word);
+            // (this.word);
             //先通过“\n”将每行歌词存入数组之中
             let arr = this.word.split('\n')
             for (let i = 0; i < arr.length; i++) {
@@ -135,8 +134,6 @@ export default {
                 this.lyric.push(lyricRow)             
             }
             this.flag = true;
-            console.log(this.flag);
-            console.log(this.lyric);
         },
         // 外界发入信息，表示此时歌词组件获取歌词
         getWordInLyric(word) {

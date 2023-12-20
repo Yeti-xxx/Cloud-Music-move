@@ -21,8 +21,8 @@
             <div class="right">
               <div class="title">{{SongListDetail.name}}</div>
               <div class="author" @click="gotoMyInfo">
-                <el-avatar :size="28" :src="author.avatarUrl" />
-                <span>{{author.nickname}}</span>
+                <el-avatar :size="28" :src="author?.profile?.avatarUrl" />
+                <span>{{author?.profile?.nickname}}</span>
               </div>
               <div class="describe">{{SongListDetail.description}}</div>
             </div>
@@ -84,7 +84,6 @@ export default {
       this.ListId = this.TsongBigListStore[0]
       this.song = this.TsongBigListStore[1]
       this.SongListDetail = this.TsongBigListStore[2]
-      console.log(this.TsongBigListStore[2]);
       this.author = this.TsongBigListStore[3]
       this.getOver = true
       this.Listlength = this.TListLengthStore
@@ -153,7 +152,7 @@ export default {
       this.updateTsongBigListStore(this.TsongBigListStore)
       this.updateTListNowStore(this.ListNow)
       this.updatedTListLengthStore(this.Listlength)
-      console.log(this.TsongBigListStore);
+
     },
     // 上拉加载歌曲
     upFresh() {
@@ -173,7 +172,7 @@ export default {
             This.ListNow += 10
             This.getNext = true
           } else {
-            console.log(111);
+            (111);
             return
           }
         }

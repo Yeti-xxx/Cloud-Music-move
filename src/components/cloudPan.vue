@@ -142,8 +142,6 @@ export default {
       this.songArray = this.cloudPanSongArray
       this.size = this.sizeStore
     }
-    console.log(this.size);
-    console.log(this.songArray);
 
 
   },
@@ -178,14 +176,12 @@ export default {
           songDetail.deletId = element.songId
           songDetail.pic = element.simpleSong.al.picUrl
           const { data: url } = await This.getMusicUrl(songDetail.id)
-          console.log(url[0].url);
           songDetail.url = url[0].url
           songDetail.isDelete = false
         }
         this.songArray.push(songDetail)
       }
       this.flag = true
-      console.log(this.songArray);
       this.updatedCloudPanSongArray(this.songArray)
     },
     // 点击搜索按钮发生的事件
@@ -250,7 +246,6 @@ export default {
 
         }
       }).then(res => {
-        console.log(res);
         This.complete = 0
         ElMessage({
           showClose: false,
@@ -259,7 +254,7 @@ export default {
           center: true,
         })
       }).catch(err => {
-        console.log(err);
+
       })
 
     },
@@ -283,7 +278,7 @@ export default {
         item.isDelete = true
         this.deletArray.push(item.deletId)
       }
-      console.log(this.deletArray);
+
     },
     // 点击最终删除按钮
     async deleteInCloudPan() {

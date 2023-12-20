@@ -77,7 +77,7 @@ export default {
     ...mapMutations('t_video', ['updatedVideoScrollTop', 'updatedToPlayScrollTop']),
     // 获取视频
     async getVideo() {
-      const { datas: res } = await this.$h.get('/video/timeline/recommend?offset=' + this.page)
+      const { datas: res } = await this.$h.get('/video/timeline/recommend')
       this.videoArray = [...this.videoArray, ...res]
       this.updatedVideoArrayInstore(this.videoArray)
       this.page++

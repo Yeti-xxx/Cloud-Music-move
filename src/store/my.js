@@ -12,7 +12,7 @@ export default {
             state.accountStore = account
         },
         updateUserInfo(state, userInfo) {
-            console.log(userInfo);
+            (userInfo);
             state.accountStore = 'true'
             state.userInfo = userInfo
 
@@ -21,7 +21,7 @@ export default {
             state.songListinStore = songListinStore
         },
         updateCookie(state, cookie) {
-            console.log(11);
+            (11);
             state.cookie = cookie
         },
     },

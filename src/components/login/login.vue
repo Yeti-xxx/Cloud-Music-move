@@ -151,7 +151,7 @@ export default {
         //             // this.updateCookie(statusRes.cookie)
         //             localStorage.setItem('wyCookie', statusRes.cookie)
         //             const status = await this.getLoginStatus(statusRes.cookie)
-        //             console.log(status);
+        //             (status);
         //             this.getUserInfo(status.data.data.account.id)
         //         }
         //     }, 3000)
@@ -166,7 +166,7 @@ export default {
         //             cookie,
         //         },
         //     })
-        //     console.log(res);
+        //     (res);
         //     return res
         // },
         
@@ -210,7 +210,6 @@ export default {
                 })
                 return this.reload
             }
-            console.log(res);
             this.updateUserInfo(res)
             setTimeout(() => {
                 this.$router.go(0)

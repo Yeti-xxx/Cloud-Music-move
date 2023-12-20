@@ -6,7 +6,7 @@ export default {
     }),
     mutations: {
         updatedCloudPanSongArray(state, cloudPanSongArray) {
-            console.log(cloudPanSongArray);
+            (cloudPanSongArray);
             state.cloudPanSongArray = cloudPanSongArray
         },
         updatedSize(state, sizeStore) {

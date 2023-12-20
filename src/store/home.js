@@ -19,14 +19,14 @@ export default {
             state.refreshTime = refreshTime
         },
         updatedSerachHot(state, searchHot) {
-            console.log(searchHot);
+            (searchHot);
             state.searchHot = searchHot
         },
         updatedSearchHistory(state, searchHistory) {
             state.searchHistory = searchHistory
         },
         updatedBannerArrayinStore(state,bannerArrayinStore){
-            console.log(bannerArrayinStore);
+            (bannerArrayinStore);
             state.bannerArrayinStore = bannerArrayinStore
         }
     },

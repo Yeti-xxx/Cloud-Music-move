@@ -74,7 +74,6 @@ export default {
                     center: true,
                 })
             }
-            console.log(this.$refs.textArea.value);
             const res = await this.$h.get('/comment?t=1&type=0&id=' + this.id + '&content=' + this.$refs.textArea.value)
             if (res.code === 200) {
                 this.$refs.textArea.value = ''

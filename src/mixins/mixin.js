@@ -2,14 +2,12 @@ import { ElMessage } from 'element-plus'
 export default {
     methods: {
         async getUserInfo(uid) {
-            console.log(uid);
             const res = await this.$h.get('/user/detail?uid=' + uid)
             return res
 
         },
         // 向父组件中的音乐播放器组件传入数据
         async playMusic(songInfo) {
-            console.log(songInfo);
             const res = await this.getMusicUrl(songInfo);
             if (res) {
                 this.playMusictoApp(this.musicUrl, songInfo.picUrl, songInfo.name)
@@ -26,11 +24,10 @@ export default {
         // 获取歌曲信息
         async getMusicDetail(id) {
             const res = await this.$h.get('/song/detail?ids=' + id)
-            console.log(res);
             return res
         },
         test() {
-            console.log(111);
+
         },
         // 点击歌单进入歌单详情页面
         goToList(ListId) {
@@ -157,7 +154,7 @@ export default {
                 return Math.trunc(e.loaded / e.total * 100);
             });
             if (percent === 100) {
-                console.log(47477);
+                (47477);
             }
             // 错误处理
             xhr.addEventListener('error', function (e) {
